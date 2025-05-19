@@ -1,0 +1,102 @@
+<script setup lang="ts">
+import { computed, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { jsonToNavigatie, navigatieToJson } from "@/ts/navigatie";
+import { VERKIEZINGEN, type InformatieType } from "@/ts/types";
+import { useToegankelijkhedenStore } from "@/stores/toegankelijkhedenStore";
+import Navigation from "@/components/NavigationComponent.vue";
+import Gemeente from "./GemeenteView.vue";
+import Kaart from "./KaartView.vue";
+import Start from "./StartView.vue";
+
+const route = useRoute();
+const router = useRouter();
+
+const informatie = ref<InformatieType>({} as InformatieType);
+
+const toegankelijkhedenStore = useToegankelijkhedenStore();
+
+watch(
+  () => route.query,
+  (newValue) => {
+    informatie.value = navigatieToJson(newValue);
+  },
+  { immediate: true, deep: true },
+);
+
+watch(
+  () => informatie,
+  (newValue) => {
+    router.replace({ query: jsonToNavigatie(newValue.value) });
+    update(informatie.value);
+  },
+  { immediate: true, deep: true },
+);
+
+const title = computed<string>(() => {
+  switch (informatie.value?.pagina) {
+    case "start":
+      return "";
+    case "kaart":
+      return "Op de kaart";
+    case "gemeente":
+      return toegankelijkhedenStore.getGemeenteName(informatie.value?.gemeente);
+    default:
+      return "_";
+  }
+  // return data?.code ? data?.data?.data[data?.code][0] : '';
+  return "TODO"; //informatie.pagina == 'gemeente' ? 'code' : '';
+});
+
+async function update(informatie: InformatieType) {
+  if (
+    informatie &&
+    informatie?.verkiezing &&
+    !toegankelijkhedenStore.isDataForVerkiezing(informatie.verkiezing)
+  ) {
+    await toegankelijkhedenStore.loadData(informatie.verkiezing);
+  }
+}
+</script>
+
+<template>
+  <header class="header">
+    <h1>Stemlokaaltoegankelijkheid {{ title }}</h1>
+    <h2>{{ VERKIEZINGEN[informatie.verkiezing] }}</h2>
+    <Navigation :informatie="informatie" />
+  </header>
+  <main class="main">
+    <Kaart v-if="informatie.pagina == 'kaart'" :informatie="informatie" />
+    <Gemeente v-else-if="informatie.pagina == 'gemeente'" :informatie="informatie" />
+    <Start v-else :informatie="informatie" />
+  </main>
+  <footer class="footer">
+    <p>
+      De informatie op deze pagina is gebaseerd met de gegevens die beschikaar zijn op de website
+      <a href="https://www.waarismijnstemlokaal.nl" target="_blank"
+        >https://www.waarismijnstemlokaal.nl</a
+      >. De gegevens zijn gebaseerd op het bestand met id
+      {{ toegankelijkhedenStore.getResourceId() }}.
+    </p>
+  </footer>
+</template>
+
+<style scoped>
+.header {
+  position: fixed;
+  width: 100%;
+  height: 130px;
+  text-align: center;
+  margin: 0;
+  border-bottom: 1px solid #333;
+  background-color: white;
+  z-index: 10000;
+}
+
+.footer {
+  width: 100%;
+}
+.main {
+  padding-top: 130px;
+}
+</style>

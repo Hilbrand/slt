@@ -1,0 +1,35 @@
+:root {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 1em;
+  --color-yes: #009e73;
+  --color-unknown: #f0e442;
+  --color-no: #cc79a7;
+  --text-color: #333;
+}
+
+body {
+  margin: 0px;
+}
+
+.ol-zoom {
+  display: relative;
+  float: right;
+  width: 30px;
+}
+
+.ol-zoom-in,
+.ol-zoom-out {
+  float: right;
+  display: block;
+  background-color: #ccc;
+  border-radius: 5px;
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+  margin-top: 4px;
+  cursor: pointer;
+}
+
+.ol-rotate {
+  display: none;
+}

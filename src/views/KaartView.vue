@@ -1,0 +1,315 @@
+<script setup lang="ts">
+import { onMounted, computed, ref, watch } from "vue";
+import { useRouter } from "vue-router";
+import { jsonToNavigatie } from "@/ts/navigatie";
+import { createGemeenteStyleFunction, isAbove } from "@/ts/gemeenteStyle";
+import {
+  Kaart,
+  achtergrondkaart,
+  maakGeoJsonKaartlaag,
+  updateKaartlaag,
+  type GeoLayer,
+} from "@/ts/kaartlagen.ts";
+import {
+  TOEGANKELIJKHEDEN,
+  TOEGANKELIJKHEDEN_KEYS,
+  type GemeenteDataType,
+  type InformatieType,
+  type LegendaTextType,
+  type ToegankelijkhedenID,
+  type ToegankelijkheidDataType
+} from "@/ts/types";
+import { useToegankelijkhedenStore } from "@/stores/toegankelijkhedenStore";
+import Legenda from "@/components/LegendaComponent.vue";
+
+const router = useRouter();
+
+const props = defineProps<{
+  informatie: InformatieType;
+}>();
+
+const toegankelijkhedenStore = useToegankelijkhedenStore();
+const allData = ref<GemeenteDataType>({});
+
+watch(
+  () => toegankelijkhedenStore.loadedVerkiezing(),
+  (newValue, oldValue) => {
+    if (newValue !== "" && newValue !== oldValue) {
+      allData.value = toegankelijkhedenStore.getGemeenteData();
+    }
+  },
+  { immediate: true },
+);
+
+const toegankelijkheid = ref<string>("");
+const toegankelijkheidIndex = ref<number>(0);
+const toegankelijkheidText = computed<string>(() =>
+  toegankelijkheid.value !== "" ? TOEGANKELIJKHEDEN[props.informatie?.toegankelijkheid] : "",
+);
+const percentage = ref(1);
+const gemeente = ref("");
+
+const lastToegankelijkheid = ref("");
+const lastPercentage = ref(0);
+const totalAbove = ref(0);
+
+let kaartlaag = undefined as GeoLayer | undefined;
+const featureGemeente = ref<string>("");
+
+watch(
+  () => props.informatie,
+  () => {
+    toegankelijkheid.value = props.informatie?.toegankelijkheid || "";
+    percentage.value = props.informatie?.percentage || 1;
+    gemeente.value = props.informatie?.gemeente || "";
+    if (
+      lastToegankelijkheid.value !== toegankelijkheid.value ||
+      lastPercentage.value !== percentage.value
+    ) {
+      lastToegankelijkheid.value = toegankelijkheid.value;
+      toegankelijkheidIndex.value = TOEGANKELIJKHEDEN_KEYS.indexOf(lastToegankelijkheid.value) || 0;
+      lastPercentage.value = percentage.value;
+      totalAbove.value = calcTotal();
+      updateKaartlaag(kaartlaag, true);
+    }
+  },
+  { immediate: true, deep: true },
+);
+
+function calcTotal() {
+  let sum = 0;
+
+  for (const gem in allData.value) {
+    const { total, above } = isAbove(allData.value, gem, toegankelijkheid.value, percentage.value);
+
+    if (above) {
+      sum += 1;
+    }
+  }
+  return sum;
+}
+
+const kaart = ref<Kaart>();
+
+function addLayer() {
+  const tgStyle = createGemeenteStyleFunction(allData, toegankelijkheid, percentage);
+  kaartlaag = maakGeoJsonKaartlaag("gemeenten.geojson", tgStyle);
+  if (kaart.value) {
+    kaart.value.addLayer(kaartlaag);
+  }  
+  totalAbove.value = calcTotal();
+  updateKaartlaag(kaartlaag, true);
+}
+
+// If no data present, layer will be added when data present
+watch(
+  () => toegankelijkhedenStore.loadedVerkiezing(),
+  (newState) => {
+    if (newState && !kaartlaag) {
+      addLayer();
+    }
+  },
+  { immediate: true, deep: true },
+);
+
+onMounted(() => {
+  kaart.value = new Kaart([achtergrondkaart]);
+  if (toegankelijkhedenStore.isDataForVerkiezing(props.informatie.verkiezing)) {
+    // If data already present add layer
+    addLayer();
+  }
+  kaart.value.addFeatureListener((feature) => {
+    featureGemeente.value = feature.get("c");
+  });
+});
+
+function navigateToegankelijkeid(tg: ToegankelijkhedenID) {
+  const copy = props.informatie;
+  copy.toegankelijkheid = tg;
+  router.replace({ query: jsonToNavigatie(copy) });
+}
+
+function handleSlider() {
+  const copy = props.informatie;
+  copy.percentage = percentage.value;
+  router.replace({ query: jsonToNavigatie(copy) });
+}
+
+function featureGemeenteName(): string {
+  const data = allData.value;
+  if (data && featureGemeente.value && data[featureGemeente.value]) {
+    return data[featureGemeente.value][0];
+  }
+  return "";
+}
+
+function aanwezig(value: string): number {
+  const data = allData.value;
+  const key = value as keyof ToegankelijkheidDataType;
+  if (data && featureGemeente.value && data[featureGemeente.value]) {
+    return data[featureGemeente.value][2][toegankelijkheidIndex.value][1][key] || 0;
+  }
+  return 0;
+}
+
+function totalGem(): number {
+  const data = allData.value;
+  if (data && featureGemeente.value && data[featureGemeente.value]) {
+    return data[featureGemeente.value][1] || 0;
+  }
+  return 0;
+}
+const legendaText = {
+  yes: "Gemeente waar het aantal stemlokalen minimaal met het percentage overeenkomt",
+  no: "Gemeenten waar geen enkel stemlokaal de categorie voorkomt",
+  nodata:
+    "Gemeenten waar minder stemlokalen dan het percentage overeenkomen, of deze informatie onbekend is",
+  title: true,
+} as LegendaTextType;
+</script>
+
+<template>
+  <div class="mapContent">
+    <div class="mapSelector">
+      <h2>Toegankelijkheid</h2>
+      <p>Klik op een van de toegankelijkheden om de gevens op de kaart te tonen.</p>
+      <button
+        v-for="(tg, index) in TOEGANKELIJKHEDEN" :key="index"
+        @click="navigateToegankelijkeid(index)"
+        class="cat-link"
+        :class="index == toegankelijkheid ? 'selected' : ''">
+        {{ tg }}
+      </button>
+      <h2>Percentage</h2>
+      <p>
+        In {{ totalAbove }} gemeenten is {{ percentage }}% van de stemlokalen
+        {{ toegankelijkheidText }}.
+      </p>
+      <div class="slidecontainer">
+        <input
+          type="range"
+          min="1"
+          max="100"
+          v-model="percentage"
+          class="slider"
+          @change="handleSlider" />
+      </div>
+      <Legenda :legendaText="legendaText" />
+    </div>
+    <div id="map">
+      <div id="hover">
+        <h4 class="hover-title">{{ featureGemeenteName() }}</h4>
+        <p>Aantal stemlokaties waar {{ toegankelijkheidText }}:</p>
+        <div class="hover-table">
+          <div>Ja</div>
+          <div>{{ aanwezig("j") }}</div>
+          <div>Nee</div>
+          <div>{{ aanwezig("n") }}</div>
+          <div>Onbekend</div>
+          <div>{{ aanwezig("") }}</div>
+          <div class="hover-table-last">Totaal</div>
+          <div class="hover-table-last">{{ totalGem() }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.cat-link {
+  color: var(--text-color);
+  width: 100%;
+  margin: 10px 3px 0;
+  border: none;
+  text-align: left;
+  background-color: transparent;
+}
+
+.cat-link::before {
+  content: "•";
+  margin-right: 3px;
+}
+
+.cat-link:link,
+.cat-link:visited {
+  text-decoration: none;
+}
+
+.cat-link:hover,
+.cat-link:active {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.selected {
+  font-weight: bold;
+}
+
+.selected::after {
+  margin-left: 3px;
+  content: "✔";
+}
+
+.slidecontainer {
+  margin-right: 10px;
+}
+
+.slider {
+  width: 100%;
+}
+
+.mapContent {
+  display: grid;
+  grid-template-columns: 20em 1fr;
+}
+
+.mapSelector {
+  margin-top: 10px;
+  margin-left: 10px;
+  border-right: 1px solid #999;
+}
+
+#map {
+  position: relative;
+  height: calc(100vh - 72px);
+  margin: 0;
+  padding: 0;
+}
+
+#hover {
+  position: absolute;
+  display: inline-block;
+  height: 210px;
+  width: 200px;
+  z-index: 100;
+  background-color: #eee;
+  color: #333;
+  text-align: left;
+  border-radius: 6px;
+  border-color: #333;
+  border-width: 3px;
+  border-style: solid;
+  padding: 5px;
+  transform: translateX(3%);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+#hover h4 {
+  margin: 0;
+  padding: 0;
+}
+
+.hover-title {
+  text-align: center;
+}
+
+.hover-table {
+  display: grid;
+  grid-template-columns: auto auto;
+}
+
+.hover-table-last {
+  border-top: 1px solid #333;
+}
+</style>
