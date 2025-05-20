@@ -79,6 +79,7 @@ export function nieuweKaart(lagen: BaseLayer[]) {
     view: new View({
       projection: projection,
       center: [150000, 450000],
+      minZoom: 2,
       zoom: 3,
     }),
   });
@@ -120,8 +121,21 @@ export class Kaart {
 
     if (feature) {
       this.listeners.forEach((l) => l(feature));
-      info.style.left = pixel[0] + "px";
-      info.style.top = pixel[1] + "px";
+      console.log("window.innerWidth:", window.innerWidth -250, ", pixel[0] * 2:", pixel[0])
+      if (window.innerWidth > 1024) {
+        info.style.left = pixel[0] - (pixel[0] > (window.innerWidth - 600) ? 220 : 0) + "px";
+      }else if (pixel[0] > window.innerWidth * 0.5) {
+        info.style.left = "0px";
+        info.style.right = "";
+      } else {
+        info.style.left = "";
+        info.style.right = "10px";
+      }
+      if (pixel[1] + 350 > window.innerHeight) {
+        info.style.top = pixel[1] - 220 + "px";
+      } else {
+        info.style.top = pixel[1] + "px";
+      }
       if (feature !== this.currentFeature) {
         info.style.visibility = "visible";
       }
