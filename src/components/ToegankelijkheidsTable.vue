@@ -107,4 +107,12 @@ function show(value: number = 0) {
   line-height: 30px;
   white-space: nowrap;
 }
+@media (max-width: 1024px) {
+  .grid td:first-child {
+    width: 50%;
+  }
+  .row {
+    margin-bottom: 1rem;
+  }
+}
 </style>

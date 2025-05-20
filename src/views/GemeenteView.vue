@@ -47,7 +47,7 @@ function handleChange(event: Event) {
 const legendaText = {
   yes: "Aantal stemlokalen waar de toegankelijkheid aanwezig is",
   no: "Aantal stemlokalen waar de toegankelijkheid afwezig is",
-  nodata: "Aantal stemlokalen waar de toegankelijkheid informatie onbekend is",
+  nodata: "Aantal stemlokalen waar de toegankelijkheidsinformatie onbekend is",
   title: true,
 } as LegendaTextType;
 </script>

@@ -6,7 +6,6 @@ import {
   DEFAULT_VERKIEZING,
 } from "@/ts/types";
 import type { LocationQuery, LocationQueryRaw } from "vue-router";
-// ------------------------------------------------------------------
 
 export function navigatieToJson(query: LocationQuery): InformatieType {
   return {

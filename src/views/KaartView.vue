@@ -9,7 +9,7 @@ import {
   maakGeoJsonKaartlaag,
   updateKaartlaag,
   type GeoLayer,
-} from "@/ts/kaartlagen.ts";
+} from "@/ts/kaartlagen";
 import {
   TOEGANKELIJKHEDEN,
   TOEGANKELIJKHEDEN_KEYS,
@@ -17,7 +17,7 @@ import {
   type InformatieType,
   type LegendaTextType,
   type ToegankelijkhedenID,
-  type ToegankelijkheidDataType
+  type ToegankelijkheidDataType,
 } from "@/ts/types";
 import { useToegankelijkhedenStore } from "@/stores/toegankelijkhedenStore";
 import Legenda from "@/components/LegendaComponent.vue";
@@ -80,7 +80,7 @@ function calcTotal() {
   let sum = 0;
 
   for (const gem in allData.value) {
-    const { total, above } = isAbove(allData.value, gem, toegankelijkheid.value, percentage.value);
+    const { above } = isAbove(allData.value, gem, toegankelijkheid.value, percentage.value);
 
     if (above) {
       sum += 1;
@@ -96,7 +96,7 @@ function addLayer() {
   kaartlaag = maakGeoJsonKaartlaag("gemeenten.geojson", tgStyle);
   if (kaart.value) {
     kaart.value.addLayer(kaartlaag);
-  }  
+  }
   totalAbove.value = calcTotal();
   updateKaartlaag(kaartlaag, true);
 }
@@ -160,10 +160,10 @@ function totalGem(): number {
   return 0;
 }
 const legendaText = {
-  yes: "Gemeente waar het aantal stemlokalen minimaal met het percentage overeenkomt",
-  no: "Gemeenten waar geen enkel stemlokaal de categorie voorkomt",
+  yes: "Gemeente waar de toegankelijkheid in minimaal het percentage stemlokalen aanwezig is",
+  no: "Gemeenten waar in geen enkel stemlokaal de toegankelijkheid aanwezig is",
   nodata:
-    "Gemeenten waar minder stemlokalen dan het percentage overeenkomen, of deze informatie onbekend is",
+    "Gemeenten waar de toegankelijkheid in minder stemlokalen dan het percentage aanwezig is, of deze informatie onbekend is",
   title: true,
 } as LegendaTextType;
 </script>
@@ -174,7 +174,8 @@ const legendaText = {
       <h2>Toegankelijkheid</h2>
       <p>Klik op een van de toegankelijkheden om de gevens op de kaart te tonen.</p>
       <button
-        v-for="(tg, index) in TOEGANKELIJKHEDEN" :key="index"
+        v-for="(tg, index) in TOEGANKELIJKHEDEN"
+        :key="index"
         @click="navigateToegankelijkeid(index)"
         class="cat-link"
         :class="index == toegankelijkheid ? 'selected' : ''">
@@ -194,7 +195,6 @@ const legendaText = {
           class="slider"
           @change="handleSlider" />
       </div>
-      <Legenda :legendaText="legendaText" />
     </div>
     <div id="map">
       <div id="hover">
@@ -212,6 +212,7 @@ const legendaText = {
         </div>
       </div>
     </div>
+    <Legenda :legendaText="legendaText" />
   </div>
 </template>
 
@@ -311,5 +312,18 @@ const legendaText = {
 
 .hover-table-last {
   border-top: 1px solid #333;
+}
+
+@media (max-width: 1024px) {
+  .mapContent {
+    display: block;
+    grid-template-columns: 20em 1fr;
+  }
+  .grid td:first-child {
+    width: 50%;
+  }
+  .row {
+    margin-bottom: 1rem;
+  }
 }
 </style>

@@ -38,14 +38,12 @@ const title = computed<string>(() => {
     case "start":
       return "";
     case "kaart":
-      return "Op de kaart";
+      return "op de kaart";
     case "gemeente":
       return toegankelijkhedenStore.getGemeenteName(informatie.value?.gemeente);
     default:
-      return "_";
+      return "";
   }
-  // return data?.code ? data?.data?.data[data?.code][0] : '';
-  return "TODO"; //informatie.pagina == 'gemeente' ? 'code' : '';
 });
 
 async function update(informatie: InformatieType) {
@@ -61,9 +59,9 @@ async function update(informatie: InformatieType) {
 
 <template>
   <header class="header">
+    <Navigation class="nav" :informatie="informatie" />
     <h1>Stemlokaaltoegankelijkheid {{ title }}</h1>
     <h2>{{ VERKIEZINGEN[informatie.verkiezing] }}</h2>
-    <Navigation :informatie="informatie" />
   </header>
   <main class="main">
     <Kaart v-if="informatie.pagina == 'kaart'" :informatie="informatie" />
@@ -75,8 +73,10 @@ async function update(informatie: InformatieType) {
       De informatie op deze pagina is gebaseerd met de gegevens die beschikaar zijn op de website
       <a href="https://www.waarismijnstemlokaal.nl" target="_blank"
         >https://www.waarismijnstemlokaal.nl</a
-      >. De gegevens zijn gebaseerd op het bestand met id
-      {{ toegankelijkhedenStore.getResourceId() }}.
+      >. De gegevens zijn gebaseerd op het bestand met id:
+      <code>{{ toegankelijkhedenStore.getResourceId() }}</code>.
+      Meer informatie over dit project is te vinden op <a href="https://github.com/hilbrand/slt"
+      >https://github.com/hilbrand/slt</a>.
     </p>
   </footer>
 </template>
@@ -98,5 +98,29 @@ async function update(informatie: InformatieType) {
 }
 .main {
   padding-top: 130px;
+}
+
+@media (max-width: 1280px) {
+  .header {
+    height: 160px;
+  }
+  .main {
+    padding-top: 160px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .header {
+    height: 130px;
+  }
+  .header h1 {
+    font-size: 1.2em;
+  }
+  .header h2 {
+    font-size: 1em;
+  }
+  .main {
+    padding-top: 130px;
+  }
 }
 </style>

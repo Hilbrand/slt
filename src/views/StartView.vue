@@ -22,13 +22,13 @@ const atLeastOne = computed<ToegankelijkheidAreaType>(() =>
     : ["", 0, []],
 );
 const alleToegankelijkheid = {
-  yes: "Stemlokalen waar toegankelijkeid aanwezig",
-  no: "Stemlokalen waar toegankelijkeid afwezig",
-  nodata: "Stemlokalen waar geen gegevens van zijn opgegevens",
+  yes: "Stemlokalen waar de toegankelijkheid aanwezig is",
+  no: "Stemlokalen waar toegankelijkheid afwezig is",
+  nodata: "Stemlokalen waar geen gegevens van zijn",
 } as LegendaTextType;
 
 const atLeastOneToegankelijkheid = {
-  yes: "Aantal gemeenten waar minimaal in 1 stemlokaal de toegankelijkeid aanwezig is",
+  yes: "Aantal gemeenten waar minimaal in 1 stemlokaal de toegankelijkheid aanwezig is",
   no: "Aantal gemeenten waar de toegankelijkheid in geen enkel stemlokaal aanwezig is",
   nodata: "Aantal gemeenten waar geen gegevens voor toegankelijkheid zijn opgegeven",
 } as LegendaTextType;
@@ -68,11 +68,5 @@ h3 {
 }
 .legenda h3 {
   display: none;
-}
-.legenda {
-  display: flex;
-  justify-content: space-between;
-  margin: 0 10px 30px 10px;
-  border-bottom: 1px solid #333;
 }
 </style>

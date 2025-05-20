@@ -1,12 +1,18 @@
 <script setup lang="ts">
+import { useRouter } from "vue-router";
+import { jsonToNavigatie } from "@/ts/navigatie";
 import type { InformatieType, PaginaID } from "@/ts/types";
+
+const router = useRouter();
 
 const props = defineProps<{
   informatie: InformatieType;
 }>();
 
 function navigateTo(page: PaginaID) {
-  return (props.informatie.pagina = page);
+  const copy = props.informatie;
+  copy.pagina = page;
+  router.replace({ query: jsonToNavigatie(copy) });
 }
 
 function selected(page: PaginaID) {
@@ -54,5 +60,12 @@ function selected(page: PaginaID) {
 .nav button.selected {
   font-weight: bold;
   background: #bbb;
+}
+
+@media (max-width: 1280px) {
+  .nav {
+    position: unset;
+    text-align: center;
+  }
 }
 </style>
