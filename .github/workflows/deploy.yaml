@@ -17,14 +17,9 @@ jobs:
         run: |
           npm ci
           npm run build
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          git-config-email: hilbrand@h72.nl
-          repository-name: hilbrand/slt
-          branch: main
-          token: ${{ secrets.DEPLOY_IB_ACCESS_TOKEN }}
-          folder: dist
-          target-folder: docs
-          clean: true
-          single-commit: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
