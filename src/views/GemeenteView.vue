@@ -21,10 +21,10 @@ const totaal = computed<number>(() =>
     : 0,
 );
 
-const toegankelijkheden = computed<ToegankelijkheidType[]>(() =>
+const toegankelijkheden = computed<ToegankelijkheidType>(() =>
   toegankelijkhedenStore.loadedVerkiezing() == props.informatie?.verkiezing
     ? toegankelijkhedenStore.getToegankelijkheden(props.informatie?.gemeente)
-    : [],
+    : {},
 );
 
 const gemeenten = computed(() =>

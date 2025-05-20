@@ -9,8 +9,8 @@ export const useToegankelijkhedenStore = defineStore("toegankelijkheden", {
     resource_id: "",
     verkiezing: "",
     gemeenten: [],
-    national: ["", 0, []] as ToegankelijkheidAreaType,
-    atLeastOne: ["", 0, []] as ToegankelijkheidAreaType,
+    national: ["", 0, {}] as ToegankelijkheidAreaType,
+    atLeastOne: ["", 0, {}] as ToegankelijkheidAreaType,
     gemeenteData: {} as GemeenteDataType,
   }),
 
@@ -47,8 +47,8 @@ export const useToegankelijkhedenStore = defineStore("toegankelijkheden", {
     getResourceId: (state) => (): string => state.resource_id,
     getToegankelijkheden:
       (state) =>
-      (key: string | undefined): ToegankelijkheidType[] =>
-        key == undefined ? [] : state.gemeenteData[key][2],
+      (key: string | undefined): ToegankelijkheidType =>
+        key == undefined ? {} : state.gemeenteData[key][2],
     isDataForVerkiezing:
       (state) =>
       (verkiezing: string): boolean =>

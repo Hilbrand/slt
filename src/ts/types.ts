@@ -28,6 +28,7 @@ export const TOEGANKELIJKHEDEN_IDS = [
 ] as const;
 
 export type ToegankelijkhedenID = (typeof TOEGANKELIJKHEDEN_IDS)[number];
+
 /**
  * Conversie map van key naar omschrijving toegankelijkheidscategorieen.
  */
@@ -46,8 +47,6 @@ export const TOEGANKELIJKHEDEN: Record<ToegankelijkhedenID, string> = {
   gs: "Gebarentalig stembureaulid (NGT)",
   as: "Akoestiek geschikt voor slechthorenden",
 };
-
-export const TOEGANKELIJKHEDEN_KEYS = Object.keys(TOEGANKELIJKHEDEN);
 
 export const DEFAULT_PAGINA = "start" as PaginaID;
 export const DEFAULT_VERKIEZING = "ep2024";
@@ -70,8 +69,10 @@ export type ToegankelijkheidDataType = {
   l?: number;
 };
 
-export type ToegankelijkheidType = [ToegankelijkhedenID, ToegankelijkheidDataType];
-export type ToegankelijkheidAreaType = [string, number, ToegankelijkheidType[]];
+export type ToegankelijkheidDataTypeKey = keyof ToegankelijkheidDataType;
+
+export type ToegankelijkheidType = { [tg:string]: ToegankelijkheidDataType };
+export type ToegankelijkheidAreaType = [string, number, ToegankelijkheidType];
 
 export type GemeenteDataType = {
   [gmcode: string]: ToegankelijkheidAreaType;

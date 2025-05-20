@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { type ToegankelijkheidType, type ToegankelijkhedenID, TOEGANKELIJKHEDEN } from "@/ts/types";
+import { type ToegankelijkheidType, type ToegankelijkhedenID, type ToegankelijkheidDataTypeKey, TOEGANKELIJKHEDEN, TOEGANKELIJKHEDEN_IDS } from "@/ts/types";
 
 const props = defineProps<{
   totaal: number;
-  toegankelijkheden: ToegankelijkheidType[];
+  toegankelijkheden: ToegankelijkheidType;
 }>();
 
-function width(value: number = 0) {
-  const percentage = (value / props.totaal) * 100;
+function width(key: ToegankelijkhedenID, state: ToegankelijkheidDataTypeKey) {
+  const percentage = (show(key, state) / props.totaal) * 100;
   return "width:" + percentage + "%";
 }
 
@@ -15,53 +15,54 @@ function cat(key: ToegankelijkhedenID) {
   return TOEGANKELIJKHEDEN[key] || "";
 }
 
-function ariaLabel(key: ToegankelijkhedenID, value: number = 0, append: string = "") {
-  return "Aantal stemlokalen met " + cat(key) + append + ": " + value;
+function ariaLabel(key: ToegankelijkhedenID, state: ToegankelijkheidDataTypeKey, append: string = "") {
+  return "Aantal stemlokalen met " + cat(key) + append + ": " + show(key, state);
 }
 
-function show(value: number = 0) {
-  return value;
+function show(key: ToegankelijkhedenID, state: ToegankelijkheidDataTypeKey): number {
+  return props.toegankelijkheden[key] && props.toegankelijkheden[key][state]
+      ? props.toegankelijkheden[key][state] : 0;
 }
 </script>
 
 <template>
   <table class="grid">
     <slot />
-    <tr v-for="row in toegankelijkheden">
-      <td>{{ cat(row[0]) }}</td>
+    <tr v-for="row in TOEGANKELIJKHEDEN_IDS" :key="row">
+      <td>{{ cat(row) }}</td>
       <td class="row">
         <div
-          v-if="row[0] == 'gt'"
-          :aria-label="ariaLabel(row[0], row[1]['l'], ' op locatie')"
+          v-if="row == 'gt'"
+          :aria-label="ariaLabel(row, 'l', ' op locatie')"
           class="cell yes"
-          :style="width(row[1]['l'])">
-          {{ show(row[1]["l"]) }}
+          :style="width(row, 'l')">
+          {{ show(row, "l") }}
         </div>
         <div
-          v-if="row[0] == 'gt'"
-          :aria-label="ariaLabel(row[0], row[1]['a'], ' op afstand')"
+          v-if="row == 'gt'"
+          :aria-label="ariaLabel(row, 'a', ' op afstand')"
           class="cell yes"
-          :style="width(row[1]['a'])">
-          {{ show(row[1]["a"]) }}
+          :style="width(row, 'a')">
+          {{ show(row, "a") }}
         </div>
         <div
-          v-if="row[0] != 'gt'"
-          :aria-label="ariaLabel(row[0], row[1].j)"
+          v-if="row != 'gt'"
+          :aria-label="ariaLabel(row, 'j')"
           class="cell yes"
-          :style="width(row[1]['j'])">
-          {{ show(row[1]["j"]) }}
+          :style="width(row, 'j')">
+          {{ show(row, "j") }}
         </div>
         <div
-          :aria-label="ariaLabel(row[0], row[1][''])"
+          :aria-label="ariaLabel(row, '')"
           class="cell unknown"
-          :style="width(row[1][''])">
-          {{ show(row[1][""]) }}
+          :style="width(row, '')">
+          {{ show(row, "") }}
         </div>
         <div
-          :aria-label="ariaLabel(row[0], row[1]['n'])"
+          :aria-label="ariaLabel(row, 'n')"
           class="cell no"
-          :style="width(row[1]['n'])">
-          {{ show(row[1]["n"]) }}
+          :style="width(row, 'n')">
+          {{ show(row, 'n') }}
         </div>
       </td>
     </tr>

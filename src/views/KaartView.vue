@@ -12,12 +12,12 @@ import {
 } from "@/ts/kaartlagen";
 import {
   TOEGANKELIJKHEDEN,
-  TOEGANKELIJKHEDEN_KEYS,
   type GemeenteDataType,
   type InformatieType,
   type LegendaTextType,
   type ToegankelijkhedenID,
   type ToegankelijkheidDataType,
+  type ToegankelijkheidDataTypeKey,
 } from "@/ts/types";
 import { useToegankelijkhedenStore } from "@/stores/toegankelijkhedenStore";
 import Legenda from "@/components/LegendaComponent.vue";
@@ -41,17 +41,16 @@ watch(
   { immediate: true },
 );
 
-const toegankelijkheid = ref<string>("");
-const toegankelijkheidIndex = ref<number>(0);
+const toegankelijkheid = ref<ToegankelijkhedenID>("lb");
 const toegankelijkheidText = computed<string>(() =>
-  toegankelijkheid.value !== "" ? TOEGANKELIJKHEDEN[props.informatie?.toegankelijkheid] : "",
+  toegankelijkheid.value ? "" : TOEGANKELIJKHEDEN[props.informatie?.toegankelijkheid],
 );
 const percentage = ref(1);
 const gemeente = ref("");
 
-const lastToegankelijkheid = ref("");
-const lastPercentage = ref(0);
-const totalAbove = ref(0);
+const lastToegankelijkheid = ref<ToegankelijkhedenID>();
+const lastPercentage = ref<number>(0);
+const totalAbove = ref<number>(0);
 
 let kaartlaag = undefined as GeoLayer | undefined;
 const featureGemeente = ref<string>("");
@@ -67,7 +66,6 @@ watch(
       lastPercentage.value !== percentage.value
     ) {
       lastToegankelijkheid.value = toegankelijkheid.value;
-      toegankelijkheidIndex.value = TOEGANKELIJKHEDEN_KEYS.indexOf(lastToegankelijkheid.value) || 0;
       lastPercentage.value = percentage.value;
       totalAbove.value = calcTotal();
       updateKaartlaag(kaartlaag, true);
@@ -92,6 +90,9 @@ function calcTotal() {
 const kaart = ref<Kaart>();
 
 function addLayer() {
+  if (!toegankelijkheid.value) {
+    return;
+  }
   const tgStyle = createGemeenteStyleFunction(allData, toegankelijkheid, percentage);
   kaartlaag = maakGeoJsonKaartlaag("gemeenten.geojson", tgStyle);
   if (kaart.value) {
@@ -143,11 +144,10 @@ function featureGemeenteName(): string {
   return "";
 }
 
-function aanwezig(value: string): number {
+function aanwezig(state: ToegankelijkheidDataTypeKey): number {
   const data = allData.value;
-  const key = value as keyof ToegankelijkheidDataType;
   if (data && featureGemeente.value && data[featureGemeente.value]) {
-    return data[featureGemeente.value][2][toegankelijkheidIndex.value][1][key] || 0;
+    return data[featureGemeente.value][2][toegankelijkheid.value][state] || 0;
   }
   return 0;
 }

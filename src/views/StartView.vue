@@ -14,12 +14,12 @@ const toegankelijkhedenStore = useToegankelijkhedenStore();
 const national = computed<ToegankelijkheidAreaType>(() =>
   toegankelijkhedenStore.loadedVerkiezing() == props.informatie?.verkiezing
     ? toegankelijkhedenStore.getNational()
-    : ["", 0, []],
+    : ["", 0, {}],
 );
 const atLeastOne = computed<ToegankelijkheidAreaType>(() =>
   toegankelijkhedenStore.loadedVerkiezing() == props.informatie?.verkiezing
     ? toegankelijkhedenStore.getAtLeastOne()
-    : ["", 0, []],
+    : ["", 0, {}],
 );
 const alleToegankelijkheid = {
   yes: "Stemlokalen waar de toegankelijkheid aanwezig is",

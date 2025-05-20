@@ -93,87 +93,95 @@ def count_values(json_data):
                value = record.get(tc, '')
                set_value(gemeentecode_groups[code], tc, value)
                keys[value] = 1
+        print("Counted all records.")
         return data
     except Exception as e:
         return f'Error processing the JSON: {str(e)}'
 
+#
+#
+#
 def transform(json):
   gemeenten = {}
   data = json['data']
   for code in data:
     gem = ""
-    toegs = []
+    toegs = {}
     totaal = 0
+    # {'gemeente code': values}
     for c in data[code]:
        if c == 'g':
          gem = data[code][c]
        else:
-         toegs.append([c, data[code][c]])
-         cat_totaal = sum(data[code][c].values())
+         toegs[c] = data[code][c]
+         cat_totaal = sum(toegs[c].values())
          if cat_totaal > totaal:
            totaal = cat_totaal
-
     gemeenten[code] = [gem, totaal, toegs]
-
+  print("Transformed counted values to new structure.")
   json['data'] = gemeenten
 
-def totalen(json):
+#
+#
+#
+#
+def nationalTotals(json):
   gemeenten = json['data']
   totaalStemlokalen = 0
   toegsTotaal = {}
   for code in gemeenten:
+    # ['<gemeente naam>', 'stemlokalen', {'<tg>': {}}]
     gemeente = gemeenten[code]
     totaalStemlokalen += gemeente[1]
-    for tg in gemeente[2]:
-      tgName = tg[0]
+    # {'<tgName>': {}}}
+    allTgStates = gemeente[2]
+    for tgName in allTgStates:
       if tgName not in toegsTotaal:
-         toegsTotaal[tgName] = [tgName, {}]
-      values = tg[1]
-      for value in values:
-        totalTg = toegsTotaal[tgName][1]
-        if value not in totalTg:
-          totalTg[value] = 0
-        totalTg[value] += values[value]
-  totalenArray = []
-  for tg in toegsTotaal:
-    totalenArray.append(toegsTotaal[tg])
-  json['national'] = ['national', sum(totalenArray[0][1].values()), totalenArray]
+         toegsTotaal[tgName] = {}
+      totalTg = toegsTotaal[tgName]
+      # { 'state': <number>, ....}
+      for state in allTgStates[tgName]:
+        if state not in totalTg:
+          totalTg[state] = 0
+        totalTg[state] += allTgStates[tgName][state]
+  json['national'] = ['national', sum(toegsTotaal['lb'].values()), toegsTotaal]
+  print("Counted national values.")
 
 def greaterZero(values, key):
   return key in values and values[key] > 0
 
 def increment(values, key):
-  if (key not in values[1]):
-    values[1][key] = 1
+  if (key not in values):
+    values[key] = 1
   else:
-    values[1][key] += 1
+    values[key] += 1
 
 def atLeastOne(json):
   gemeenten = json['data']
   totaalGemeenten = 0
   toegsTotaal = {}
   for code in gemeenten:
+    # ['<gemeente naam>', 'stemlokalen', {'<tg>': {}}]
     gemeente = gemeenten[code]
     totaalGemeenten += 1
-    for tg in gemeente[2]:
-      tgName = tg[0]
+    # {'<tgName>': {}}}
+    allTgStates = gemeente[2]
+    for tgName in allTgStates:
       if tgName not in toegsTotaal:
-         toegsTotaal[tgName] = [tgName, {}]
-      values = tg[1]
-      if greaterZero(values, 'j'):
+          toegsTotaal[tgName] = {}
+      states = allTgStates[tgName]
+      if greaterZero(states, 'j'):
         increment(toegsTotaal[tgName], 'j')
-      elif greaterZero(values, 'a'):
+      elif greaterZero(states, 'a'):
         increment(toegsTotaal[tgName], 'a')
-      elif greaterZero(values, 'l'):
+      elif greaterZero(states, 'l'):
         increment(toegsTotaal[tgName], 'l')
-      elif 'n' in values and values['n'] == tg[1]:
+      elif 'n' in states and states['n'] == gemeente[1]:
         increment(toegsTotaal[tgName], 'n')
       else:
         increment(toegsTotaal[tgName], '')
-  totalenArray = []
-  for tg in toegsTotaal:
-    totalenArray.append(toegsTotaal[tg])
-  json['atLeastOne'] = ['atLeastOne', sum(totalenArray[0][1].values()), totalenArray]
+  json['atLeastOne'] = ['atLeastOne', sum(toegsTotaal['lb'].values()), toegsTotaal]
+  print("Counted at-least-one.")
 
 def togemeenten(data):
   gemeenten = []
@@ -188,7 +196,7 @@ def load_and_process_json_file(filename, output_filename):
             data = json.load(file)
             counted = count_values(data)
             transform(counted)
-            totalen(counted)
+            nationalTotals(counted)
             atLeastOne(counted)
             with open(output_filename + '.json', 'w', encoding='utf-8') as output:
                 json.dump(counted, output)
@@ -200,7 +208,7 @@ def load_and_process_json_file(filename, output_filename):
 def main():
     # Check if a filename was provided as command line argument
     if len(sys.argv) != 3:
-        print('Usage: python script.py path_to_json_file')
+        print('Usage: python converteer.py path_to_data_json')
         sys.exit(1)
 
     # Get the filename from command line arguments
@@ -216,8 +224,8 @@ def main():
         sys.exit(1)
 
     # Print the results
-    print('resultaat geschreven naar ' + output_filename + '.json')
-    print('resultaat geschreven naar ' + output_filename + 'gemeenten.json')
+    print('Result of data written to: ' + output_filename + '.json')
+    print('Result of gemeentes written to: ' + output_filename + 'gemeenten.json')
 
 if __name__ == '__main__':
     main()
