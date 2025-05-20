@@ -16,15 +16,15 @@ export const TOEGANKELIJKHEDEN_IDS = [
   "ov",
   "to",
   "ho",
+  "pa",
   "gi",
   "gu",
-  "sa",
   "kb",
   "kg",
+  "sa",
   "gt",
   "gs",
   "as",
-  "pa",
 ] as const;
 
 export type ToegankelijkhedenID = (typeof TOEGANKELIJKHEDEN_IDS)[number];
@@ -36,15 +36,15 @@ export const TOEGANKELIJKHEDEN: Record<ToegankelijkhedenID, string> = {
   ov: "Toegankelijke ov-halte",
   to: "Gehandicaptentoilet",
   ho: "Host",
+  pa: "Prikkelarm",
   gi: "Geleidelijnen binnen",
   gu: "Geleidelijnen buiten",
-  sa: "Stemmal met audio-ondersteuning",
   kb: "Kandidatenlijst in braille",
   kg: "Kandidatenlijst met grote letters",
+  sa: "Stemmal met audio-ondersteuning",
   gt: "Gebarentolk (NGT)",
   gs: "Gebarentalig stembureaulid (NGT)",
   as: "Akoestiek geschikt voor slechthorenden",
-  pa: "Prikkelarm",
 };
 
 export const TOEGANKELIJKHEDEN_KEYS = Object.keys(TOEGANKELIJKHEDEN);

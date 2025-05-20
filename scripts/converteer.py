@@ -94,7 +94,6 @@ def count_values(json_data):
                set_value(gemeentecode_groups[code], tc, value)
                keys[value] = 1
         return data
-
     except Exception as e:
         return f'Error processing the JSON: {str(e)}'
 
@@ -195,8 +194,6 @@ def load_and_process_json_file(filename, output_filename):
                 json.dump(counted, output)
             with open(output_filename + '_gemeenten.json', 'w', encoding='utf-8') as output:
                 json.dump(togemeenten(counted['data']), output)
-            #totalePercentage(totalenArray)
-            #print(totalenArray)
     except Exception as e:
         return f'Error loading or processing file: {str(e)}'
 
@@ -221,12 +218,6 @@ def main():
     # Print the results
     print('resultaat geschreven naar ' + output_filename + '.json')
     print('resultaat geschreven naar ' + output_filename + 'gemeenten.json')
-    # for code, counts in result.items():
-    #     print(f'\nCode: {code}')
-    #     for value, count in counts.items():
-    #         # For empty strings, show as 'empty value'
-    #         display_value = ''empty value'' if value == '' else f''{value}''
-    #         print(f'  Value {display_value}: {count} occurrences')
 
 if __name__ == '__main__':
     main()

@@ -1,4 +1,4 @@
-import { Map, View } from "ol";
+import { Map, MapBrowserEvent, View } from "ol";
 import type { FeatureLike } from "ol/Feature";
 import { getTopLeft } from "ol/extent";
 import { GeoJSON } from "ol/format";
@@ -121,7 +121,6 @@ export class Kaart {
 
     if (feature) {
       this.listeners.forEach((l) => l(feature));
-      console.log("window.innerWidth:", window.innerWidth -250, ", pixel[0] * 2:", pixel[0])
       if (window.innerWidth > 1024) {
         info.style.left = pixel[0] - (pixel[0] > (window.innerWidth - 600) ? 220 : 0) + "px";
       }else if (pixel[0] > window.innerWidth * 0.5) {
@@ -146,12 +145,11 @@ export class Kaart {
     }
   }
 
-  onClick(evt: any) {
+  onClick(evt: MapBrowserEvent) {
     this.onPointMove(evt);
-    // this.displayFeatureInfo(evt.pixel, evt.originalEvent.target);
   }
 
-  onPointMove(evt: any) {
+  onPointMove(evt: MapBrowserEvent) {
     if (evt.dragging) {
       this.getHover().style.visibility = "hidden";
       this.currentFeature = undefined;
@@ -163,7 +161,7 @@ export class Kaart {
     }
   }
 
-  onPointerLeave(evt: any) {
+  onPointerLeave(evt: Event) {
     this.currentFeature = undefined;
     this.getHover().style.visibility = "hidden";
   }
@@ -171,7 +169,7 @@ export class Kaart {
   maakMap(lagen: BaseLayer[]): Map {
     const map = nieuweKaart(lagen);
 
-    map.on("click", (evt) => this.onClick(evt));
+    map.on("click", (evt: MapBrowserEvent) => this.onClick(evt));
     map.on("pointermove", (evt) => this.onPointMove(evt));
     map.getTargetElement().addEventListener("pointerleave", (evt) => this.onPointerLeave(evt));
     return map;
