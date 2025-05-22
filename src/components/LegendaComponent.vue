@@ -32,6 +32,9 @@ const props = defineProps<{
 </template>
 
 <style scoped>
+h3 {
+  margin-left: 10px;
+}
 .legenda-row {
   display: grid;
   grid-template-columns: 2em 1fr;

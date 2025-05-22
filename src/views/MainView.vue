@@ -75,7 +75,7 @@ async function update(informatie: InformatieType) {
         >https://www.waarismijnstemlokaal.nl</a
       >. De gegevens zijn gebaseerd op het bestand met id:
       <code>{{ toegankelijkhedenStore.getResourceId() }}</code>.
-      Meer informatie over dit project is te vinden op <a href="https://github.com/hilbrand/slt"
+      Meer informatie over dit project is te vinden op <a href="https://github.com/hilbrand/slt" target="_blank"
       >https://github.com/hilbrand/slt</a>.
     </p>
   </footer>
@@ -121,6 +121,9 @@ async function update(informatie: InformatieType) {
   }
   .main {
     padding-top: 130px;
+  }
+  .footer p {
+    margin: 10px;
   }
 }
 </style>

@@ -319,6 +319,9 @@ const legendaText = {
     display: block;
     grid-template-columns: 20em 1fr;
   }
+  #map {
+    margin: 0 20px;
+  }
   .grid td:first-child {
     width: 50%;
   }
