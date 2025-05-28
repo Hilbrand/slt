@@ -25,6 +25,7 @@ function selected(page: PaginaID) {
     <button @click="navigateTo('start')" :class="selected('start')">Start</button>
     <button @click="navigateTo('gemeente')" :class="selected('gemeente')">Gemeente</button>
     <button @click="navigateTo('kaart')" :class="selected('kaart')">Kaart</button>
+    <button @click="navigateTo('eml')" :class="selected('eml')">EML Data</button>
   </nav>
 </template>
 

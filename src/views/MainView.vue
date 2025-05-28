@@ -3,8 +3,10 @@ import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { jsonToNavigatie, navigatieToJson } from "@/ts/navigatie";
 import { VERKIEZINGEN, type InformatieType } from "@/ts/types";
+import { useEmlMismatchesStore } from "@/stores/emlMismatchesStore";
 import { useToegankelijkhedenStore } from "@/stores/toegankelijkhedenStore";
 import Navigation from "@/components/NavigationComponent.vue";
+import Eml from "./EmlView.vue";
 import Gemeente from "./GemeenteView.vue";
 import Kaart from "./KaartView.vue";
 import Start from "./StartView.vue";
@@ -15,6 +17,7 @@ const router = useRouter();
 const informatie = ref<InformatieType>({} as InformatieType);
 
 const toegankelijkhedenStore = useToegankelijkhedenStore();
+const emlMismatchesStore = useEmlMismatchesStore();
 
 watch(
   () => route.query,
@@ -35,6 +38,8 @@ watch(
 
 const title = computed<string>(() => {
   switch (informatie.value?.pagina) {
+    case "eml":
+      return "EML Data"
     case "start":
       return "";
     case "kaart":
@@ -53,6 +58,7 @@ async function update(informatie: InformatieType) {
     !toegankelijkhedenStore.isDataForVerkiezing(informatie.verkiezing)
   ) {
     await toegankelijkhedenStore.loadData(informatie.verkiezing);
+    await emlMismatchesStore.loadData(informatie.verkiezing);
   }
 }
 </script>
@@ -66,6 +72,7 @@ async function update(informatie: InformatieType) {
   <main class="main">
     <Kaart v-if="informatie.pagina == 'kaart'" :informatie="informatie" />
     <Gemeente v-else-if="informatie.pagina == 'gemeente'" :informatie="informatie" />
+    <Eml v-else-if="informatie.pagina == 'eml'" :informatie="informatie" />
     <Start v-else :informatie="informatie" />
   </main>
   <footer class="footer">

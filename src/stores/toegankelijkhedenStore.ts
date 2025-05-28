@@ -24,8 +24,7 @@ export const useToegankelijkhedenStore = defineStore("toegankelijkheden", {
         this.national = json.national;
         this.atLeastOne = json.atLeastOne;
         const dataGemeenten = await fetch(verkiezing + "_gemeenten.json");
-        const jsonGemeenten = await dataGemeenten.json();
-        this.gemeenten = jsonGemeenten;
+        this.gemeenten = await dataGemeenten.json();
         this.verkiezing = verkiezing;
       } catch (error) {
         console.error("Failed to load data:", error);
@@ -41,7 +40,9 @@ export const useToegankelijkhedenStore = defineStore("toegankelijkheden", {
     getGemeenteName:
       (state) =>
       (key: string | undefined): string =>
-        key === undefined || !(key in state.gemeenteData) ? "" : state.gemeenteData[key][0],
+        key === undefined || !(key in state.gemeenteData)
+          ? (key === 'nationaal' ? "Alle stemlokalen" : "")
+          : state.gemeenteData[key][0],
     getStemlokalen: (state) => (key: string | undefined) =>
       key == undefined ? 0 : state.gemeenteData[key][1],
     getResourceId: (state) => (): string => state.resource_id,
@@ -53,7 +54,6 @@ export const useToegankelijkhedenStore = defineStore("toegankelijkheden", {
       (state) =>
       (verkiezing: string): boolean =>
         state.verkiezing === verkiezing,
-
     loadedVerkiezing: (state) => () => state.verkiezing,
   },
 });

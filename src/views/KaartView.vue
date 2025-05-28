@@ -186,7 +186,7 @@ const legendaText = {
         In {{ totalAbove }} gemeenten is {{ percentage }}% van de stemlokalen
         {{ toegankelijkheidText }}.
       </p>
-      <div class="slidecontainer">
+      <div class="slider-container">
         <input
           type="range"
           min="1"
@@ -251,7 +251,7 @@ const legendaText = {
   content: "✔";
 }
 
-.slidecontainer {
+.slider-container {
   margin-right: 10px;
 }
 
