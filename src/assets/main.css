@@ -33,3 +33,51 @@ body {
 .ol-rotate {
   display: none;
 }
+
+.grid {
+  table-layout: fixed;
+  width: 100%;
+  padding: 10px;
+}
+
+.grid td:first-child {
+  width: 300px;
+}
+
+.row {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 756px) {
+  .grid td:first-child {
+    width: 50%;
+  }
+  .row {
+    margin-bottom: 1rem;
+  }
+}
+
+.yes {
+  background-color: var(--color-yes);
+  color: white;
+}
+
+.unknown {
+  background-color: var(--color-unknown);
+  color: #333;
+}
+
+.no {
+  background-color: var(--color-no);
+  color: white;
+}
+
+.cell {
+  height: 30px;
+  text-align: center;
+  line-height: 30px;
+  white-space: nowrap;
+}

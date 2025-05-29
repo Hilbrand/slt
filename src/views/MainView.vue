@@ -118,7 +118,7 @@ async function update(informatie: InformatieType) {
 
 @media (max-width: 1024px) {
   .header {
-    height: 130px;
+    height: 165px;
   }
   .header h1 {
     font-size: 1.2em;
@@ -127,7 +127,7 @@ async function update(informatie: InformatieType) {
     font-size: 1em;
   }
   .main {
-    padding-top: 130px;
+    padding-top: 160px;
   }
   .footer p {
     margin: 10px;

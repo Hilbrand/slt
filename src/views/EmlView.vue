@@ -109,25 +109,21 @@ h3 {
   text-align: center;
   width: 100%;
 }
+
 .legenda h3 {
   display: none;
 }
+
 .tekst {
   margin: 15px;
 }
-.grid {
-  table-layout: fixed;
-  width: 100%;
-  padding: 10px;
-}
-.grid td:first-child {
-  width: 300px;
-}
 
-.row {
-  width: 100%;
-  display: flex;
-  justify-content: flex-start;
-  margin-bottom: 0.5rem;
+@media (max-width: 756px) {
+  .grid td:first-child {
+    width: 40%;
+  }
+  .row {
+    margin-bottom: 1rem;
+  }
 }
 </style>

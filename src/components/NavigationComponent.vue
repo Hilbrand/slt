@@ -38,14 +38,19 @@ function selected(page: PaginaID) {
 
 .nav button {
   color: var(--text-color);
-  width: 100px;
   vertical-align: middle;
   text-align: center;
   border: 1px solid #333;
   border-top: 0;
   border-radius: 0 0 5px 5px;
-  padding: 10px 10px;
+  padding: 10px;
   margin-left: 5px;
+}
+
+@media (min-width: 1600px) {
+  .nav button {
+    width: 100px;
+  }
 }
 
 .nav a:link,
