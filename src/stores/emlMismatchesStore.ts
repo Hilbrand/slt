@@ -27,7 +27,6 @@ export const useEmlMismatchesStore = defineStore("emlMismatches", {
         const data = await fetch(verkiezing + "_eml_mismatch.json");
         this.mismatches = await data.json();
         this.verkiezing = verkiezing;
-        console.log(this.mismatches);
       } catch (error) {
         console.error("Failed to load data:", error);
       }

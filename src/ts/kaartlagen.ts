@@ -3,14 +3,18 @@ import type { FeatureLike } from "ol/Feature";
 import { getTopLeft } from "ol/extent";
 import { GeoJSON } from "ol/format";
 import type BaseLayer from "ol/layer/Base";
+import Select from 'ol/interaction/Select.js';
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
 import type { Pixel } from "ol/pixel";
 import { Projection } from "ol/proj";
 import { WMTS } from "ol/source";
 import VectorSource from "ol/source/Vector";
-import { type StyleFunction } from "ol/style/Style";
+import Stroke from "ol/style/Stroke";
+import Style, { type StyleFunction } from "ol/style/Style";
 import WMTSTileGrid from "ol/tilegrid/WMTS";
+import { pointerMove } from "ol/events/condition";
+import Fill from "ol/style/Fill";
 
 export type GeoLayer = VectorLayer<VectorSource>;
 
@@ -24,6 +28,16 @@ const matrixIds = Array.from<string>({ length: 26 });
 for (let i = 0; i < 26; ++i) {
   matrixIds[i] = "EPSG:28992:" + i;
 }
+
+const hoverStyle = new Style({
+  fill: new Fill({color: '#0002'}),
+  stroke: new Stroke({ color: 'black', width: 1 })
+});
+
+const selectPointerMove = new Select({
+  condition: pointerMove,
+  style: hoverStyle,
+});
 
 /**
  * Achtergrond kaartlaag
@@ -172,6 +186,7 @@ export class Kaart {
     map.on("click", (evt: MapBrowserEvent) => this.onClick(evt));
     map.on("pointermove", (evt) => this.onPointMove(evt));
     map.getTargetElement().addEventListener("pointerleave", (evt) => this.onPointerLeave(evt));
+    map.addInteraction(selectPointerMove)
     return map;
   }
 }

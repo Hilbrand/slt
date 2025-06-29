@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { onMounted, computed, ref, watch } from "vue";
-import { useRouter } from "vue-router";
-import { jsonToNavigatie } from "@/ts/navigatie";
+import Legenda from "@/components/LegendaComponent.vue";
+import { useToegankelijkhedenStore } from "@/stores/toegankelijkhedenStore";
 import { createGemeenteStyleFunction, isAbove } from "@/ts/gemeenteStyle";
 import {
   Kaart,
@@ -10,17 +9,17 @@ import {
   updateKaartlaag,
   type GeoLayer,
 } from "@/ts/kaartlagen";
+import { jsonToNavigatie } from "@/ts/navigatie";
 import {
   TOEGANKELIJKHEDEN,
   type GemeenteDataType,
   type InformatieType,
   type LegendaTextType,
   type ToegankelijkhedenID,
-  type ToegankelijkheidDataType,
   type ToegankelijkheidDataTypeKey,
 } from "@/ts/types";
-import { useToegankelijkhedenStore } from "@/stores/toegankelijkhedenStore";
-import Legenda from "@/components/LegendaComponent.vue";
+import { computed, onMounted, ref, watch } from "vue";
+import { useRouter } from "vue-router";
 
 const router = useRouter();
 
@@ -31,29 +30,30 @@ const props = defineProps<{
 const toegankelijkhedenStore = useToegankelijkhedenStore();
 const allData = ref<GemeenteDataType>({});
 
+const toegankelijkheid = ref<ToegankelijkhedenID>("lb");
+const toegankelijkheidText = computed<string>(() =>
+  props.informatie?.toegankelijkheid && TOEGANKELIJKHEDEN[props.informatie?.toegankelijkheid] || "",
+);
+const percentage = ref(1);
+const gemeente = ref("");
+
+const laatsteToegankelijkheid = ref<ToegankelijkhedenID>();
+const laatstePercentage = ref<number>(0);
+const totalAbove = ref<number>(0);
+
+let kaartlaag = undefined as GeoLayer | undefined;
+const featureGemeente = ref<string>("");
+
 watch(
   () => toegankelijkhedenStore.loadedVerkiezing(),
   (newValue, oldValue) => {
     if (newValue !== "" && newValue !== oldValue) {
       allData.value = toegankelijkhedenStore.getGemeenteData();
+      updateKaartlaag(kaartlaag, true);
     }
   },
   { immediate: true },
 );
-
-const toegankelijkheid = ref<ToegankelijkhedenID>("lb");
-const toegankelijkheidText = computed<string>(() =>
-  toegankelijkheid.value ? "" : TOEGANKELIJKHEDEN[props.informatie?.toegankelijkheid],
-);
-const percentage = ref(1);
-const gemeente = ref("");
-
-const lastToegankelijkheid = ref<ToegankelijkhedenID>();
-const lastPercentage = ref<number>(0);
-const totalAbove = ref<number>(0);
-
-let kaartlaag = undefined as GeoLayer | undefined;
-const featureGemeente = ref<string>("");
 
 watch(
   () => props.informatie,
@@ -62,11 +62,12 @@ watch(
     percentage.value = props.informatie?.percentage || 1;
     gemeente.value = props.informatie?.gemeente || "";
     if (
-      lastToegankelijkheid.value !== toegankelijkheid.value ||
-      lastPercentage.value !== percentage.value
+      laatsteToegankelijkheid.value !== toegankelijkheid.value ||
+      laatstePercentage.value !== percentage.value
+      // laatsteVerkiezing.value !== verkiezing
     ) {
-      lastToegankelijkheid.value = toegankelijkheid.value;
-      lastPercentage.value = percentage.value;
+      laatsteToegankelijkheid.value = toegankelijkheid.value;
+      laatstePercentage.value = percentage.value;
       totalAbove.value = calcTotal();
       updateKaartlaag(kaartlaag, true);
     }
@@ -137,16 +138,15 @@ function handleSlider() {
 }
 
 function featureGemeenteName(): string {
-  const data = allData.value;
-  if (data && featureGemeente.value && data[featureGemeente.value]) {
-    return data[featureGemeente.value][0];
+  if (featureGemeente.value) {
+    return toegankelijkhedenStore.getGemeenteName(featureGemeente.value);
   }
-  return "";
+  return featureGemeente.value;
 }
 
 function aanwezig(state: ToegankelijkheidDataTypeKey): number {
   const data = allData.value;
-  if (data && featureGemeente.value && data[featureGemeente.value]) {
+  if (data && featureGemeente.value) {
     return data[featureGemeente.value][2][toegankelijkheid.value][state] || 0;
   }
   return 0;
@@ -199,17 +199,20 @@ const legendaText = {
     <div id="map">
       <div id="hover">
         <h4 class="hover-title">{{ featureGemeenteName() }}</h4>
-        <p>Aantal stemlokaties waar {{ toegankelijkheidText }}:</p>
-        <div class="hover-table">
-          <div>Ja</div>
-          <div>{{ aanwezig("j") }}</div>
-          <div>Nee</div>
-          <div>{{ aanwezig("n") }}</div>
-          <div>Onbekend</div>
-          <div>{{ aanwezig("") }}</div>
-          <div class="hover-table-last">Totaal</div>
-          <div class="hover-table-last">{{ totalGem() }}</div>
-        </div>
+        <template v-if="totalGem() > 0">
+          <p>Aantal stemlokaties waar {{ toegankelijkheidText }}:</p>
+          <div class="hover-table">
+            <div>Ja</div>
+            <div>{{ aanwezig("j") }}</div>
+            <div>Nee</div>
+            <div>{{ aanwezig("n") }}</div>
+            <div>Onbekend</div>
+            <div>{{ aanwezig("") }}</div>
+            <div class="hover-table-last">Totaal</div>
+            <div class="hover-table-last">{{ totalGem() }}</div>
+          </div>
+        </template>
+        <div v-else>Voor deze gemeente zijn nog geen gegevens beschikbaar.</div>
       </div>
     </div>
     <Legenda :legendaText="legendaText" />

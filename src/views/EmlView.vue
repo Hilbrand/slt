@@ -74,10 +74,11 @@ const emlDataLegenda = {
       maar de in beide opgegeven postcodes zijn verschillend wordt dit al verschil aangemerkt.
       Een stemlokaal waar de naam niet overeenkomt, en de postcode ook niet overeenkomt wordt alleen als niet overeenkomende naam gemeld.</li>
   </ul>
-  <div class="legenda">
+  <div class="legenda" v-if="alles.length > 0">
     <Legenda :legendaText="emlDataLegenda" />
   </div>
-  <table class="grid">
+  <table v-if="alles.length > 0"
+    class="grid">
     <tr v-for="row in alles" :key="row[0]">
       <td>{{ cat(row) }}</td>
       <td class="row">
@@ -102,6 +103,8 @@ const emlDataLegenda = {
       </td>
     </tr>
   </table>
+  <div v-else
+   class="nietBeschikbaar">Deze informatie komt beschikbaar als de verkiezingsuitlagen beschikbaar zijn.</div>
 </template>
 
 <style scoped>
@@ -117,7 +120,11 @@ h3 {
 .tekst {
   margin: 15px;
 }
-
+.nietBeschikbaar {
+  font-size: 1.4em;
+  text-align: center;
+  font-weight: bold;
+}
 @media (max-width: 756px) {
   .grid td:first-child {
     width: 40%;

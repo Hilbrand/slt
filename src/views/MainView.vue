@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { jsonToNavigatie, navigatieToJson } from "@/ts/navigatie";
-import { VERKIEZINGEN, type InformatieType } from "@/ts/types";
+import Navigation from "@/components/NavigationComponent.vue";
 import { useEmlMismatchesStore } from "@/stores/emlMismatchesStore";
 import { useToegankelijkhedenStore } from "@/stores/toegankelijkhedenStore";
-import Navigation from "@/components/NavigationComponent.vue";
+import { jsonToNavigatie, navigatieToJson } from "@/ts/navigatie";
+import { VERKIEZING_IDS, VERKIEZINGEN, type InformatieType, type VerkiezingID } from "@/ts/types";
+import { computed, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import Eml from "./EmlView.vue";
 import Gemeente from "./GemeenteView.vue";
 import Kaart from "./KaartView.vue";
@@ -51,6 +51,13 @@ const title = computed<string>(() => {
   }
 });
 
+function wisselVerkiezing(event: Event) {
+  const e = event.target as HTMLInputElement;
+  const copy = informatie.value;
+  copy.verkiezing = e.value as VerkiezingID;
+  router.replace({ query: jsonToNavigatie(copy) });
+}
+
 async function update(informatie: InformatieType) {
   if (
     informatie &&
@@ -65,6 +72,14 @@ async function update(informatie: InformatieType) {
 
 <template>
   <header class="header">
+    <select class="verkiezingen" @change="wisselVerkiezing">
+      <option v-for="verkiezing in VERKIEZING_IDS"
+        :key="verkiezing"
+        :value="verkiezing"
+        :selected="informatie.verkiezing === verkiezing">
+        {{ VERKIEZINGEN[verkiezing] }}
+      </option>
+    </select>
     <Navigation class="nav" :informatie="informatie" />
     <h1>Stemlokaaltoegankelijkheid {{ title }}</h1>
     <h2>{{ VERKIEZINGEN[informatie.verkiezing] }}</h2>
@@ -99,7 +114,11 @@ async function update(informatie: InformatieType) {
   background-color: white;
   z-index: 10000;
 }
-
+.verkiezingen {
+  position: absolute;
+  left: 10px;
+  top: 0px;
+}
 .footer {
   width: 100%;
 }

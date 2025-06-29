@@ -28,10 +28,9 @@ export function createGemeenteStyleFunction(
     const { total, above } = isAbove(data.value, gem, tg.value, percentage.value);
     const color = above
       ? "#009E73"
-      : gem.value && data.value[gem][2][tg.value]?.n === total
-        ? "#CC79A7"
-        : color_unknown;
-
+      : (gem.value
+        ? (data.value[gem][2][tg.value]?.n === total ? "#CC79A7" : color_unknown)
+        : "#DDDD");
     return new Style({
       fill: new Fill({
         color: color,

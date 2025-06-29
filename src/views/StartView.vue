@@ -11,7 +11,7 @@ const props = defineProps<{
 
 const toegankelijkhedenStore = useToegankelijkhedenStore();
 
-const national = computed<ToegankelijkheidAreaType>(() =>
+const nationaal = computed<ToegankelijkheidAreaType>(() =>
   toegankelijkhedenStore.loadedVerkiezing() == props.informatie?.verkiezing
     ? toegankelijkhedenStore.getNational()
     : ["", 0, {}],
@@ -36,11 +36,11 @@ const atLeastOneToegankelijkheid = {
 
 <template v-if="national !== undefined">
   <h3>Toegankelijkheid van alle stembureaus</h3>
-  <ToegankelijkheidsTable :totaal="national[1]" :toegankelijkheden="national[2]">
+  <ToegankelijkheidsTable :totaal="nationaal[1]" :toegankelijkheden="nationaal[2]">
     <tr>
       <td>Aantal Stemlokalen</td>
       <td class="row">
-        <div class="cell yes" style="width: 100%">{{ national[1] }}</div>
+        <div class="cell yes" style="width: 100%">{{ nationaal[1] }}</div>
       </td>
     </tr>
   </ToegankelijkheidsTable>

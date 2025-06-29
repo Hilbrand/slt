@@ -2,13 +2,14 @@ export const PAGINA_IDS = ["eml", "gemeente", "kaart", "start"] as const;
 
 export type PaginaID = (typeof PAGINA_IDS)[number];
 
-export const VERKIEZING_IDS = ["ep2024"] as const;
+export const VERKIEZING_IDS = ["ep2024", "tk2025"] as const;
 
 export type VerkiezingID = (typeof VERKIEZING_IDS)[number];
 
 export const VERKIEZINGEN: Record<VerkiezingID, string> = {
   //TK2023: "Tweede Kamer 2023",
   ep2024: "Europees Parlement 2024",
+  tk2025: "Tweede Kamer 2025",
 };
 
 export const TOEGANKELIJKHEDEN_IDS = [

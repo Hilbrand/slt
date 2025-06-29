@@ -21,8 +21,8 @@ export const useToegankelijkhedenStore = defineStore("toegankelijkheden", {
         const json = await data.json();
         this.resource_id = json.resource_id;
         this.gemeenteData = json.data;
-        this.national = json.national;
-        this.atLeastOne = json.atLeastOne;
+        this.national = json.national || ["", 0, {}];
+        this.atLeastOne = json.atLeastOne || ["", 0, {}];
         const dataGemeenten = await fetch(verkiezing + "_gemeenten.json");
         this.gemeenten = await dataGemeenten.json();
         this.verkiezing = verkiezing;
@@ -40,16 +40,18 @@ export const useToegankelijkhedenStore = defineStore("toegankelijkheden", {
     getGemeenteName:
       (state) =>
       (key: string | undefined): string =>
-        key === undefined || !(key in state.gemeenteData)
-          ? (key === 'nationaal' ? "Alle stemlokalen" : "")
-          : state.gemeenteData[key][0],
+        state.gemeenteData
+          ? (key === undefined || !(key in state.gemeenteData)
+            ? (key === 'nationaal' ? "Alle stemlokalen" : "")
+            : state.gemeenteData[key][0])
+          : (state.gemeenten.filter(g => g[0] === key)[0][1]),
     getStemlokalen: (state) => (key: string | undefined) =>
-      key == undefined ? 0 : state.gemeenteData[key][1],
+      key !== undefined && state.gemeenteData ? state.gemeenteData[key][1] : 0,
     getResourceId: (state) => (): string => state.resource_id,
     getToegankelijkheden:
       (state) =>
       (key: string | undefined): ToegankelijkheidType =>
-        key == undefined ? {} : state.gemeenteData[key][2],
+        key !== undefined && state.gemeenteData ? state.gemeenteData[key][2] : {},
     isDataForVerkiezing:
       (state) =>
       (verkiezing: string): boolean =>

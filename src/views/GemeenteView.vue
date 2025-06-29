@@ -37,7 +37,7 @@ function selected(gem: string): boolean {
   return props.informatie?.gemeente === gem;
 }
 
-function handleChange(event: Event) {
+function wisselGemeente(event: Event) {
   const e = event.target as HTMLInputElement;
   const copy = props.informatie;
   copy.gemeente = e.value;
@@ -53,10 +53,12 @@ const legendaText = {
 </script>
 
 <template v-if="toegankelijkheden !== undefined">
-  <ToegankelijkheidsTable :totaal="totaal" :toegankelijkheden="toegankelijkheden">
+  <ToegankelijkheidsTable
+    :totaal="totaal"
+    :toegankelijkheden="toegankelijkheden">
     <tr>
       <td>
-        <select class="select" @change="handleChange">
+        <select class="select" @change="wisselGemeente">
           <option v-for="gem in gemeenten" :key="gem[0]"
               :value="gem[0]"
               :selected="selected(gem[0])">
