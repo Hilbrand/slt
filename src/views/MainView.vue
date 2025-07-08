@@ -145,6 +145,10 @@ async function update(informatie: InformatieType) {
   .header h2 {
     font-size: 1em;
   }
+  .header .verkiezingen {
+    left: 5px;
+    top: 140px;
+  }
   .main {
     padding-top: 160px;
   }
