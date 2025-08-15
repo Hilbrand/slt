@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - main
+  schedule:
+    - cron: '30 20 * * *' # Dagelijks draaien
+  workflow_dispatch:      # Handmatig starten toegestaan
 permissions:
   contents: write
 jobs:
