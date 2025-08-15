@@ -34,6 +34,6 @@ jobs:
 
       - name: Push changes
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.stemlokalentoegankelijkheid }}
         run: |
           git push origin HEAD
