@@ -44,7 +44,7 @@ export const TOEGANKELIJKHEDEN: Record<ToegankelijkhedenID, string> = {
   kb: "Kandidatenlijst in braille",
   kg: "Kandidatenlijst met grote letters",
   sa: "Stemmal met audio-ondersteuning",
-  gt: "Gebarentolk (NGT)",
+  gt: "Gebarentolk (NGT) op afstand",
   gs: "Gebarentalig stembureaulid (NGT)",
   as: "Akoestiek geschikt voor slechthorenden",
 };
