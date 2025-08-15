@@ -46,10 +46,11 @@ function ariaLabel(key: GemeenteMismatch, index: number, append: string = "") {
 }
 
 const emlDataLegenda = {
-  no: "Aantal stemlokalen waar de naam van stemlokaal in de EML data verschilt met de naam in WaarIsMijnStemlokaal",
-  nodata:
+  ja: "Aantal stemlokalen waar de naam van het stemlokaal in de EML data hetzelfde is als de naam in WaarIsMijnStemlokaal",
+  nee: "Aantal stemlokalen waar de naam van stemlokaal in de EML data verschilt met de naam in WaarIsMijnStemlokaal",
+  onbekend:
     "Aantal stemlokalen waar de postcode van het stemlokaal in de EML data verschilt met de naam in WaarIsMijnStemlokaal",
-  yes: "Aantal stemlokalen waar de naam van het stemlokaal in de EML data hetzelfde is als de naam in WaarIsMijnStemlokaal",
+  geenGegevens: "Geen gegevens"
 } as LegendaTextType;
 </script>
 

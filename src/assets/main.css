@@ -1,9 +1,10 @@
 :root {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: 1em;
-  --color-yes: #009e73;
-  --color-unknown: #f0e442;
-  --color-no: #cc79a7;
+  --color-ja: #009e73;
+  --color-onbekend: #f0e442;
+  --color-nee: #cc79a7;
+  --color-geen-gegevens: #eee5;
   --text-color: #333;
 }
 
@@ -61,18 +62,23 @@ body {
 }
 
 .yes {
-  background-color: var(--color-yes);
+  background-color: var(--color-ja);
   color: white;
 }
 
 .unknown {
-  background-color: var(--color-unknown);
+  background-color: var(--color-onbekend);
   color: #333;
 }
 
 .no {
-  background-color: var(--color-no);
+  background-color: var(--color-nee);
   color: white;
+}
+
+.geen-gegevens {
+  background-color: var(--color-geen-gegevens);
+  color: #333;
 }
 
 .cell {

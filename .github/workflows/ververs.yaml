@@ -1,0 +1,39 @@
+name: Script om stemlokalen gegevens te verversen
+
+on:
+  schedule:
+    - cron: '25 20 * * *' # Dagelijks draaien
+  workflow_dispatch:      # Handmatig starten toegestaan
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Haal de code op
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Download met wget
+        run: wget -O scripts/data/stemlokalen_TK2025.json "https://data.waarismijnstemlokaal.nl/api/3/action/datastore_search?resource_id=d4c0fa98-22d7-43fb-a80d-fd2f112a6627&limit=100000"
+
+      - name: Draai Python script die bestanden voor website aanmaakt
+        run: python scripts/converteer.py scripts/data/stemlokalen_TK2025.json public/tk2025
+
+      - name: Bewaar de veranderde bestanden
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git add scripts/data/stemlokalen_TK2025.json
+          git add public/*
+          git commit -m "Update van stemlokalen gegevens" || echo "Geen veranderen toe te voegen"
+
+      - name: Push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git push origin HEAD

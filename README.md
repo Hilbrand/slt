@@ -25,6 +25,3 @@ https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
 Tenzij vereist door de toepasselijke wetgeving of schriftelijk overeengekomen, wordt software die onder de Licentie wordt gedistribueerd, gedistribueerd op een "AS IS"-basis,
 ZONDER GARANTIES OF VOORWAARDEN VAN WELKE AARD DAN OOK, expliciet of impliciet.
 Zie de Licentie voor de specifieke taal waarin de machtigingen en beperkingen onder de Licentie van toepassing zijn.
-
-Deze licentie is niet van toepassing op de broncode in de namespaces beginnende met `de.ivu`, `oasis` en `org.w3`.
-Op die broncode is de copyright van de Kiesraad van toepassing.

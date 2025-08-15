@@ -160,11 +160,12 @@ function totalGem(): number {
   return 0;
 }
 const legendaText = {
-  yes: "Gemeente waar de toegankelijkheid in minimaal het percentage stemlokalen aanwezig is",
-  no: "Gemeenten waar in geen enkel stemlokaal de toegankelijkheid aanwezig is",
-  nodata:
+  ja: "Gemeente waar de toegankelijkheid in minimaal het percentage stemlokalen aanwezig is",
+  nee: "Gemeenten waar in geen enkel stemlokaal de toegankelijkheid aanwezig is",
+  onbekend:
     "Gemeenten waar de toegankelijkheid in minder stemlokalen dan het percentage aanwezig is, of deze informatie onbekend is",
-  title: true,
+  geenGegevens: "Geen gegevens",
+  titel: true,
 } as LegendaTextType;
 </script>
 

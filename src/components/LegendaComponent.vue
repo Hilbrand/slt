@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { color_unknown } from "@/ts/gemeenteStyle";
 import type { LegendaTextType } from "@/ts/types";
 
 const props = defineProps<{
@@ -8,25 +7,29 @@ const props = defineProps<{
 </script>
 
 <template>
-  <h3 v-if="props.legendaText.title">Legenda</h3>
+  <h3 v-if="props.legendaText.titel">Legenda</h3>
   <div class="legenda">
     <div class="legenda-row">
       <div
         class="legenda-block"
-        style="background-color: var(--color-yes)"
+        style="background-color: var(--color-ja)"
         aria-hidden="true"></div>
-      <div class="legenda-text">{{ props.legendaText.yes }}</div>
+      <div class="legenda-text">{{ props.legendaText.ja }}</div>
     </div>
     <div class="legenda-row">
       <div
         class="legenda-block"
-        :style="'background-color:' + color_unknown"
+        style="background-color: var(--color-onbekend)"
         aria-hidden="true"></div>
-      <div class="legenda-text">{{ props.legendaText.nodata }}</div>
+      <div class="legenda-text">{{ props.legendaText.onbekend }}</div>
     </div>
     <div class="legenda-row">
-      <div class="legenda-block" style="background-color: var(--color-no)" aria-hidden="true"></div>
-      <div class="legenda-text">{{ props.legendaText.no }}</div>
+      <div class="legenda-block" style="background-color: var(--color-nee)" aria-hidden="true"></div>
+      <div class="legenda-text">{{ props.legendaText.nee }}</div>
+    </div>
+    <div class="legenda-row">
+      <div class="legenda-block" style="background-color: var(--color-geen-gegevens)" aria-hidden="true"></div>
+      <div class="legenda-text">{{ props.legendaText.geenGegevens }}</div>
     </div>
   </div>
 </template>

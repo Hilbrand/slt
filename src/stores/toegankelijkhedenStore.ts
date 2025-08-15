@@ -46,12 +46,12 @@ export const useToegankelijkhedenStore = defineStore("toegankelijkheden", {
             : state.gemeenteData[key][0])
           : (state.gemeenten.filter(g => g[0] === key)[0][1]),
     getStemlokalen: (state) => (key: string | undefined) =>
-      key !== undefined && state.gemeenteData ? state.gemeenteData[key][1] : 0,
+      key !== undefined && state.gemeenteData && state.gemeenteData[key] ? state.gemeenteData[key][1] : 0,
     getResourceId: (state) => (): string => state.resource_id,
     getToegankelijkheden:
       (state) =>
       (key: string | undefined): ToegankelijkheidType =>
-        key !== undefined && state.gemeenteData ? state.gemeenteData[key][2] : {},
+        key !== undefined && state.gemeenteData && state.gemeenteData[key] ? state.gemeenteData[key][2] : {},
     isDataForVerkiezing:
       (state) =>
       (verkiezing: string): boolean =>

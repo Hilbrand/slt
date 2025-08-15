@@ -208,7 +208,7 @@ def load_and_process_json_file(filename, output_filename):
 def main():
     # Check if a filename was provided as command line argument
     if len(sys.argv) != 3:
-        print('Usage: python converteer.py path_to_data_json')
+        print('Gebruik: python converteer.py [stemlokalen json bestand] [uitvoer bestand zonder extensie]')
         sys.exit(1)
 
     # Get the filename from command line arguments
@@ -224,10 +224,8 @@ def main():
         sys.exit(1)
 
     # Print the results
-    print('Result of data written to: ' + output_filename + '.json')
-    print('Result of gemeentes written to: ' + output_filename + 'gemeenten.json')
+    print('Conversie opgeslagen in: ' + output_filename + '.json')
+    print('Conversie gemeentes opgeslagen in: ' + output_filename + '_gemeenten.json')
 
 if __name__ == '__main__':
     main()
-
-

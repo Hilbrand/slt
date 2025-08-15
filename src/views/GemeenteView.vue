@@ -45,10 +45,11 @@ function wisselGemeente(event: Event) {
 }
 
 const legendaText = {
-  yes: "Aantal stemlokalen waar de toegankelijkheid aanwezig is",
-  no: "Aantal stemlokalen waar de toegankelijkheid afwezig is",
-  nodata: "Aantal stemlokalen waar de toegankelijkheidsinformatie onbekend is",
-  title: true,
+  ja: "Aantal stemlokalen waar de toegankelijkheid aanwezig is",
+  nee: "Aantal stemlokalen waar de toegankelijkheid afwezig is",
+  onbekend: "Aantal stemlokalen waar de toegankelijkheidsinformatie onbekend is",
+  geenGegevens: "Geen gegevens",
+  titel: true,
 } as LegendaTextType;
 </script>
 

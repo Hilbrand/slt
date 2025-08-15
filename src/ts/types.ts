@@ -50,7 +50,7 @@ export const TOEGANKELIJKHEDEN: Record<ToegankelijkhedenID, string> = {
 };
 
 export const DEFAULT_PAGINA = "start" as PaginaID;
-export const DEFAULT_VERKIEZING = "ep2024";
+export const DEFAULT_VERKIEZING = "tk2025";
 export const DEFAULT_GEMEENTE = "0518"; // Den Haag
 export const DEFAULT_TOEGANKELIJKHEID = "lb";
 
@@ -85,8 +85,9 @@ export type ToegankelijkhedenDataType = {
 };
 
 export type LegendaTextType = {
-  no: string;
-  nodata: string;
-  yes: string;
-  title: boolean;
+  ja: string;
+  nee: string;
+  onbekend: string;
+  geenGegevens: string;
+  titel: boolean;
 };
