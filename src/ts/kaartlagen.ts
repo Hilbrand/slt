@@ -183,7 +183,7 @@ export class Kaart {
   maakMap(lagen: BaseLayer[]): Map {
     const map = nieuweKaart(lagen);
 
-    map.on("click", (evt: MapBrowserEvent) => this.onClick(evt));
+    map.on("singleclick", (evt: MapBrowserEvent) => this.onClick(evt));
     map.on("pointermove", (evt) => this.onPointMove(evt));
     map.getTargetElement().addEventListener("pointerleave", (evt) => this.onPointerLeave(evt));
     map.addInteraction(selectPointerMove)
