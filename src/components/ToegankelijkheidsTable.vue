@@ -38,33 +38,33 @@ function show(key: ToegankelijkhedenID, state: ToegankelijkheidDataTypeKey): num
         <td class="row">
           <div
             v-if="row == 'gt'"
-            :aria-label="ariaLabel(row, 'l', ' op locatie')"
+            :title="ariaLabel(row, 'l', ' op locatie')"
             class="cell yes"
             :style="width(row, 'l')">
             {{ show(row, "l") }}
           </div>
           <div
             v-if="row == 'gt'"
-            :aria-label="ariaLabel(row, 'a', ' op afstand')"
+            :title="ariaLabel(row, 'a', ' op afstand')"
             class="cell yes"
             :style="width(row, 'a')">
             {{ show(row, "a") }}
           </div>
           <div
             v-if="row != 'gt'"
-            :aria-label="ariaLabel(row, 'j')"
+            :title="ariaLabel(row, 'j')"
             class="cell yes"
             :style="width(row, 'j')">
             {{ show(row, "j") }}
           </div>
           <div
-            :aria-label="ariaLabel(row, '')"
+            :title="ariaLabel(row, '')"
             class="cell unknown"
             :style="width(row, '')">
             {{ show(row, "") }}
           </div>
           <div
-            :aria-label="ariaLabel(row, 'n')"
+            :title="ariaLabel(row, 'n')"
             class="cell no"
             :style="width(row, 'n')">
             {{ show(row, 'n') }}

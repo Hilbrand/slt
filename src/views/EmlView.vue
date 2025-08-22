@@ -41,7 +41,7 @@ function cat(key: GemeenteMismatch) {
   return toegankelijkhedenStore.getGemeenteName(key[CODE]) || "";
 }
 
-function ariaLabel(key: GemeenteMismatch, index: number, append: string = "") {
+function titleLabel(key: GemeenteMismatch, index: number, append: string = "") {
   return "Aantal stemlokalen met " + cat(key) + append + ": " + show(key, index);
 }
 
@@ -84,19 +84,19 @@ const emlDataLegenda = {
       <td>{{ cat(row) }}</td>
       <td class="row">
         <div
-          :aria-label="ariaLabel(row, ANDERE_NAAM)"
+          :title="titleLabel(row, ANDERE_NAAM)"
           class="cell no"
           :style="width(row, ANDERE_NAAM_PERCENTAGE)">
           {{ show(row, ANDERE_NAAM) }}
         </div>
         <div
-          :aria-label="ariaLabel(row, ANDERE_POSTCODE)"
+          :title="titleLabel(row, ANDERE_POSTCODE)"
           class="cell unknown"
           :style="width(row, ANDERE_POSTCODE_PERCENTAGE)">
           {{ show(row, ANDERE_POSTCODE) }}
         </div>
         <div
-          :aria-label="ariaLabel(row, ZELFDE)"
+          :title="titleLabel(row, ZELFDE)"
           class="cell yes"
           :style="width(row, ZELFDE_PERCENTAGE)">
           {{ show(row, ZELFDE) }}
