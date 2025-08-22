@@ -13,7 +13,7 @@ import VectorSource from "ol/source/Vector";
 import Stroke from "ol/style/Stroke";
 import Style, { type StyleFunction } from "ol/style/Style";
 import WMTSTileGrid from "ol/tilegrid/WMTS";
-import { pointerMove } from "ol/events/condition";
+import { pointerMove, singleClick } from "ol/events/condition";
 import Fill from "ol/style/Fill";
 
 export type GeoLayer = VectorLayer<VectorSource>;
@@ -30,13 +30,23 @@ for (let i = 0; i < 26; ++i) {
 }
 
 const hoverStyle = new Style({
-  fill: new Fill({color: '#0002'}),
-  stroke: new Stroke({ color: 'black', width: 1 })
+  fill: new Fill({color: '#2222'}),
+  stroke: new Stroke({ color: '#000D', width: 1 })
 });
 
 const selectPointerMove = new Select({
   condition: pointerMove,
   style: hoverStyle,
+});
+
+const singleClickStyle = new Style({
+  fill: new Fill({color: '#2222'}),
+  stroke: new Stroke({ color: '#000D', width: 2 })
+});
+
+const selectSingleClick = new Select({
+  condition: singleClick,
+  style: singleClickStyle,
 });
 
 /**
@@ -69,7 +79,6 @@ export function maakGeoJsonKaartlaag(
       url: geojson, // Path to your GeoJSON file
       format: new GeoJSON(),
     }),
-
     style: styleFunction,
   });
 }
@@ -161,6 +170,7 @@ export class Kaart {
 
   onClick(evt: MapBrowserEvent) {
     this.onPointMove(evt);
+    this.getHover().style.visibility = "visible";
   }
 
   onPointMove(evt: MapBrowserEvent) {
@@ -187,6 +197,7 @@ export class Kaart {
     map.on("pointermove", (evt) => this.onPointMove(evt));
     map.getTargetElement().addEventListener("pointerleave", (evt) => this.onPointerLeave(evt));
     map.addInteraction(selectPointerMove)
+    map.addInteraction(selectSingleClick)
     return map;
   }
 }

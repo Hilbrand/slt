@@ -103,7 +103,7 @@ function addLayer() {
   updateKaartlaag(kaartlaag, true);
 }
 
-// If no data present, layer will be added when data present
+// Als geen data beschikbaar, de kaartlaag zal worden toegevoegd als deze beschikbaar ingeladen is.
 watch(
   () => toegankelijkhedenStore.loadedVerkiezing(),
   (newState) => {
@@ -117,7 +117,7 @@ watch(
 onMounted(() => {
   kaart.value = new Kaart([achtergrondkaart]);
   if (toegankelijkhedenStore.isDataForVerkiezing(props.informatie.verkiezing)) {
-    // If data already present add layer
+    // Als de data beschikbaar is voeg de kaartlaag toe.
     addLayer();
   }
   kaart.value.addFeatureListener((feature) => {
@@ -284,7 +284,7 @@ const legendaText = {
 #hover {
   position: absolute;
   display: inline-block;
-  height: 210px;
+  height: 220px;
   width: 200px;
   z-index: 100;
   background-color: #eee;

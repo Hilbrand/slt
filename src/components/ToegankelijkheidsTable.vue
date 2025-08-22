@@ -19,7 +19,7 @@ function cat(key: ToegankelijkhedenID) {
   return TOEGANKELIJKHEDEN[key] || "";
 }
 
-function ariaLabel(key: ToegankelijkhedenID, state: ToegankelijkheidDataTypeKey, append: string = "") {
+function titleLabel(key: ToegankelijkhedenID, state: ToegankelijkheidDataTypeKey, append: string = "") {
   return "Aantal stemlokalen met " + cat(key) + append + ": " + show(key, state);
 }
 
@@ -38,33 +38,33 @@ function show(key: ToegankelijkhedenID, state: ToegankelijkheidDataTypeKey): num
         <td class="row">
           <div
             v-if="row == 'gt'"
-            :title="ariaLabel(row, 'l', ' op locatie')"
+            :title="titleLabel(row, 'l', ' op locatie')"
             class="cell yes"
             :style="width(row, 'l')">
             {{ show(row, "l") }}
           </div>
           <div
             v-if="row == 'gt'"
-            :title="ariaLabel(row, 'a', ' op afstand')"
+            :title="titleLabel(row, 'a', ' op afstand')"
             class="cell yes"
             :style="width(row, 'a')">
             {{ show(row, "a") }}
           </div>
           <div
             v-if="row != 'gt'"
-            :title="ariaLabel(row, 'j')"
+            :title="titleLabel(row, 'j')"
             class="cell yes"
             :style="width(row, 'j')">
             {{ show(row, "j") }}
           </div>
           <div
-            :title="ariaLabel(row, '')"
+            :title="titleLabel(row, '')"
             class="cell unknown"
             :style="width(row, '')">
             {{ show(row, "") }}
           </div>
           <div
-            :title="ariaLabel(row, 'n')"
+            :title="titleLabel(row, 'n')"
             class="cell no"
             :style="width(row, 'n')">
             {{ show(row, 'n') }}
