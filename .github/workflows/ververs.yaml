@@ -2,7 +2,7 @@ name: Script om stemlokalen gegevens te verversen
 
 on:
   schedule:
-    - cron: '25 20 * * *' # Dagelijks draaien
+    - cron: '25 18 * * *' # Dagelijks draaien
   workflow_dispatch:      # Handmatig starten toegestaan
 
 jobs:
