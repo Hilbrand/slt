@@ -50,7 +50,7 @@ const emlDataLegenda = {
   nee: "Aantal stemlokalen waar de naam van stemlokaal in de EML data verschilt met de naam in WaarIsMijnStemlokaal",
   onbekend:
     "Aantal stemlokalen waar de postcode van het stemlokaal in de EML data verschilt met de naam in WaarIsMijnStemlokaal",
-  geenGegevens: "Geen gegevens"
+  geenGegevens: ""
 } as LegendaTextType;
 </script>
 

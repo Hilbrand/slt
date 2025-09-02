@@ -48,7 +48,7 @@ const legendaText = {
   ja: "Aantal stemlokalen waar de toegankelijkheid aanwezig is",
   nee: "Aantal stemlokalen waar de toegankelijkheid afwezig is",
   onbekend: "Aantal stemlokalen waar de toegankelijkheidsinformatie onbekend is",
-  geenGegevens: "Geen gegevens",
+  geenGegevens: "",
   titel: true,
 } as LegendaTextType;
 </script>

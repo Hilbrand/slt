@@ -25,14 +25,14 @@ const alleToegankelijkheid = {
   ja: "Stemlokalen waar de toegankelijkheid aanwezig is",
   nee: "Stemlokalen waar toegankelijkheid afwezig is",
   onbekend: "Stemlokalen waar geen gegevens van zijn",
-  geenGegevens: "Geen gegevens",
+  geenGegevens: "",
 } as LegendaTextType;
 
 const atLeastOneToegankelijkheid = {
   ja: "Aantal gemeenten waar minimaal in 1 stemlokaal de toegankelijkheid aanwezig is",
   nee: "Aantal gemeenten waar de toegankelijkheid in geen enkel stemlokaal aanwezig is",
   onbekend: "Aantal gemeenten waar geen gegevens voor toegankelijkheid zijn opgegeven",
-  geenGegevens: "Geen gegevens",
+  geenGegevens: "",
 } as LegendaTextType;
 </script>
 

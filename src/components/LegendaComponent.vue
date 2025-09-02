@@ -27,7 +27,8 @@ const props = defineProps<{
       <div class="legenda-block" style="background-color: var(--color-nee)" aria-hidden="true"></div>
       <div class="legenda-text">{{ props.legendaText.nee }}</div>
     </div>
-    <div class="legenda-row">
+    <div v-if="props.legendaText.geenGegevens !== ''"
+        class="legenda-row">
       <div class="legenda-block" style="background-color: var(--color-geen-gegevens)" aria-hidden="true"></div>
       <div class="legenda-text">{{ props.legendaText.geenGegevens }}</div>
     </div>
