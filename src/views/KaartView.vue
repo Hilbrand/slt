@@ -174,14 +174,18 @@ const legendaText = {
     <div class="mapSelector">
       <h2>Toegankelijkheid</h2>
       <p>Klik op een van de toegankelijkheden om de gevens op de kaart te tonen.</p>
-      <button
-        v-for="(tg, index) in TOEGANKELIJKHEDEN"
-        :key="index"
-        @click="navigateToegankelijkeid(index)"
-        class="cat-link"
-        :class="index == toegankelijkheid ? 'selected' : ''">
-        {{ tg }}
-      </button>
+      <div class="selecties">
+      <template v-for="(tg, index) in TOEGANKELIJKHEDEN"
+        :key="index">
+        <input
+          type="checkbox"
+          :id="index"
+          @click="navigateToegankelijkeid(index)"
+          class="cat-link"
+          :class="index == toegankelijkheid ? 'selected' : ''" />
+        <label :for="index">{{ tg }}</label>
+      </template>
+      </div>
       <h2>Percentage</h2>
       <p>
         In {{ totalAbove }} gemeenten is {{ percentage }}% van de stemlokalen
@@ -221,18 +225,22 @@ const legendaText = {
 </template>
 
 <style scoped>
+.selecties {
+  display: grid;
+  grid-template-columns: 15px 1fr;
+  align-items: center;
+  column-gap: 7px;
+}
+
 .cat-link {
   color: var(--text-color);
-  width: 100%;
-  margin: 10px 3px 0;
-  border: none;
-  text-align: left;
-  background-color: transparent;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .cat-link::before {
-  content: "•";
-  margin-right: 3px;
+  content: "▢";
+  line-height: 20px;
 }
 
 .cat-link:link,
@@ -240,8 +248,8 @@ const legendaText = {
   text-decoration: none;
 }
 
-.cat-link:hover,
-.cat-link:active {
+.cat-link + label:hover,
+.cat-link + label:active {
   text-decoration: underline;
   cursor: pointer;
 }
@@ -250,8 +258,7 @@ const legendaText = {
   font-weight: bold;
 }
 
-.selected::after {
-  margin-left: 3px;
+.selected::before {
   content: "✔";
 }
 
