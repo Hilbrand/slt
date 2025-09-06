@@ -110,8 +110,8 @@ async function update(informatie: InformatieType) {
   height: 130px;
   text-align: center;
   margin: 0;
-  border-bottom: 1px solid #333;
-  background-color: white;
+  border-bottom: 1px solid var(--color-header-bottom);
+  background-color: var(--color-achtergrond);
   z-index: 10000;
 }
 .verkiezingen {

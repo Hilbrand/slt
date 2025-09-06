@@ -1,15 +1,52 @@
 :root {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: 1em;
-  --color-ja: #009e73;
-  --color-onbekend: #f0e442;
-  --color-nee: #cc79a7;
+
+  --color-achtergrond: light-dark(#fff, #222);
+  --color-tekst: light-dark(#333, #ccc);
+
+  --color-ja: light-dark(#009e73, #009e7388);
+  --color-tekst-ja: white;
+  --color-onbekend: light-dark(#f0e442, #f0e442aa);
+  --color-tekst-onbekend: light-dark(#333, #222);
+  --color-nee: light-dark(#cc79a7, #cc79a788);
+  --color-tekst-nee: white;
   --color-geen-gegevens: #eee5;
-  --text-color: #333;
+  --color-tekst-geen-gegevens: #333;
+
+  --color-tekst-tgl-link: var(--color-tekst);
+
+  --color-header-bottom: var(--color-tekst);
+
+  --color-button: light-dark(#e9e9ed, #555);
+  --color-button-tekst: light-dark(#555, #e9e9ed);
+  --color-button-border: var(--color-tekst);
+  --color-button-hover: light-dark(#ccc, #888);
+  --color-button-geselecteerd: light-dark(#bbb, #333);
+
+  --color-legenda-border-bottom:#333;
+  --color-legenda-border: #aaa;
+
+  --color-popup: light-dark(#eee, #222);
+  --color-popup-tekst: var(--color-tekst);
+  --color-popup-border: var(--color-tekst);
+
+  --color-selectiebox: var(--color-achtergrond);
+
+  --color-map-selectie-border: #999;
+
+  &:has(#theme:checked) {
+    color-scheme: dark;
+  }
+  &:has:not(#theme:checked) {
+    color-scheme: dark;
+  }
 }
 
 body {
   margin: 0px;
+  background-color: var(--color-achtergrond);
+  color: var(--color-tekst);
 }
 
 .ol-zoom {
@@ -22,7 +59,8 @@ body {
 .ol-zoom-out {
   float: right;
   display: block;
-  background-color: #ccc;
+  color: var(--color-tekst);
+  background-color: var(--color-button);
   border-radius: 5px;
   width: 30px;
   height: 30px;
@@ -63,22 +101,22 @@ body {
 
 .yes {
   background-color: var(--color-ja);
-  color: white;
+  color: var(--color-tekst-ja);
 }
 
 .unknown {
   background-color: var(--color-onbekend);
-  color: #333;
+  color: var(--color-tekst-onbekend);
 }
 
 .no {
   background-color: var(--color-nee);
-  color: white;
+  color: var(--color-tekst-nee);
 }
 
 .geen-gegevens {
   background-color: var(--color-geen-gegevens);
-  color: #333;
+  color: var(--color-tekst-geen-gegevens)
 }
 
 .cell {

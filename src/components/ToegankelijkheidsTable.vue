@@ -24,8 +24,7 @@ function titleLabel(key: ToegankelijkhedenID, state: ToegankelijkheidDataTypeKey
 }
 
 function show(key: ToegankelijkhedenID, state: ToegankelijkheidDataTypeKey): number {
-  return props.toegankelijkheden[key] && props.toegankelijkheden[key][state]
-      ? props.toegankelijkheden[key][state] : 0;
+  return props.toegankelijkheden[key] && props.toegankelijkheden[key][state] || 0;
 }
 </script>
 
@@ -37,33 +36,35 @@ function show(key: ToegankelijkhedenID, state: ToegankelijkheidDataTypeKey): num
         <td>{{ cat(row) }}</td>
         <td class="row">
           <div
-            v-if="row == 'gt'"
+            v-if="row == 'gt' && show(row, 'l') > 0"
             :title="titleLabel(row, 'l', ' op locatie')"
             class="cell yes"
             :style="width(row, 'l')">
             {{ show(row, "l") }}
           </div>
           <div
-            v-if="row == 'gt'"
+            v-if="row == 'gt' && show(row, 'a') > 0"
             :title="titleLabel(row, 'a', ' op afstand')"
             class="cell yes"
             :style="width(row, 'a')">
             {{ show(row, "a") }}
           </div>
           <div
-            v-if="row != 'gt'"
+            v-if="row != 'gt' && show(row, 'j') > 0"
             :title="titleLabel(row, 'j')"
             class="cell yes"
             :style="width(row, 'j')">
             {{ show(row, "j") }}
           </div>
           <div
+            v-if="show(row, '') > 0"
             :title="titleLabel(row, '')"
             class="cell unknown"
             :style="width(row, '')">
             {{ show(row, "") }}
           </div>
           <div
+            v-if="show(row, 'n') > 0"
             :title="titleLabel(row, 'n')"
             class="cell no"
             :style="width(row, 'n')">

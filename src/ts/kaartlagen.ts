@@ -30,8 +30,8 @@ for (let i = 0; i < 26; ++i) {
 }
 
 const hoverStyle = new Style({
-  fill: new Fill({color: '#2222'}),
-  stroke: new Stroke({ color: '#000D', width: 1 })
+  fill: new Fill({color: '#FFF'}),
+  stroke: new Stroke({ color: '#A6BDDB', width: 1 })
 });
 
 const selectPointerMove = new Select({

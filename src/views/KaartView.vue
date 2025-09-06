@@ -233,7 +233,7 @@ const legendaText = {
 }
 
 .cat-link {
-  color: var(--text-color);
+  color: var(--color-tekst-tgl-link);
   -webkit-appearance: none;
   appearance: none;
 }
@@ -278,12 +278,12 @@ const legendaText = {
 .mapSelector {
   margin-top: 10px;
   margin-left: 10px;
-  border-right: 1px solid #999;
+  border-right: 1px solid var(--color-map-selectie-border);
 }
 
 #map {
   position: relative;
-  height: calc(100vh - 72px);
+  height: calc(100dvh - 72px);
   margin: 0;
   padding: 0;
 }
@@ -294,11 +294,11 @@ const legendaText = {
   height: 220px;
   width: 200px;
   z-index: 100;
-  background-color: #eee;
-  color: #333;
+  background-color: var(--color-popup);
+  color: var(--color-popup-tekst);
   text-align: left;
   border-radius: 6px;
-  border-color: #333;
+  border-color: var(--color-popup-border);
   border-width: 3px;
   border-style: solid;
   padding: 5px;
@@ -322,7 +322,7 @@ const legendaText = {
 }
 
 .hover-table-last {
-  border-top: 1px solid #333;
+  border-top: 1px solid var(--color-popup-border);
 }
 
 @media (max-width: 1024px) {

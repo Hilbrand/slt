@@ -84,7 +84,7 @@ const legendaText = {
   width: 100%;
   line-height: 30px;
   height: 30px;
-  background-color: #eee;
+  background-color: var(--color-selectiebox);
   border-radius: 5px;
 }
 </style>

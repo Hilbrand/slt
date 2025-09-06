@@ -50,11 +50,11 @@ h3 {
     display: flex;
     justify-content: space-between;
     margin: 0 10px 30px 10px;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid var(--color-legenda-border-bottom);
   }
 }
 .legenda-block {
-  border: 1px solid #aaa;
+  border: 1px solid var(--color-legenda-border);
   width: 20px;
   height: 15px;
 }

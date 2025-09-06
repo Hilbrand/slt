@@ -2,12 +2,15 @@
 import { useRouter } from "vue-router";
 import { jsonToNavigatie } from "@/ts/navigatie";
 import type { InformatieType, PaginaID } from "@/ts/types";
+import { onMounted, ref } from "vue";
 
 const router = useRouter();
 
 const props = defineProps<{
   informatie: InformatieType;
 }>();
+
+const thema = ref(false);
 
 function navigateTo(page: PaginaID) {
   const copy = props.informatie;
@@ -18,6 +21,21 @@ function navigateTo(page: PaginaID) {
 function selected(page: PaginaID) {
   return props.informatie.pagina == page ? "selected" : "";
 }
+
+function bewaarThema() {
+  localStorage.setItem("thema", JSON.stringify(thema.value));
+}
+
+onMounted(() => {
+  const localStorageThema = localStorage.getItem("thema");
+
+  if (localStorageThema === null) {
+    thema.value = window?.matchMedia('(prefers-color-scheme: dark)').matches;
+    bewaarThema();
+  } else {
+    thema.value = JSON.parse(localStorageThema);
+  }
+})
 </script>
 
 <template>
@@ -26,6 +44,12 @@ function selected(page: PaginaID) {
     <button @click="navigateTo('gemeente')" :class="selected('gemeente')">Gemeente</button>
     <button @click="navigateTo('kaart')" :class="selected('kaart')">Kaart</button>
     <button @click="navigateTo('eml')" :class="selected('eml')">EML Data</button>
+    <input class="theme"
+      type="checkbox"
+      id="theme"
+      title="Schakel tussen licht en donker thema"
+      v-model="thema"
+      @change="bewaarThema"/>
   </nav>
 </template>
 
@@ -35,12 +59,26 @@ function selected(page: PaginaID) {
   right: 5px;
   top: 0px;
 }
+.nav .theme {
+  padding-left: 10px;
+  width: 30px;
+  -webkit-appearance: none;
+  appearance: none;
+  font-size: 1.3em;
+}
+.nav .theme:before {
+  content: '\263C';
+}
+.nav .theme:checked:before {
+  content: '\263D';
+}
 
 .nav button {
-  color: var(--text-color);
+  color: var(--color-button-tekst);
   vertical-align: middle;
   text-align: center;
-  border: 1px solid #333;
+  border: 1px solid var(--color-button-border);
+  background-color: var(--color-button);
   border-top: 0;
   border-radius: 0 0 5px 5px;
   padding: 10px;
@@ -59,13 +97,13 @@ function selected(page: PaginaID) {
 }
 
 .nav button:hover {
-  background-color: #ccc;
+  background-color: var(--color-button-hover);
   cursor: pointer;
 }
 
 .nav button.selected {
   font-weight: bold;
-  background: #bbb;
+  background: var(--color-button-geselecteerd);
 }
 
 @media (max-width: 1280px) {
