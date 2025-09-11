@@ -38,7 +38,7 @@ const atLeastOneToegankelijkheid = {
 
 <template v-if="national !== undefined">
   <h3>Toegankelijkheid van alle stembureaus</h3>
-  <ToegankelijkheidsTable :totaal="nationaal[1]" :toegankelijkheden="nationaal[2]">
+  <ToegankelijkheidsTable :totaal="nationaal[1]" groep="stemlokalen" :toegankelijkheden="nationaal[2]">
     <tr>
       <td>Aantal Stemlokalen</td>
       <td class="row">
@@ -50,7 +50,7 @@ const atLeastOneToegankelijkheid = {
     <Legenda :legendaText="alleToegankelijkheid" />
   </div>
   <h3>Gemeenten waar minimaal 1 stemlokaal de toegankelijkheid aanwezig is</h3>
-  <ToegankelijkheidsTable :totaal="atLeastOne[1]" :toegankelijkheden="atLeastOne[2]">
+  <ToegankelijkheidsTable :totaal="atLeastOne[1]" groep="gemeenten" :toegankelijkheden="atLeastOne[2]">
     <tr>
       <td>Aantal Gemeenten</td>
       <td class="row">

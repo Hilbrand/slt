@@ -56,6 +56,7 @@ const legendaText = {
 <template v-if="toegankelijkheden !== undefined">
   <ToegankelijkheidsTable
     :totaal="totaal"
+    groep="stemlokalen"
     :toegankelijkheden="toegankelijkheden">
     <tr>
       <td>

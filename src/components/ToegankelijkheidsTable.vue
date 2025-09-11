@@ -3,6 +3,7 @@ import { type ToegankelijkheidType, type ToegankelijkhedenID, type Toegankelijkh
 
 const props = defineProps<{
   totaal: number;
+  groep: string;
   toegankelijkheden: ToegankelijkheidType;
 }>();
 
@@ -20,7 +21,7 @@ function cat(key: ToegankelijkhedenID) {
 }
 
 function titleLabel(key: ToegankelijkhedenID, state: ToegankelijkheidDataTypeKey, append: string = "") {
-  return "Aantal stemlokalen met " + cat(key) + append + ": " + show(key, state);
+  return "Aantal " + props.groep + " met " + cat(key) + append + ": " + show(key, state);
 }
 
 function show(key: ToegankelijkhedenID, state: ToegankelijkheidDataTypeKey): number {
@@ -37,35 +38,35 @@ function show(key: ToegankelijkhedenID, state: ToegankelijkheidDataTypeKey): num
         <td class="row">
           <div
             v-if="row == 'gt' && show(row, 'l') > 0"
-            :title="titleLabel(row, 'l', ' op locatie')"
+            :title="titleLabel(row, 'l', ' op locatie aanwezig')"
             class="cell yes"
             :style="width(row, 'l')">
             {{ show(row, "l") }}
           </div>
           <div
             v-if="row == 'gt' && show(row, 'a') > 0"
-            :title="titleLabel(row, 'a', ' op afstand')"
+            :title="titleLabel(row, 'a', ' op afstand aanwezig')"
             class="cell yes"
             :style="width(row, 'a')">
             {{ show(row, "a") }}
           </div>
           <div
             v-if="row != 'gt' && show(row, 'j') > 0"
-            :title="titleLabel(row, 'j')"
+            :title="titleLabel(row, 'j', ' aanwezig')"
             class="cell yes"
             :style="width(row, 'j')">
             {{ show(row, "j") }}
           </div>
           <div
             v-if="show(row, '') > 0"
-            :title="titleLabel(row, '')"
+            :title="titleLabel(row, '', ' onbekend')"
             class="cell unknown"
             :style="width(row, '')">
             {{ show(row, "") }}
           </div>
           <div
             v-if="show(row, 'n') > 0"
-            :title="titleLabel(row, 'n')"
+            :title="titleLabel(row, 'n', ' afwezig')"
             class="cell no"
             :style="width(row, 'n')">
             {{ show(row, 'n') }}
