@@ -11,9 +11,16 @@ function hasData(): boolean {
   return !!props.toegankelijkheden["lb"];
 }
 
+function percentage(key: ToegankelijkhedenID, state: ToegankelijkheidDataTypeKey) {
+  return (show(key, state) / props.totaal) * 100;
+}
+
 function width(key: ToegankelijkhedenID, state: ToegankelijkheidDataTypeKey) {
-  const percentage = (show(key, state) / props.totaal) * 100;
-  return "width:" + percentage + "%";
+  return "width:" + percentage(key, state) + "%";
+}
+
+function tekort(key: ToegankelijkhedenID, state: ToegankelijkheidDataTypeKey) {
+  return percentage(key, state) < 10 ? 'tekort' : '';
 }
 
 function cat(key: ToegankelijkhedenID) {
@@ -68,6 +75,7 @@ function show(key: ToegankelijkhedenID, state: ToegankelijkheidDataTypeKey): num
             v-if="show(row, 'n') > 0"
             :title="titleLabel(row, 'n', ' afwezig')"
             class="cell no"
+            :class="tekort(row, 'n')"
             :style="width(row, 'n')">
             {{ show(row, 'n') }}
           </div>
@@ -77,3 +85,12 @@ function show(key: ToegankelijkhedenID, state: ToegankelijkheidDataTypeKey): num
     <tr v-else><td></td><td>Er is zijn nog geen gegevens bekend</td></tr>
   </table>
 </template>
+
+<style scoped>
+@media (max-width: 1000px) {
+  .tekort {
+    display: inline-flex;
+    justify-content: end;
+  }
+}
+</style>
