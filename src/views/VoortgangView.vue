@@ -47,6 +47,7 @@ onUnmounted(() => {
   <div class="midden">
     <h3>Aantal gemeenten die gegevens hebben gepubliceerd</h3>
     <div style="margin-left: 10px" ref="ggGrafiek"></div>
+    <p v-if="gegevens">De getoonde voortgang is vanaf ({{ new Intl.DateTimeFormat().format(gegevens[0].datum) }}). Vanaf dat moment zijn de gegevens via deze site bijgehouden.</p>
   </div>
 </template>
 
@@ -54,9 +55,19 @@ onUnmounted(() => {
 .midden {
   width: 100%;
   display: grid;
-  vertical-align: center;
 }
+
 .midden > * {
   justify-self: center;
+}
+
+@media (max-width: 590px) {
+  .midden > h3 {
+    margin-left: 20px;
+  }
+}
+.midden p {
+  margin: 10px;
+  margin-top: 20px;
 }
 </style>

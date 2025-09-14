@@ -22,7 +22,7 @@ export async function maakGrafiek(verkiezingCode: VerkiezingID, data: GemeentenG
   const marginWidth = 30;
   const marginHeight = 10;
   const width = Math.min(innerWidth - marginWidth - marginWidth, 1000);
-  const height = 500;
+  const height = Math.min(width - 50, 500);
 
   const x = d3.scaleTime()
     .domain([data[0].datum, verkiezing.datum])
