@@ -40,10 +40,31 @@ onMounted(() => {
 
 <template>
   <nav class="nav">
-    <button @click="navigateTo('start')" :class="selected('start')">Start</button>
-    <button @click="navigateTo('gemeente')" :class="selected('gemeente')">Gemeente</button>
-    <button @click="navigateTo('kaart')" :class="selected('kaart')">Kaart</button>
-    <button @click="navigateTo('eml')" :class="selected('eml')">EML Data</button>
+    <button
+      @click="navigateTo('start')"
+      :class="selected('start')"
+      title="Start pagina met algemene statistieken"
+    >Start</button>
+    <button
+      @click="navigateTo('gemeente')"
+      :class="selected('gemeente')"
+      title="Pagina met toegankelijkheidsgegevens per Gemeente"
+    >Gemeente</button>
+    <button
+      @click="navigateTo('kaart')"
+      :class="selected('kaart')"
+      title="Pagina met toegankelijkheidsgegevens per gemeente op een kaart"
+    >Kaart</button>
+    <button
+      @click="navigateTo('eml')"
+      :class="selected('eml')"
+      title="Locatiegegevens van WaarIsMijnStemlokaal vergeleken met verkiezingsuitslagen gegevens"
+    >EML Data</button>
+    <button
+      @click="navigateTo('voortgang')"
+      :class="selected('voortgang')"
+      title="Voortgang van aangeleverde gegevens door gemeenten voor aankomende verkiezing"
+    >&#128203;</button>
     <input class="theme"
       type="checkbox"
       id="theme"

@@ -16,19 +16,19 @@ const props = defineProps<{
 const toegankelijkhedenStore = useToegankelijkhedenStore();
 
 const totaal = computed<number>(() =>
-  toegankelijkhedenStore.loadedVerkiezing() == props.informatie?.verkiezing
+  toegankelijkhedenStore.isDataForVerkiezing(props.informatie?.verkiezing)
     ? toegankelijkhedenStore.getStemlokalen(props.informatie?.gemeente)
     : 0,
 );
 
 const toegankelijkheden = computed<ToegankelijkheidType>(() =>
-  toegankelijkhedenStore.loadedVerkiezing() == props.informatie?.verkiezing
+  toegankelijkhedenStore.isDataForVerkiezing(props.informatie?.verkiezing)
     ? toegankelijkhedenStore.getToegankelijkheden(props.informatie?.gemeente)
     : {},
 );
 
 const gemeenten = computed(() =>
-  toegankelijkhedenStore.loadedVerkiezing() == props.informatie?.verkiezing
+  toegankelijkhedenStore.isDataForVerkiezing(props.informatie?.verkiezing)
     ? toegankelijkhedenStore.getGemeenten()
     : [],
 );

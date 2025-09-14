@@ -1,5 +1,7 @@
 import json
 import sys
+from datetime import date
+import subprocess
 
 toegankelijkheids_categorieen = [
     'Toegankelijk voor mensen met een lichamelijke beperking',
@@ -31,7 +33,6 @@ toegankelijkheids_categorieen_short = {
     'Gebarentalig stembureaulid (NGT)'                       : 'gs',
     'Akoestiek geschikt voor slechthorenden'                 : 'as',
 }
-
 
 uitzonderingen = {
   'binnen',
@@ -202,6 +203,17 @@ def load_and_process_json_file(filename, output_filename):
                 json.dump(counted, output)
             with open(output_filename + '_gemeenten.json', 'w', encoding='utf-8') as output:
                 json.dump(togemeenten(counted['data']), output)
+            with open(output_filename + '_voortgang.csv', 'a', encoding='utf-8') as voortgangBestand:
+                datum = date.today().strftime('%d-%m-%Y')
+                #Gebruik volgende regels als een eerdere commit datum moet worden opgehaald.
+                #Check de slt repo in andere directory uit, pass directory hieronder aan, checkout de specifieke commit
+                #en run dit script.
+                #datum = subprocess.run(['git', 'show', '-s', '--format=%cd', '--date=format:%d-%m-%Y'],
+                #      cwd='<directory naar andere repo waar specifieke commit is uitgecheckt>',
+                #      capture_output=True, text=True)
+                #    .stdout.strip()
+                voortgangBestand.write(datum + ',' + str(len(counted['data'])) + '\n')
+
     except Exception as e:
         return f'Error loading or processing file: {str(e)}'
 

@@ -10,6 +10,7 @@ import Eml from "./EmlView.vue";
 import Gemeente from "./GemeenteView.vue";
 import Kaart from "./KaartView.vue";
 import Start from "./StartView.vue";
+import Voortgang from "./VoortgangView.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -46,6 +47,8 @@ const title = computed<string>(() => {
       return "op de kaart";
     case "gemeente":
       return toegankelijkhedenStore.getGemeenteName(informatie.value?.gemeente);
+    case "voortgang":
+      return "aanlever voortgang";
     default:
       return "";
   }
@@ -77,17 +80,18 @@ async function update(informatie: InformatieType) {
         :key="verkiezing"
         :value="verkiezing"
         :selected="informatie.verkiezing === verkiezing">
-        {{ VERKIEZINGEN[verkiezing] }}
+        {{ VERKIEZINGEN[verkiezing].naam }}
       </option>
     </select>
     <Navigation class="nav" :informatie="informatie" />
     <h1>Stemlokaaltoegankelijkheid {{ title }}</h1>
-    <h2>{{ VERKIEZINGEN[informatie.verkiezing] }}</h2>
+    <h2>{{ VERKIEZINGEN[informatie.verkiezing].naam }}</h2>
   </header>
   <main class="main">
     <Kaart v-if="informatie.pagina == 'kaart'" :informatie="informatie" />
     <Gemeente v-else-if="informatie.pagina == 'gemeente'" :informatie="informatie" />
     <Eml v-else-if="informatie.pagina == 'eml'" :informatie="informatie" />
+    <Voortgang v-else-if="informatie.pagina == 'voortgang'" :informatie="informatie" />
     <Start v-else :informatie="informatie" />
   </main>
   <footer class="footer">

@@ -1,4 +1,4 @@
-export const PAGINA_IDS = ["eml", "gemeente", "kaart", "start"] as const;
+export const PAGINA_IDS = ["eml", "gemeente", "kaart", "start", "voortgang"] as const;
 
 export type PaginaID = (typeof PAGINA_IDS)[number];
 
@@ -6,10 +6,24 @@ export const VERKIEZING_IDS = ["ep2024", "tk2025"] as const;
 
 export type VerkiezingID = (typeof VERKIEZING_IDS)[number];
 
-export const VERKIEZINGEN: Record<VerkiezingID, string> = {
+export type VerkiezingType = {
+  naam: string,
+  datum: Date,
+  aantalGemeenten: number,
+};
+
+export const VERKIEZINGEN: Record<VerkiezingID, VerkiezingType> = {
   //TK2023: "Tweede Kamer 2023",
-  ep2024: "Europees Parlement 2024",
-  tk2025: "Tweede Kamer 2025",
+  ep2024: {
+    naam: "Europees Parlement 2024",
+    datum: new Date(2024, 4, 6),
+    aantalGemeenten: 345,
+  },
+  tk2025: {
+    naam: "Tweede Kamer 2025",
+    datum: new Date(2025, 9, 29),
+    aantalGemeenten: 345,
+  }
 };
 
 export const TOEGANKELIJKHEDEN_IDS = [

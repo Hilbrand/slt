@@ -35,6 +35,9 @@
 
   --color-map-selectie-border: #999;
 
+  --color-voortgang-lijn: light-dark(steelblue, #eee);
+  --color-voortgang-as: light-dark(#aaa, #eee);;
+
   &:has(#theme:checked) {
     color-scheme: dark;
   }
@@ -124,4 +127,23 @@ body {
   text-align: center;
   line-height: 30px;
   white-space: nowrap;
+}
+
+.voortgang .lijn {
+  fill: none;
+  stroke: var(--color-voortgang-lijn);
+  stroke-width: 3.5px;
+}
+
+.voortgang .totaal-lijn {
+  fill: none;
+  stroke: var(--color-voortgang-as);
+}
+
+.voortgang .as {
+  fill: none;
+}
+
+.voortgang .tekst {
+  fill: var(--color-tekst);
 }
