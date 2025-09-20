@@ -8,7 +8,7 @@ import Style from "ol/style/Style";
 export const color_onbekend = "#f0e442";
 const color_ja = "#009e73";
 const color_nee = "#cc79a7";
-const color_geen_gegevens = "#eee5";
+const color_geen_gegevens = "#7774";
 
 
 export function isAbove(data: GemeenteDataType, gem: string, tg: ToegankelijkhedenID | undefined, percentage: number) {
@@ -40,8 +40,8 @@ export function createGemeenteStyleFunction(
         color: color,
       }),
       stroke: new Stroke({
-        color: "#999",
-        width: 0.4,
+        color: "#333",
+        width: 0.6,
       }),
     });
   };

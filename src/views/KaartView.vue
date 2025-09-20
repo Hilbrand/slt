@@ -4,7 +4,6 @@ import { useToegankelijkhedenStore } from "@/stores/toegankelijkhedenStore";
 import { createGemeenteStyleFunction, isAbove } from "@/ts/gemeenteStyle";
 import {
   Kaart,
-  achtergrondkaart,
   maakGeoJsonKaartlaag,
   updateKaartlaag,
   type GeoLayer,
@@ -40,6 +39,8 @@ const gemeente = ref("");
 const laatsteToegankelijkheid = ref<ToegankelijkhedenID>();
 const laatstePercentage = ref<number>(0);
 const totalAbove = ref<number>(0);
+
+const grootScherm = window.innerHeight > 800;
 
 let kaartlaag = undefined as GeoLayer | undefined;
 const featureGemeente = ref<string>("");
@@ -115,7 +116,7 @@ watch(
 );
 
 onMounted(() => {
-  kaart.value = new Kaart([achtergrondkaart]);
+  kaart.value = new Kaart(grootScherm, []);
   if (toegankelijkhedenStore.isDataForVerkiezing(props.informatie.verkiezing)) {
     // Als de data beschikbaar is voeg de kaartlaag toe.
     addLayer();
@@ -219,6 +220,7 @@ const legendaText = {
         </template>
         <div v-else>Voor deze gemeente zijn nog geen gegevens beschikbaar.</div>
       </div>
+      <div class="kaart-hint" v-if="!grootScherm">Gebruik 2 vingers om de kaart te verplaatsen.</div>
     </div>
     <Legenda :legendaText="legendaText" />
   </div>
@@ -339,5 +341,8 @@ const legendaText = {
   .row {
     margin-bottom: 1rem;
   }
+}
+.kaart-hint {
+  margin-bottom: 10px;
 }
 </style>

@@ -3,6 +3,8 @@ import type { FeatureLike } from "ol/Feature";
 import { getTopLeft } from "ol/extent";
 import { GeoJSON } from "ol/format";
 import type BaseLayer from "ol/layer/Base";
+import {defaults} from 'ol/interaction/defaults.js';
+import DragPan from 'ol/interaction/DragPan.js';
 import Select from 'ol/interaction/Select.js';
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
@@ -13,7 +15,7 @@ import VectorSource from "ol/source/Vector";
 import Stroke from "ol/style/Stroke";
 import Style, { type StyleFunction } from "ol/style/Style";
 import WMTSTileGrid from "ol/tilegrid/WMTS";
-import { pointerMove, singleClick } from "ol/events/condition";
+import { platformModifierKeyOnly, pointerMove, singleClick } from "ol/events/condition";
 import Fill from "ol/style/Fill";
 
 export type GeoLayer = VectorLayer<VectorSource>;
@@ -30,7 +32,7 @@ for (let i = 0; i < 26; ++i) {
 }
 
 const hoverStyle = new Style({
-  fill: new Fill({color: '#FFF'}),
+  fill: new Fill({color: '#FFF5'}),
   stroke: new Stroke({ color: '#A6BDDB', width: 1 })
 });
 
@@ -95,7 +97,7 @@ export function updateKaartlaag(kaartlaag: GeoLayer | undefined, herlaad: boolea
   }
 }
 
-export function nieuweKaart(lagen: BaseLayer[]) {
+export function nieuweKaart(lagen: BaseLayer[], dragPan: boolean) {
   return new Map({
     target: "map", // The target HTML element id to render the map in
     layers: lagen,
@@ -105,6 +107,13 @@ export function nieuweKaart(lagen: BaseLayer[]) {
       minZoom: 2,
       zoom: 3,
     }),
+    interactions: defaults({dragPan: dragPan, mouseWheelZoom: true}).extend([
+      new DragPan({
+        condition: function (event) {
+          return (this as DragPan).getPointerCount() === 2 || platformModifierKeyOnly(event);
+        },
+      }),
+    ]),
   });
 }
 
@@ -116,8 +125,8 @@ export class Kaart {
   currentFeature: FeatureLike | undefined;
   listeners: FeatureListener[];
 
-  constructor(lagen: BaseLayer[]) {
-    this.map = this.maakMap(lagen);
+  constructor(dragPan: boolean, lagen: BaseLayer[]) {
+    this.map = this.maakMap(dragPan, lagen);
     this.currentGemeente = "";
     this.listeners = [];
   }
@@ -190,8 +199,8 @@ export class Kaart {
     this.getHover().style.visibility = "hidden";
   }
 
-  maakMap(lagen: BaseLayer[]): Map {
-    const map = nieuweKaart(lagen);
+  maakMap(dragPan: boolean, lagen: BaseLayer[]): Map {
+    const map = nieuweKaart(lagen, dragPan);
 
     map.on("singleclick", (evt: MapBrowserEvent) => this.onClick(evt));
     map.on("pointermove", (evt) => this.onPointMove(evt));
