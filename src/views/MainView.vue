@@ -85,7 +85,7 @@ async function update(informatie: InformatieType) {
     </select>
     <Navigation class="nav" :informatie="informatie" />
     <h1>Stemlokaaltoegankelijkheid {{ title }}</h1>
-    <h2>{{ VERKIEZINGEN[informatie.verkiezing].naam }}</h2>
+    <h2 class="verkiezing-naam">{{ VERKIEZINGEN[informatie.verkiezing].naam }}</h2>
   </header>
   <main class="main">
     <Kaart v-if="informatie.pagina == 'kaart'" :informatie="informatie" />
@@ -141,20 +141,21 @@ async function update(informatie: InformatieType) {
 
 @media (max-width: 1024px) {
   .header {
-    height: 165px;
+    height: 105px;
   }
   .header h1 {
     font-size: 1.2em;
   }
   .header h2 {
+    display: none;
     font-size: 1em;
   }
   .header .verkiezingen {
     left: 5px;
-    top: 140px;
+    top: 80px;
   }
   .main {
-    padding-top: 160px;
+    padding-top: 105px;
   }
   .footer p {
     margin: 10px;
