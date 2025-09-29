@@ -3,6 +3,8 @@ import sys
 from datetime import date
 import subprocess
 
+vorige_verkiezing = 'ep2024'
+
 toegankelijkheids_categorieen = [
     'Toegankelijk voor mensen met een lichamelijke beperking',
     'Toegankelijke ov-halte',
@@ -191,31 +193,49 @@ def togemeenten(data):
 
   return sorted(gemeenten, key=lambda item: item[1])
 
-def load_and_process_json_file(filename, output_filename):
-    try:
-        with open(filename, 'r', encoding='utf-8') as file:
-            data = json.load(file)
-            counted = count_values(data)
-            transform(counted)
-            nationalTotals(counted)
-            atLeastOne(counted)
-            with open(output_filename + '.json', 'w', encoding='utf-8') as output:
-                json.dump(counted, output)
-            with open(output_filename + '_gemeenten.json', 'w', encoding='utf-8') as output:
-                json.dump(togemeenten(counted['data']), output)
-            with open(output_filename + '_voortgang.csv', 'a', encoding='utf-8') as voortgangBestand:
-                datum = date.today().strftime('%d-%m-%Y')
-                #Gebruik volgende regels als een eerdere commit datum moet worden opgehaald.
-                #Check de slt repo in andere directory uit, pass directory hieronder aan, checkout de specifieke commit
-                #en run dit script.
-                #datum = subprocess.run(['git', 'show', '-s', '--format=%cd', '--date=format:%d-%m-%Y'],
-                #      cwd='<directory naar andere repo waar specifieke commit is uitgecheckt>',
-                #      capture_output=True, text=True)
-                #    .stdout.strip()
-                voortgangBestand.write(datum + ',' + str(len(counted['data'])) + '\n')
+def ontbrekendeGemeenten(bron, ontbrekendeGemeentenBestand):
+  bron1  = bron[:-7]
+  file1 = bron1 + '/' + vorige_verkiezing + '_gemeenten.json'
+  file2 = bron + '_gemeenten.json'
 
-    except Exception as e:
-        return f'Error loading or processing file: {str(e)}'
+  with open(file1, 'r') as f1, open(file2, 'r') as f2:
+    data1 = json.load(f1)
+    data2 = json.load(f2)
+
+  dict1 = {item[0]: tuple(item) for item in data1}
+  dict2 = {item[0]: tuple(item) for item in data2}
+  ontbrekendeGemeenten = [dict1[num] for num in dict1 if num not in dict2]
+
+  for gemeente in ontbrekendeGemeenten:
+      ontbrekendeGemeentenBestand.write(gemeente[1] + '\n')
+
+def load_and_process_json_file(filename, output_filename):
+  try:
+    with open(filename, 'r', encoding='utf-8') as file:
+      data = json.load(file)
+      counted = count_values(data)
+      transform(counted)
+      nationalTotals(counted)
+      atLeastOne(counted)
+      with open(output_filename + '.json', 'w', encoding='utf-8') as output:
+        json.dump(counted, output)
+      with open(output_filename + '_gemeenten.json', 'w', encoding='utf-8') as output:
+        json.dump(togemeenten(counted['data']), output)
+      with open(output_filename + '_voortgang.csv', 'a', encoding='utf-8') as voortgangBestand:
+        datum = date.today().strftime('%d-%m-%Y')
+        #Gebruik volgende regels als een eerdere commit datum moet worden opgehaald.
+        #Check de slt repo in andere directory uit, pass directory hieronder aan, checkout de specifieke commit
+        #en run dit script.
+        #datum = subprocess.run(['git', 'show', '-s', '--format=%cd', '--date=format:%d-%m-%Y'],
+        #      cwd='<directory naar andere repo waar specifieke commit is uitgecheckt>',
+        #      capture_output=True, text=True)
+        #    .stdout.strip()
+        voortgangBestand.write(datum + ',' + str(len(counted['data'])) + '\n')
+      with open(output_filename + '_ontbrekende_gemeenten.csv', 'w', encoding='utf-8') as output:
+        ontbrekendeGemeenten(output_filename, output)
+
+  except Exception as e:
+      return f'Error loading or processing file: {str(e)}'
 
 def main():
     # Check if a filename was provided as command line argument
