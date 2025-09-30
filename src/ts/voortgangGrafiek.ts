@@ -95,10 +95,29 @@ export async function maakGrafiek(verkiezingCode: VerkiezingID, data: GemeentenG
     // @ts-expect-error typescript ziet alleen nummer array
     .y(d => y(d.aantal));
 
+  const tooltip = d3.select("body")
+    .append("div")
+    .style("position", "absolute");
+
   svg.append("path")
     .attr("class", "lijn")
     .attr("transform", `translate(${marginWidth},0)`)
     .datum(data)
     // @ts-expect-error lijn is specifiek type en dat mag
-    .attr("d", lijn);
+    .attr("d", lijn)
+    .on("mousemove", function(event) {
+      const [xp, yp] = d3.pointer(event);
+      const xValue = x.invert(xp);
+      const bisect = d3.bisector((d: GemeentenGepubliceerdItem) => d.datum).left;
+      const index = bisect(data, xValue);
+      const aantal = data[index]?.aantal;
+
+      tooltip.style("opacity", 1)
+        .html(`${aantal || ''}`)
+        .style("left", (event.pageX + 10) + "px")
+        .style("top", (event.pageY - 0) + "px");
+    })
+    .on("mouseout", () => tooltip.style("opacity", 0));
+
+
 }
