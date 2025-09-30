@@ -48,7 +48,7 @@ const title = computed<string>(() => {
     case "gemeente":
       return toegankelijkhedenStore.getGemeenteName(informatie.value?.gemeente);
     case "voortgang":
-      return "aanlever voortgang";
+      return "aanlevervoortgang";
     default:
       return "";
   }

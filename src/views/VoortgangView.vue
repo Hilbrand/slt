@@ -32,7 +32,6 @@ async function tekenGrafiek() {
   if (gegevens.value == null) {
     gegevens.value = await leesCsv(verkiezing);
     ontbrekendeGemeenten.value = await leesOntbrekendeGemeentenCsv(verkiezing);
-    console.log("ontbrekendeGemeenten", ontbrekendeGemeenten.value)
   }
   if (ggGrafiek.value !== null && gegevens.value != null) {
     maakGrafiek(verkiezing, gegevens.value, ggGrafiek.value, window.innerWidth);
@@ -65,7 +64,7 @@ onUnmounted(() => {
   <div class="midden" v-if="props.informatie.verkiezing == DEFAULT_VERKIEZING">
     <h3>Aantal gemeenten die gegevens hebben gepubliceerd</h3>
     <div style="margin-left: 10px" ref="ggGrafiek"></div>
-    <h3 v-if="ontbrekendeGemeenten?.length !== 0">Ontbrekende gemeenten</h3>
+    <h3 v-if="ontbrekendeGemeenten?.length !== 0">Ontbrekende gemeenten ({{ (ontbrekendeGemeenten?.length || 1) - 1 }})</h3>
     <table>
       <tr v-for="g in ontbrekendeGemeenten" :key="g"><td>{{ g }}</td></tr>
     </table>
