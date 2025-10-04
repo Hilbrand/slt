@@ -5,11 +5,14 @@
   --color-achtergrond: light-dark(#fff, #222);
   --color-tekst: light-dark(#333, #ccc);
 
-  --color-ja: light-dark(#009e73, #009e7388);
+  --color-ja-1: light-dark(#00aa73, #00aa7388);
+  --color-ja-2: light-dark(#009e73, #009e7388);
   --color-tekst-ja: white;
-  --color-onbekend: light-dark(#f0e442, #f0e442aa);
+  --color-onbekend-1: light-dark(#f0e04f, #f0e44299);
+  --color-onbekend-2: light-dark(#f0e442, #f0e442aa);
   --color-tekst-onbekend: light-dark(#333, #222);
-  --color-nee: light-dark(#cc79a7, #cc79a788);
+  --color-nee-1: light-dark(#e079a7, #cc79a7bb);
+  --color-nee-2: light-dark(#cc79a7, #cc79a788);
   --color-tekst-nee: white;
   --color-geen-gegevens: #eee5;
   --color-tekst-geen-gegevens: #333;
@@ -104,17 +107,17 @@ body {
 }
 
 .yes {
-  background-color: var(--color-ja);
+  background: linear-gradient(90deg, var(--color-ja-1), var(--color-ja-2));
   color: var(--color-tekst-ja);
 }
 
 .unknown {
-  background-color: var(--color-onbekend);
+  background: linear-gradient(90deg, var(--color-onbekend-1), var(--color-onbekend-2));
   color: var(--color-tekst-onbekend);
 }
 
 .no {
-  background-color: var(--color-nee);
+  background: linear-gradient(90deg, var(--color-nee-1), var(--color-nee-2));
   color: var(--color-tekst-nee);
 }
 
