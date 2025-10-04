@@ -12,19 +12,19 @@ const props = defineProps<{
     <div class="legenda-row">
       <div
         class="legenda-block"
-        style="background-color: var(--color-ja)"
+        style="background-color: var(--color-ja-2)"
         aria-hidden="true"></div>
       <div class="legenda-text">{{ props.legendaText.ja }}</div>
     </div>
     <div class="legenda-row">
       <div
         class="legenda-block"
-        style="background-color: var(--color-onbekend)"
+        style="background-color: var(--color-onbekend-2)"
         aria-hidden="true"></div>
       <div class="legenda-text">{{ props.legendaText.onbekend }}</div>
     </div>
     <div class="legenda-row">
-      <div class="legenda-block" style="background-color: var(--color-nee)" aria-hidden="true"></div>
+      <div class="legenda-block" style="background-color: var(--color-nee-2)" aria-hidden="true"></div>
       <div class="legenda-text">{{ props.legendaText.nee }}</div>
     </div>
     <div v-if="props.legendaText.geenGegevens !== ''"
