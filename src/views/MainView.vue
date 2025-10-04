@@ -116,8 +116,10 @@ async function update(informatie: InformatieType) {
   margin: 0;
   border-bottom: 1px solid var(--color-header-bottom);
   background-color: var(--color-achtergrond);
+  box-shadow: 0 1px 5px var(--color-header-bottom);
   z-index: 10000;
 }
+
 .verkiezingen {
   position: absolute;
   left: 10px;
@@ -128,6 +130,7 @@ async function update(informatie: InformatieType) {
 }
 .main {
   padding-top: 130px;
+  background-color: var(--color-main);
 }
 
 @media (max-width: 1280px) {

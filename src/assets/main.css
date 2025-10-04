@@ -16,11 +16,12 @@
 
   --color-tekst-tgl-link: var(--color-tekst);
 
-  --color-header-bottom: var(--color-tekst);
+  --color-header-bottom: light-dark(#e6e8ec, #e6e8ec);
+  --color-main: light-dark(#fafafa, #2a2a2a);
 
   --color-button: light-dark(#e9e9ed, #555);
   --color-button-tekst: light-dark(#555, #e9e9ed);
-  --color-button-border: var(--color-tekst);
+  --color-button-border: var(--color-button-tekst);
   --color-button-hover: light-dark(#ccc, #888);
   --color-button-geselecteerd: light-dark(#bbb, #333);
 
