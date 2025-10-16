@@ -59,7 +59,6 @@ const legendaText = {
       <tr>
         <td>
           <select class="select" @change="wisselToegankelijkheid">
-            <option>Selecteer een gemeente</option>
             <option v-for="row in TOEGANKELIJKHEDEN_IDS" :key="row"
                 :value="row"
                 :selected="selected(row)">
