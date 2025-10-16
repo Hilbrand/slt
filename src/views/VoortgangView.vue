@@ -9,28 +9,38 @@ const props = defineProps<{
 
 const ggGrafiek = ref(null);
 const gegevens = ref<GemeentenGepubliceerdItem[] | null>(null);
+const nietDeelnemendeGemeenten = ref<string[] | null>(null);
 const ontbrekendeGemeenten = ref<string[] | null>(null);
 
-async function leesOntbrekendeGemeentenCsv(verkiezing: string): Promise<string[]> {
-  try {
-    const data = await fetch(verkiezing + "_ontbrekende_gemeenten.csv");
+async function leesGemeentenCsv(csv: string): Promise<string[]> {
+    try {
+      const data = await fetch(csv);
     const gemeenten = await data.text();
 
     if (gemeenten.includes('html')) {
       return [];
     }
-    return gemeenten.split('\n');
-  } catch(error) {
-    console.log("Fout bij laden ontbrekende gemeenten:", error);
-    return [];
-  }
+    return gemeenten == "" ? [] : gemeenten.split('\n');
+    } catch(error) {
+      console.log(`"Fout bij laden ${csv} gemeenten:"`, error);
+      return [];
+    }
+}
+
+async function leesNietDeelnemendeGemeentenCsv(verkiezing: string): Promise<string[]> {
+  return leesGemeentenCsv(verkiezing + "_niet-deelnemende-gemeenten.csv");
+}
+
+async function leesOntbrekendeGemeentenCsv(verkiezing: string): Promise<string[]> {
+  return leesGemeentenCsv(verkiezing + "_ontbrekende_gemeenten.csv");
 }
 
 async function tekenGrafiek() {
   const verkiezing = DEFAULT_VERKIEZING;
-  console.log(verkiezing);
+
   if (gegevens.value == null) {
     gegevens.value = await leesCsv(verkiezing);
+    nietDeelnemendeGemeenten.value = await leesNietDeelnemendeGemeentenCsv(verkiezing);
     ontbrekendeGemeenten.value = await leesOntbrekendeGemeentenCsv(verkiezing);
   }
   if (ggGrafiek.value !== null && gegevens.value != null) {
@@ -67,6 +77,10 @@ onUnmounted(() => {
     <h3 v-if="ontbrekendeGemeenten?.length !== 0">Ontbrekende gemeenten ({{ (ontbrekendeGemeenten?.length || 1) - 1 }})</h3>
     <table>
       <tr v-for="g in ontbrekendeGemeenten" :key="g"><td>{{ g }}</td></tr>
+    </table>
+    <h3 v-if="nietDeelnemendeGemeenten?.length !== 0">Gemeenten die niet zelf de gegevens hebben aangeleverd ({{ (nietDeelnemendeGemeenten?.length || 1) - 1 }})</h3>
+    <table>
+      <tr v-for="g in nietDeelnemendeGemeenten" :key="g"><td>{{ g }}</td></tr>
     </table>
     <p v-if="gegevens">De getoonde voortgang is vanaf ({{ new Intl.DateTimeFormat().format(gegevens[0].datum) }}). Vanaf dat moment zijn de gegevens via deze site bijgehouden.</p>
   </div>

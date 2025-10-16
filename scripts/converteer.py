@@ -218,9 +218,9 @@ def load_and_process_json_file(filename, output_filename):
       nationalTotals(counted)
       atLeastOne(counted)
       with open(output_filename + '.json', 'w', encoding='utf-8') as output:
-        json.dump(counted, output)
+        json.dump(counted, output, separators=(',', ':'))
       with open(output_filename + '_gemeenten.json', 'w', encoding='utf-8') as output:
-        json.dump(togemeenten(counted['data']), output)
+        json.dump(togemeenten(counted['data']), output, separators=(',', ':'))
       with open(output_filename + '_voortgang.csv', 'a', encoding='utf-8') as voortgangBestand:
         datum = date.today().strftime('%d-%m-%Y')
         #Gebruik volgende regels als een eerdere commit datum moet worden opgehaald.
