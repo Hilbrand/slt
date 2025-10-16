@@ -2,7 +2,7 @@ import "./assets/main.css";
 
 import { createApp } from "vue";
 import { createPinia } from "pinia";
-import { createRouter, createWebHashHistory, type _RouteLocationBase } from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 import { useGemeentenStore } from "@/stores/gemeentenStore";
 
 import App from "./App.vue";

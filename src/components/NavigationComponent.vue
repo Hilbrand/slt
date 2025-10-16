@@ -56,6 +56,11 @@ onMounted(() => {
       title="Pagina met toegankelijkheidsgegevens per gemeente op een kaart"
     >Kaart</button>
     <button
+      @click="navigateTo('tg')"
+      :class="selected('tg')"
+      title="Specifieke toegankelijkheid in alle gemeenten"
+    >TG</button>
+    <button
       @click="navigateTo('eml')"
       :class="selected('eml')"
       title="Locatiegegevens van WaarIsMijnStemlokaal vergeleken met verkiezingsuitslagen gegevens"

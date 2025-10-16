@@ -11,6 +11,7 @@ import Gemeente from "./GemeenteView.vue";
 import Kaart from "./KaartView.vue";
 import Start from "./StartView.vue";
 import Voortgang from "./VoortgangView.vue";
+import Toegankelijkheden from "./ToegankelijkhedenView.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -49,6 +50,8 @@ const title = computed<string>(() => {
       return toegankelijkhedenStore.getGemeenteName(informatie.value?.gemeente);
     case "voortgang":
       return "aanlevervoortgang";
+    case "tg":
+      return "";
     default:
       return "";
   }
@@ -92,6 +95,7 @@ async function update(informatie: InformatieType) {
     <Gemeente v-else-if="informatie.pagina == 'gemeente'" :informatie="informatie" />
     <Eml v-else-if="informatie.pagina == 'eml'" :informatie="informatie" />
     <Voortgang v-else-if="informatie.pagina == 'voortgang'" :informatie="informatie" />
+    <Toegankelijkheden v-else-if="informatie.pagina == 'tg'" :informatie="informatie" />
     <Start v-else :informatie="informatie" />
   </main>
   <footer class="footer">

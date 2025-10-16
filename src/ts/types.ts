@@ -1,4 +1,4 @@
-export const PAGINA_IDS = ["eml", "gemeente", "kaart", "start", "voortgang"] as const;
+export const PAGINA_IDS = ["eml", "gemeente", "kaart", "start", "tg", "voortgang"] as const;
 
 export type PaginaID = (typeof PAGINA_IDS)[number];
 
