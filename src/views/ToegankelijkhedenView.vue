@@ -7,6 +7,7 @@ import { useToegankelijkhedenStore } from "@/stores/toegankelijkhedenStore";
 import Legenda from "@/components/LegendaComponent.vue";
 import ToegankelijkheidsTable from "@/components/ToegankelijkheidsTable.vue";
 import ToegankelijkheidRegel from "@/components/ToegankelijkheidRegel.vue";
+import { preventDefault } from "ol/events/Event";
 
 const router = useRouter();
 
@@ -37,11 +38,19 @@ function selected(tg: string): boolean {
   return props.informatie?.toegankelijkheid === tg;
 }
 
+function navigateGemeente(gemeente: string) {
+  const copy = props.informatie;
+  copy.gemeente = gemeente;
+  copy.pagina = "gemeente";
+  preventDefault();
+  router.push({ query: jsonToNavigatie(copy) });
+}
+
 function wisselToegankelijkheid(event: Event) {
   const e = event.target as HTMLInputElement;
   const copy = props.informatie;
   copy.toegankelijkheid = e.value as ToegankelijkhedenID;
-  router.replace({ query: jsonToNavigatie(copy) });
+  router.push({ query: jsonToNavigatie(copy) });
 }
 
 const legendaText = {
@@ -68,21 +77,21 @@ const legendaText = {
         </td>
       </tr>
       <ToegankelijkheidRegel
-        naam="Alle stemlokalen"
         :toegankelijkheid="toegankelijkheidText"
         :tid="props.informatie.toegankelijkheid"
         :totaal="nationaal[1]"
         groep="gemeenten"
-        :toegankelijkheden="nationaal[2]"/>
+        :toegankelijkheden="nationaal[2]">Alle stemlokalen</ToegankelijkheidRegel>
       <ToegankelijkheidRegel
         v-for="gem in gemeenten"
         :key="gem[0]"
-        :naam="gem[1]"
         :toegankelijkheid="toegankelijkheidText"
         :tid="props.informatie.toegankelijkheid"
         :totaal="toegankelijkhedenStore.getStemlokalen(gem[0])"
         groep="gemeenten"
-        :toegankelijkheden="toegankelijkhedenStore.getToegankelijkheden(gem[0])"/>
+        :toegankelijkheden="toegankelijkhedenStore.getToegankelijkheden(gem[0])">
+        <a @click=navigateGemeente(gem[0])>{{  gem[1] }}</a>
+      </ToegankelijkheidRegel>
     </tbody>
   </table>
   <Legenda :legendaText="legendaText" />

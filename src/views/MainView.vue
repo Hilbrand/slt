@@ -61,7 +61,7 @@ function wisselVerkiezing(event: Event) {
   const e = event.target as HTMLInputElement;
   const copy = informatie.value;
   copy.verkiezing = e.value as VerkiezingID;
-  router.replace({ query: jsonToNavigatie(copy) });
+  router.push({ query: jsonToNavigatie(copy) });
 }
 
 async function update(informatie: InformatieType) {

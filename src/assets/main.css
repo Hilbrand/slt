@@ -151,3 +151,25 @@ body {
 .voortgang .tekst {
   fill: var(--color-tekst);
 }
+
+a, .cat-link {
+  color: var(--color-tekst-tgl-link);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.cat-link::before {
+  content: "▢";
+  line-height: 20px;
+}
+
+a:link, .cat-link:link,
+a:visited, .cat-link:visited {
+  text-decoration: none;
+}
+
+a:hover, .cat-link + label:hover,
+a:active, .cat-link + label:active {
+  text-decoration: underline;
+  cursor: pointer;
+}

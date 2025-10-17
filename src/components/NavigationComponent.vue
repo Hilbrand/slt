@@ -15,7 +15,7 @@ const thema = ref(false);
 function navigateTo(page: PaginaID) {
   const copy = props.informatie;
   copy.pagina = page;
-  router.replace({ query: jsonToNavigatie(copy) });
+  router.push({ query: jsonToNavigatie(copy) });
 }
 
 function selected(page: PaginaID) {

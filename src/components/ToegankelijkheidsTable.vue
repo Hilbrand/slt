@@ -25,12 +25,11 @@ function cat(key: ToegankelijkhedenID) {
         <ToegankelijkheidRegel
           v-for="row in TOEGANKELIJKHEDEN_IDS"
           :key="row"
-          :naam="cat(row)"
           :tid="row"
           :totaal="props.totaal"
           :groep="props.groep"
           :toegankelijkheden="props.toegankelijkheden"
-          />
+          >{{ cat(row) }}</ToegankelijkheidRegel>
       </template>
       <tr v-else><td></td><td>Er is zijn nog geen gegevens bekend</td></tr>
     </tbody>

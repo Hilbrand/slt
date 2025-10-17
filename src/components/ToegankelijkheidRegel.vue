@@ -2,7 +2,6 @@
 import { type ToegankelijkheidType, type ToegankelijkhedenID, type ToegankelijkheidDataTypeKey, TOEGANKELIJKHEDEN, TOEGANKELIJKHEDEN_IDS } from "@/ts/types";
 
 const props = defineProps<{
-  naam: string,
   tid: ToegankelijkhedenID,
   totaal: number;
   groep: string;
@@ -45,7 +44,7 @@ function titleLabel(key: ToegankelijkhedenID, state: ToegankelijkheidDataTypeKey
 
 <template>
   <tr>
-    <td>{{ naam }}</td>
+    <td><slot /></td>
     <td class="row">
       <div
         v-if="tid == 'gt' && show(tid, 'l') > 0"

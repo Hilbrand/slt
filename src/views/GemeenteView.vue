@@ -41,7 +41,7 @@ function wisselGemeente(event: Event) {
   const e = event.target as HTMLInputElement;
   const copy = props.informatie;
   copy.gemeente = e.value;
-  router.replace({ query: jsonToNavigatie(copy) });
+  router.push({ query: jsonToNavigatie(copy) });
 }
 
 const legendaText = {

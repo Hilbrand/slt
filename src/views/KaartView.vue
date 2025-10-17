@@ -129,13 +129,13 @@ onMounted(() => {
 function navigateToegankelijkeid(tg: ToegankelijkhedenID) {
   const copy = props.informatie;
   copy.toegankelijkheid = tg;
-  router.replace({ query: jsonToNavigatie(copy) });
+  router.push({ query: jsonToNavigatie(copy) });
 }
 
 function handleSlider() {
   const copy = props.informatie;
   copy.percentage = percentage.value;
-  router.replace({ query: jsonToNavigatie(copy) });
+  router.push({ query: jsonToNavigatie(copy) });
 }
 
 function featureGemeenteName(): string {
@@ -234,26 +234,9 @@ const legendaText = {
   column-gap: 7px;
 }
 
-.cat-link {
-  color: var(--color-tekst-tgl-link);
-  -webkit-appearance: none;
-  appearance: none;
-}
-
 .cat-link::before {
   content: "▢";
   line-height: 20px;
-}
-
-.cat-link:link,
-.cat-link:visited {
-  text-decoration: none;
-}
-
-.cat-link + label:hover,
-.cat-link + label:active {
-  text-decoration: underline;
-  cursor: pointer;
 }
 
 .selected {
