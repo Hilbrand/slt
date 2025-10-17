@@ -106,7 +106,7 @@ const legendaText = {
 @media (max-width: 1024px) {
   .select {
     top: 80px;
-    right: 30px;
+    right: 10px;
     width: 50%;
   }
 }
