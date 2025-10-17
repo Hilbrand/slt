@@ -183,7 +183,7 @@ const legendaText = {
           :id="index"
           @click="navigateToegankelijkeid(index)"
           class="cat-link"
-          :class="index == toegankelijkheid ? 'selected' : ''" />
+          :checked="index == toegankelijkheid"/>
         <label :for="index">{{ tg }}</label>
       </template>
       </div>
@@ -239,11 +239,11 @@ const legendaText = {
   line-height: 20px;
 }
 
-.selected {
+.cat-link:checked {
   font-weight: bold;
 }
 
-.selected::before {
+.cat-link:checked::before {
   content: "✔";
 }
 
