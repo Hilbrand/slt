@@ -42,7 +42,6 @@ function navigateGemeente(gemeente: string) {
   const copy = props.informatie;
   copy.gemeente = gemeente;
   copy.pagina = "gemeente";
-  preventDefault();
   router.push({ query: jsonToNavigatie(copy) });
 }
 
@@ -63,19 +62,16 @@ const legendaText = {
 </script>
 
 <template>
+  <select class="select" @change="wisselToegankelijkheid">
+    <option v-for="row in TOEGANKELIJKHEDEN_IDS" :key="row"
+        :value="row"
+        :selected="selected(row)">
+      {{ TOEGANKELIJKHEDEN[row] }}
+    </option>
+  </select>
+  <div class="tabel">
   <table class="grid">
     <tbody>
-      <tr>
-        <td>
-          <select class="select" @change="wisselToegankelijkheid">
-            <option v-for="row in TOEGANKELIJKHEDEN_IDS" :key="row"
-                :value="row"
-                :selected="selected(row)">
-              {{ TOEGANKELIJKHEDEN[row] }}
-            </option>
-          </select>
-        </td>
-      </tr>
       <ToegankelijkheidRegel
         :toegankelijkheid="toegankelijkheidText"
         :tid="props.informatie.toegankelijkheid"
@@ -95,14 +91,23 @@ const legendaText = {
     </tbody>
   </table>
   <Legenda :legendaText="legendaText" />
+  </div>
 </template>
 
 <style scoped>
 .select {
-  width: 100%;
-  line-height: 30px;
-  height: 30px;
-  background-color: var(--color-selectiebox);
   border-radius: 5px;
+  position: fixed;
+  top: 100px;
+  margin-left: 10px;
+  z-index: 10000;
+}
+
+@media (max-width: 1024px) {
+  .select {
+    top: 80px;
+    right: 30px;
+    width: 50%;
+  }
 }
 </style>

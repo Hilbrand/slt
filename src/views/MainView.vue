@@ -114,7 +114,7 @@ async function update(informatie: InformatieType) {
 <style scoped>
 .header {
   position: fixed;
-  width: 100%;
+  width: 100vw;
   height: 130px;
   text-align: center;
   margin: 0;
@@ -135,6 +135,7 @@ async function update(informatie: InformatieType) {
 .main {
   padding-top: 130px;
   background-color: var(--color-main);
+  position: relative;
 }
 
 @media (max-width: 1280px) {

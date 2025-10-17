@@ -56,6 +56,10 @@ body {
   color: var(--color-tekst);
 }
 
+select {
+  color: var(--color-tekst);
+}
+
 .ol-zoom {
   display: relative;
   float: right;
@@ -152,7 +156,11 @@ body {
   fill: var(--color-tekst);
 }
 
-a, .cat-link {
+a {
+  text-decoration: underline;
+}
+
+a .cat-link {
   color: var(--color-tekst-tgl-link);
   -webkit-appearance: none;
   appearance: none;
@@ -163,8 +171,8 @@ a, .cat-link {
   line-height: 20px;
 }
 
-a:link, .cat-link:link,
-a:visited, .cat-link:visited {
+a .cat-link:link,
+a .cat-link:visited {
   text-decoration: none;
 }
 
