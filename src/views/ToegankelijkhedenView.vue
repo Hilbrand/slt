@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { jsonToNavigatie } from "@/ts/navigatie";
 import { TOEGANKELIJKHEDEN, TOEGANKELIJKHEDEN_IDS, type InformatieType, type LegendaTextType, type ToegankelijkhedenID, type ToegankelijkheidAreaType, type ToegankelijkheidType } from "@/ts/types";
@@ -17,7 +17,6 @@ const props = defineProps<{
 
 const toegankelijkhedenStore = useToegankelijkhedenStore();
 
-// const toegankelijkheid = ref<ToegankelijkhedenID>("lb");
 const toegankelijkheidText = computed<string>(() =>
   props.informatie?.toegankelijkheid && TOEGANKELIJKHEDEN[props.informatie?.toegankelijkheid] || "",
 );
@@ -33,6 +32,19 @@ const gemeenten = computed(() =>
     ? toegankelijkhedenStore.getGemeenten()
     : [],
 );
+
+function idGem(gemId: string): string {
+  return `tg-${gemId}`;
+}
+
+function scrollNaarGemeente(gemId: string) {
+  const element = document.getElementById(idGem(gemId));
+  element?.scrollIntoView({ behavior: 'smooth' })
+}
+
+onMounted(() => {
+  scrollNaarGemeente(props.informatie.gemeente);
+});
 
 function selected(tg: string): boolean {
   return props.informatie?.toegankelijkheid === tg;
@@ -79,6 +91,7 @@ const legendaText = {
         groep="gemeenten"
         :toegankelijkheden="nationaal[2]">Alle stemlokalen</ToegankelijkheidRegel>
       <ToegankelijkheidRegel
+        :id="idGem(gem[0])"
         v-for="gem in gemeenten"
         :key="gem[0]"
         :toegankelijkheid="toegankelijkheidText"
@@ -102,12 +115,17 @@ const legendaText = {
   margin-left: 10px;
   z-index: 10000;
 }
-
+.grid tr {
+  scroll-margin-top: 140px;
+}
 @media (max-width: 1024px) {
   .select {
     top: 80px;
     right: 10px;
     width: 50%;
   }
+.grid tr {
+  scroll-margin-top: 120px;
+}
 }
 </style>
