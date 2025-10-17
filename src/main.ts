@@ -2,7 +2,7 @@ import "./assets/main.css";
 
 import { createApp } from "vue";
 import { createPinia } from "pinia";
-import { createRouter, createWebHashHistory } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 import { useGemeentenStore } from "@/stores/gemeentenStore";
 
 import App from "./App.vue";
@@ -11,7 +11,7 @@ import MainView from "./views/MainView.vue";
 const routes = [{ path: "", component: MainView }];
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory("/slt"),
   routes,
 });
 
