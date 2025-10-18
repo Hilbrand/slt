@@ -119,6 +119,11 @@ function veranderVisualisatie(event: Event) {
         >https://www.waarismijnstemlokaal.nl</a
       >. De gegevens zijn gebaseerd op het bestand met id:
       <code>{{ toegankelijkhedenStore.getResourceId() }}</code>.
+   </p>
+    <p>'Niet verplichte toegankelijkheden' is de som van alle toegankelijkheden behalve de verplichte
+      'Toegankelijk voor mensen met een lichamelijke beperking'.
+   </p>
+    <p>
       Meer informatie over dit project is te vinden op <a href="https://github.com/hilbrand/slt" target="_blank"
       >https://github.com/hilbrand/slt</a>.
     </p>

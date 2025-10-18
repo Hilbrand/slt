@@ -4,9 +4,10 @@ from datetime import date
 import subprocess
 
 vorige_verkiezing = 'ep2024'
+LB = 'Toegankelijk voor mensen met een lichamelijke beperking'
 
 toegankelijkheids_categorieen = [
-    'Toegankelijk voor mensen met een lichamelijke beperking',
+    LB,
     'Toegankelijke ov-halte',
     'Gehandicaptentoilet',
     'Host',
@@ -18,10 +19,12 @@ toegankelijkheids_categorieen = [
     'Gebarentolk (NGT)',
     'Gebarentalig stembureaulid (NGT)',
     'Akoestiek geschikt voor slechthorenden',
+    # Aanvullend
+#    'Niet verplichte toegankelijkheden',
 ]
 
 toegankelijkheids_categorieen_short = {
-    'Toegankelijk voor mensen met een lichamelijke beperking': 'lb',
+    LB                                                       : 'lb',
     'Toegankelijke ov-halte'                                 : 'ov',
     'Gehandicaptentoilet'                                    : 'to',
     'Host'                                                   : 'ho',
@@ -34,6 +37,7 @@ toegankelijkheids_categorieen_short = {
     'Gebarentolk (NGT)'                                      : 'gt',
     'Gebarentalig stembureaulid (NGT)'                       : 'gs',
     'Akoestiek geschikt voor slechthorenden'                 : 'as',
+     'Niet verplichte toegankelijkheden'                     : 'nv',
 }
 
 uitzonderingen = {
@@ -77,12 +81,15 @@ def set_value(gemeente, categorie, value):
         gemeente[stc][v] = 0
     gemeente[stc][v] += 1
 
+#
+# Telt de toegankelijkheden en groepeert per gemeente.
+#
 def count_values(json_data):
     try:
         # Extract the records array
         records = json_data['result']['records']
 
-        # Group records by CBS gemeentecode
+        # Groepeer records op CBS gemeentecode
         data = { 'resource_id': json_data['result']['resource_id'], 'data' : {} }
         gemeentecode_groups = data['data']
         keys = {}
@@ -96,13 +103,13 @@ def count_values(json_data):
                value = record.get(tc, '')
                set_value(gemeentecode_groups[code], tc, value)
                keys[value] = 1
-        print("Counted all records.")
+        print("Alle records geteld.")
         return data
     except Exception as e:
         return f'Error processing the JSON: {str(e)}'
 
 #
-#
+# Transformeer data van map naar gemeente naam, totaal en toegankelijkeden in array per gemeente code.
 #
 def transform(json):
   gemeenten = {}
@@ -121,12 +128,35 @@ def transform(json):
          if cat_totaal > totaal:
            totaal = cat_totaal
     gemeenten[code] = [gem, totaal, toegs]
-  print("Transformed counted values to new structure.")
+  print("Gegevens getransformeerd en totalen per gemeente geteld.")
   json['data'] = gemeenten
 
 #
+# Tel per gemeente van de niet verplichte toegankelijkheden de totalen.
 #
+def nietVerplichtTotaal(json):
+  gemeenten = json['data']
+  for code in gemeenten:
+    gemeente = gemeenten[code]
+    allTgStates = gemeente[2]
+    totalTg = {}
+    for tgName in allTgStates:
+      if tgName != 'lb':
+        for state in allTgStates[tgName]:
+          if state == 'a' or state == 'l':
+            bewaarState = 'j'
+          else:
+           bewaarState = state
+          if bewaarState not in totalTg:
+            totalTg[bewaarState] = 0
+          totalTg[bewaarState] += allTgStates[tgName][state]
+    if totalTg == 0:
+      print(gemeente[0])
+    allTgStates['nv'] = totalTg
+  print("Niet verplichte toegankelijkheden totalen geteld.")
+
 #
+# Tel de toegankelijkheden op landelijk nivo.
 #
 def nationalTotals(json):
   gemeenten = json['data']
@@ -148,17 +178,27 @@ def nationalTotals(json):
           totalTg[state] = 0
         totalTg[state] += allTgStates[tgName][state]
   json['national'] = ['national', sum(toegsTotaal['lb'].values()), toegsTotaal]
-  print("Counted national values.")
+  print("Gegevens op landelijk nivo verzameld.")
 
+#
+# Test of key in values en zo ja of de waarde > 0 is.
+#
 def greaterZero(values, key):
   return key in values and values[key] > 0
 
+#
+# Als key niet in values set 1, ander verhoog waarde in values met 1.
+#
 def increment(values, key):
   if (key not in values):
     values[key] = 1
   else:
     values[key] += 1
 
+#
+# Maakt json object met per toegankelijkheid geteld bij hoeveel gemeenten deze tenminste 1 keer
+# voor komt.
+#
 def atLeastOne(json):
   gemeenten = json['data']
   totaalGemeenten = 0
@@ -170,6 +210,11 @@ def atLeastOne(json):
     # {'<tgName>': {}}}
     allTgStates = gemeente[2]
     for tgName in allTgStates:
+      # Als nv gebruik dan totaal * aantal toegankelijkheden - 2 (lb en nv tellen niet mee).
+      if tgName == 'nv':
+        noCount = gemeente[1] * (len(allTgStates) - 2)
+      else:
+        noCount = gemeente[1]
       if tgName not in toegsTotaal:
           toegsTotaal[tgName] = {}
       states = allTgStates[tgName]
@@ -179,13 +224,17 @@ def atLeastOne(json):
         increment(toegsTotaal[tgName], 'a')
       elif greaterZero(states, 'l'):
         increment(toegsTotaal[tgName], 'l')
-      elif 'n' in states and states['n'] == gemeente[1]:
+      elif 'n' in states and states['n'] == noCount:
         increment(toegsTotaal[tgName], 'n')
       else:
         increment(toegsTotaal[tgName], '')
   json['atLeastOne'] = ['atLeastOne', sum(toegsTotaal['lb'].values()), toegsTotaal]
-  print("Counted at-least-one.")
+  print("Gegevens van tenminste 1 aangemaakt.")
 
+#
+# Maakt een gesorteerd array met tuple [gemeente code, gemeente naam] 
+# op basis van gegevens die in WaarIsMijnStemlokaal data bestand zijn verwerkt.
+#
 def togemeenten(data):
   gemeenten = []
   for code in data:
@@ -193,6 +242,10 @@ def togemeenten(data):
 
   return sorted(gemeenten, key=lambda item: item[1])
 
+#
+# Maakt een bestand aan met gemeenten die nog niet hun gegevens aan hebben geleverd.
+# Dit wordt gedaan aan de hand van de lijst gemeenten van de vorige verkiezing.
+#
 def ontbrekendeGemeenten(bron, ontbrekendeGemeentenBestand):
   bron1  = bron[:-7]
   file1 = bron1 + '/' + vorige_verkiezing + '_gemeenten.json'
@@ -208,13 +261,18 @@ def ontbrekendeGemeenten(bron, ontbrekendeGemeentenBestand):
 
   for gemeente in ontbrekendeGemeenten:
       ontbrekendeGemeentenBestand.write(gemeente[1] + '\n')
+  print("Ontbrekende gemeenten gegevens aangemaakt.")    
 
+#
+# Hoofd proces. Laad bestand van WaarIsMijnStemlokaal en converteert naar de verschillende bestanden.
+#
 def load_and_process_json_file(filename, output_filename):
   try:
     with open(filename, 'r', encoding='utf-8') as file:
       data = json.load(file)
       counted = count_values(data)
       transform(counted)
+      nietVerplichtTotaal(counted)
       nationalTotals(counted)
       atLeastOne(counted)
       with open(output_filename + '.json', 'w', encoding='utf-8') as output:

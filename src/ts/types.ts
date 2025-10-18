@@ -40,6 +40,7 @@ export const TOEGANKELIJKHEDEN_IDS = [
   "gt",
   "gs",
   "as",
+  "nv",
 ] as const;
 
 export type ToegankelijkhedenID = (typeof TOEGANKELIJKHEDEN_IDS)[number];
@@ -61,6 +62,7 @@ export const TOEGANKELIJKHEDEN: Record<ToegankelijkhedenID, string> = {
   gt: "Gebarentolk (NGT)",
   gs: "Gebarentalig stembureaulid (NGT)",
   as: "Akoestiek geschikt voor slechthorenden",
+  nv: "Niet verplichte toegankelijkheden",
 };
 
 export enum Visualisatie {
