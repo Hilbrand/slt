@@ -191,7 +191,7 @@ function veranderVisualisatie(event: Event) {
   }
   .header .verkiezingen {
     left: 5px;
-    top: 80px;
+    top: 78px;
   }
   .vis {
     top:45px;
