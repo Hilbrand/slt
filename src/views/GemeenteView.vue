@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { jsonToNavigatie } from "@/ts/navigatie";
-import type { InformatieType, LegendaTextType, ToegankelijkheidType } from "@/ts/types";
+import { Visualisatie, type InformatieType, type LegendaTextType, type ToegankelijkheidType } from "@/ts/types";
 import { useToegankelijkhedenStore } from "@/stores/toegankelijkhedenStore";
 import Legenda from "@/components/LegendaComponent.vue";
 import ToegankelijkheidsTable from "@/components/ToegankelijkheidsTable.vue";
@@ -44,6 +44,10 @@ function wisselGemeente(event: Event) {
   router.push({ query: jsonToNavigatie(copy) });
 }
 
+const grafiek = computed(() => {
+  return props.informatie.visualisatie == Visualisatie.GRAFIEK;
+});
+
 const legendaText = {
   ja: "Aantal stemlokalen waar de toegankelijkheid aanwezig is",
   nee: "Aantal stemlokalen waar de toegankelijkheid afwezig is",
@@ -54,38 +58,45 @@ const legendaText = {
 </script>
 
 <template v-if="toegankelijkheden !== undefined">
+  <select class="select" @change="wisselGemeente">
+    <option>Selecteer een gemeente</option>
+    <option v-for="gem in gemeenten" :key="gem[0]"
+        :value="gem[0]"
+        :selected="selected(gem[0])">
+      {{ gem[1] }}
+    </option>
+  </select>
+  <div v-if="!grafiek"
+    class="totaal-tekst">Aantal stemlokalen: {{ totaal }}</div>
   <ToegankelijkheidsTable
     :totaal="totaal"
     groep="stemlokalen"
-    :toegankelijkheden="toegankelijkheden">
-    <tr>
-      <td>
-        <select class="select" @change="wisselGemeente">
-          <option>Selecteer een gemeente</option>
-          <option v-for="gem in gemeenten" :key="gem[0]"
-              :value="gem[0]"
-              :selected="selected(gem[0])">
-            {{ gem[1] }}
-          </option>
-        </select>
-      </td>
-    </tr>
-    <tr>
+    :toegankelijkheden="toegankelijkheden"
+    :visualisatie="props.informatie.visualisatie">
+    <tr v-if="grafiek">
       <td>Aantal stemlokalen</td>
-      <td class="row">
+      <td v-if="grafiek"
+        class="row">
         <div class="cell yes" style="width: 100%">{{ totaal }}</div>
       </td>
     </tr>
   </ToegankelijkheidsTable>
-  <Legenda :legendaText="legendaText" />
+  <Legenda v-if="grafiek"
+    :legendaText="legendaText" />
 </template>
 
 <style scoped>
 .select {
-  width: 100%;
-  line-height: 30px;
-  height: 30px;
-  background-color: var(--color-selectiebox);
-  border-radius: 5px;
+  z-index: 10000;
+  margin:10px;
+}
+@media (max-width: 1024px) {
+  .select {
+    position: fixed;
+    top: 80px;
+    right: 45px;
+    width: 50%;
+    margin: 0px;
+  }
 }
 </style>

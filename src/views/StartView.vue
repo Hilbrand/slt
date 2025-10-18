@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import type { InformatieType, LegendaTextType, ToegankelijkheidAreaType } from "@/ts/types";
+import { Visualisatie, type InformatieType, type LegendaTextType, type ToegankelijkheidAreaType } from "@/ts/types";
 import { useToegankelijkhedenStore } from "@/stores/toegankelijkhedenStore";
 import Legenda from "@/components/LegendaComponent.vue";
 import ToegankelijkheidsTable from "@/components/ToegankelijkheidsTable.vue";
+import ToegankelijkheidTabelHoofd from "@/components/ToegankelijkheidTabelHoofd.vue";
 
 const props = defineProps<{
   informatie: InformatieType;
@@ -28,6 +29,10 @@ const alleToegankelijkheid = {
   geenGegevens: "",
 } as LegendaTextType;
 
+const grafiek = computed(() => {
+  return props.informatie.visualisatie == Visualisatie.GRAFIEK;
+});
+
 const atLeastOneToegankelijkheid = {
   ja: "Aantal gemeenten waar minimaal in 1 stemlokaal de toegankelijkheid aanwezig is",
   nee: "Aantal gemeenten waar de toegankelijkheid in geen enkel stemlokaal aanwezig is",
@@ -38,27 +43,41 @@ const atLeastOneToegankelijkheid = {
 
 <template v-if="national !== undefined">
   <h3>Toegankelijkheid van alle stembureaus</h3>
-  <ToegankelijkheidsTable :totaal="nationaal[1]" groep="stemlokalen" :toegankelijkheden="nationaal[2]">
-    <tr>
+  <div v-if="!grafiek"
+    class="totaal-tekst">Aantal stemlokalen: {{ nationaal[1] }}</div>
+  <ToegankelijkheidsTable
+    :totaal="nationaal[1]"
+    groep="stemlokalen"
+    :toegankelijkheden="nationaal[2]"
+    :visualisatie="props.informatie.visualisatie">
+    <tr v-if="grafiek">
       <td>Aantal Stemlokalen</td>
       <td class="row">
         <div class="cell yes" style="width: 100%">{{ nationaal[1] }}</div>
       </td>
     </tr>
   </ToegankelijkheidsTable>
-  <div class="legenda">
+  <div v-if="grafiek"
+    class="legenda">
     <Legenda :legendaText="alleToegankelijkheid" />
   </div>
   <h3>Gemeenten waar minimaal 1 stemlokaal de toegankelijkheid aanwezig is</h3>
-  <ToegankelijkheidsTable :totaal="atLeastOne[1]" groep="gemeenten" :toegankelijkheden="atLeastOne[2]">
-    <tr>
+  <div v-if="!grafiek"
+    class="totaal-tekst">Aantal gemeenten: {{ atLeastOne[1] }}</div>
+  <ToegankelijkheidsTable
+    :totaal="atLeastOne[1]"
+    groep="gemeenten"
+    :toegankelijkheden="atLeastOne[2]"
+    :visualisatie="props.informatie.visualisatie">
+    <tr v-if="grafiek">
       <td>Aantal Gemeenten</td>
       <td class="row">
         <div class="cell yes" style="width: 100%">{{ atLeastOne[1] }}</div>
       </td>
     </tr>
   </ToegankelijkheidsTable>
-  <div class="legenda">
+  <div v-if="grafiek"
+    class="legenda" >
     <Legenda :legendaText="atLeastOneToegankelijkheid" />
   </div>
 </template>

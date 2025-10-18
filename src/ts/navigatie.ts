@@ -4,6 +4,7 @@ import {
   DEFAULT_PAGINA,
   DEFAULT_TOEGANKELIJKHEID,
   DEFAULT_VERKIEZING,
+  DEFAULT_VISUALISATIE,
 } from "@/ts/types";
 import type { LocationQuery, LocationQueryRaw } from "vue-router";
 
@@ -14,6 +15,7 @@ export function navigatieToJson(query: LocationQuery): InformatieType {
     gemeente: query.g || DEFAULT_GEMEENTE,
     toegankelijkheid: query.t || DEFAULT_TOEGANKELIJKHEID,
     percentage: query.p || 1,
+    visualisatie: query.vis || DEFAULT_VISUALISATIE,
   } as InformatieType;
 }
 
@@ -24,6 +26,7 @@ export function jsonToNavigatie(info: InformatieType): LocationQueryRaw {
     g: info.gemeente,
     t: info.toegankelijkheid,
     p: info.percentage,
+    vis: info.visualisatie,
   } as LocationQueryRaw;
 }
 

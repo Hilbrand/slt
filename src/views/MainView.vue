@@ -3,7 +3,7 @@ import Navigation from "@/components/NavigationComponent.vue";
 import { useEmlMismatchesStore } from "@/stores/emlMismatchesStore";
 import { useToegankelijkhedenStore } from "@/stores/toegankelijkhedenStore";
 import { jsonToNavigatie, navigatieToJson } from "@/ts/navigatie";
-import { VERKIEZING_IDS, VERKIEZINGEN, type InformatieType, type VerkiezingID } from "@/ts/types";
+import { VERKIEZING_IDS, VERKIEZINGEN, Visualisatie, type InformatieType, type VerkiezingID } from "@/ts/types";
 import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Eml from "./EmlView.vue";
@@ -20,6 +20,7 @@ const informatie = ref<InformatieType>({} as InformatieType);
 
 const toegankelijkhedenStore = useToegankelijkhedenStore();
 const emlMismatchesStore = useEmlMismatchesStore();
+const visualisatie = ref(false);
 
 watch(
   () => route.query,
@@ -33,12 +34,13 @@ watch(
   () => informatie,
   (newValue) => {
     router.replace({ query: jsonToNavigatie(newValue.value) });
+    visualisatie.value = newValue.value.visualisatie == Visualisatie.GRAFIEK;
     update(informatie.value);
   },
   { immediate: true, deep: true },
 );
 
-const title = computed<string>(() => {
+const titel = computed<string>(() => {
   switch (informatie.value?.pagina) {
     case "eml":
       return "EML Data"
@@ -74,6 +76,12 @@ async function update(informatie: InformatieType) {
     await emlMismatchesStore.loadData(informatie.verkiezing);
   }
 }
+function veranderVisualisatie(event: Event) {
+  const e = event.target as HTMLInputElement;
+  const copy = informatie.value;
+  copy.visualisatie = e.checked ?  Visualisatie.GRAFIEK : Visualisatie.TABEL;
+  router.push({ query: jsonToNavigatie(copy) });
+}
 </script>
 
 <template>
@@ -87,8 +95,14 @@ async function update(informatie: InformatieType) {
       </option>
     </select>
     <Navigation class="nav" :informatie="informatie" />
-    <h1>Stemlokaaltoegankelijkheid {{ title }}</h1>
+    <h1>Stemlokaaltoegankelijkheid <span class="titel">{{ titel }}</span></h1>
     <h2 class="verkiezing-naam">{{ VERKIEZINGEN[informatie.verkiezing].naam }}</h2>
+    <input
+      type="checkbox"
+      titel="Toon gegevens als Grafiek of Tabel"
+      class="vis"
+      v-model="visualisatie"
+      @change="veranderVisualisatie"/>
   </header>
   <main class="main">
     <Kaart v-if="informatie.pagina == 'kaart'" :informatie="informatie" />
@@ -122,6 +136,23 @@ async function update(informatie: InformatieType) {
   background-color: var(--color-achtergrond);
   box-shadow: 0 1px 5px var(--color-header-bottom);
   z-index: 10000;
+}
+
+.vis {
+  position: absolute;
+  top: 90px;
+  right: 0px;
+  width: 30px;
+  -webkit-appearance: none;
+  appearance: none;
+  font-size: 1.3em;
+  cursor: pointer;
+}
+.vis:before {
+  content: 'T';
+}
+.vis:checked:before {
+  content: '\1F4CA';
 }
 
 .verkiezingen {
@@ -162,11 +193,20 @@ async function update(informatie: InformatieType) {
     left: 5px;
     top: 80px;
   }
+  .vis {
+    top:45px;
+    right: 0px;
+  }
   .main {
     padding-top: 105px;
   }
   .footer p {
     margin: 10px;
+  }
+}
+@media (max-width: 600px) {
+  .titel {
+    display: none;
   }
 }
 </style>

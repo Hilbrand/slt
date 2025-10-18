@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { jsonToNavigatie } from "@/ts/navigatie";
-import { TOEGANKELIJKHEDEN, TOEGANKELIJKHEDEN_IDS, type InformatieType, type LegendaTextType, type ToegankelijkhedenID, type ToegankelijkheidAreaType, type ToegankelijkheidType } from "@/ts/types";
+import { TOEGANKELIJKHEDEN, TOEGANKELIJKHEDEN_IDS, Visualisatie, type InformatieType, type LegendaTextType, type ToegankelijkhedenID, type ToegankelijkheidAreaType } from "@/ts/types";
 import { useToegankelijkhedenStore } from "@/stores/toegankelijkhedenStore";
 import Legenda from "@/components/LegendaComponent.vue";
-import ToegankelijkheidsTable from "@/components/ToegankelijkheidsTable.vue";
 import ToegankelijkheidRegel from "@/components/ToegankelijkheidRegel.vue";
-import { preventDefault } from "ol/events/Event";
+import ToegankelijkheidRegelTabel from "@/components/ToegankelijkheidRegelTabel.vue";
+import ToegankelijkheidTabelHoofd from "@/components/ToegankelijkheidTabelHoofd.vue";
 
 const router = useRouter();
 
@@ -81,29 +81,46 @@ const legendaText = {
       {{ TOEGANKELIJKHEDEN[row] }}
     </option>
   </select>
-  <div class="tabel">
+  <div class="tabel-tg">
   <table class="grid">
     <tbody>
-      <ToegankelijkheidRegel
-        :toegankelijkheid="toegankelijkheidText"
-        :tid="props.informatie.toegankelijkheid"
-        :totaal="nationaal[1]"
-        groep="gemeenten"
-        :toegankelijkheden="nationaal[2]">Alle stemlokalen</ToegankelijkheidRegel>
-      <ToegankelijkheidRegel
-        :id="idGem(gem[0])"
-        v-for="gem in gemeenten"
-        :key="gem[0]"
-        :toegankelijkheid="toegankelijkheidText"
-        :tid="props.informatie.toegankelijkheid"
-        :totaal="toegankelijkhedenStore.getStemlokalen(gem[0])"
-        groep="gemeenten"
-        :toegankelijkheden="toegankelijkhedenStore.getToegankelijkheden(gem[0])">
-        <a @click=navigateGemeente(gem[0])>{{  gem[1] }}</a>
-      </ToegankelijkheidRegel>
+      <template v-if="props.informatie.visualisatie == Visualisatie.TABEL">
+        <ToegankelijkheidTabelHoofd naam="Gemeente" />
+        <ToegankelijkheidRegelTabel
+          v-for="gem in gemeenten"
+          :id="idGem(gem[0])"
+          :key="gem[0]"
+          :tid="props.informatie.toegankelijkheid"
+          :totaal="nationaal[1]"
+          groep="gemeenten"
+          :toegankelijkheden="toegankelijkhedenStore.getToegankelijkheden(gem[0])"
+          ><a @click=navigateGemeente(gem[0])>{{  gem[1] }}</a>
+        </ToegankelijkheidRegelTabel>
+      </template>
+      <template v-else>
+         <ToegankelijkheidRegel
+          :toegankelijkheid="toegankelijkheidText"
+          :tid="props.informatie.toegankelijkheid"
+          :totaal="nationaal[1]"
+          groep="gemeenten"
+          :toegankelijkheden="nationaal[2]">Alle stemlokalen</ToegankelijkheidRegel>
+        <ToegankelijkheidRegel
+          v-for="gem in gemeenten"
+          :id="idGem(gem[0])"
+          :key="gem[0]"
+          :toegankelijkheid="toegankelijkheidText"
+          :tid="props.informatie.toegankelijkheid"
+          :totaal="toegankelijkhedenStore.getStemlokalen(gem[0])"
+          groep="gemeenten"
+          :toegankelijkheden="toegankelijkhedenStore.getToegankelijkheden(gem[0])"
+          :visualisatie="props.informatie.visualisatie">
+          <a @click=navigateGemeente(gem[0])>{{  gem[1] }}</a>
+        </ToegankelijkheidRegel>
+        </template>
     </tbody>
   </table>
-  <Legenda :legendaText="legendaText" />
+  <Legenda v-if="props.informatie.visualisatie == Visualisatie.GRAFIEK"
+    :legendaText="legendaText" />
   </div>
 </template>
 
@@ -121,7 +138,7 @@ const legendaText = {
 @media (max-width: 1024px) {
   .select {
     top: 80px;
-    right: 10px;
+    right: 45px;
     width: 50%;
   }
 .grid tr {

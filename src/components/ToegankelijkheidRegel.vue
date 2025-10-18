@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type ToegankelijkheidType, type ToegankelijkhedenID, type ToegankelijkheidDataTypeKey, TOEGANKELIJKHEDEN, TOEGANKELIJKHEDEN_IDS } from "@/ts/types";
+import { type ToegankelijkheidType, type ToegankelijkhedenID, type ToegankelijkheidDataTypeKey, TOEGANKELIJKHEDEN } from "@/ts/types";
 
 const props = defineProps<{
   tid: ToegankelijkhedenID,
@@ -108,6 +108,7 @@ function titleLabel(key: ToegankelijkhedenID, state: ToegankelijkheidDataTypeKey
   display: inline-flex;
   justify-content: center;
 }
+
 @media (max-width: 1000px) {
   .tekort {
     color: var(--color-tekst-onbekend);

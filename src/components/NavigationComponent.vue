@@ -91,6 +91,7 @@ onMounted(() => {
   -webkit-appearance: none;
   appearance: none;
   font-size: 1.3em;
+  cursor: pointer;
 }
 .nav .theme:before {
   content: '\263C';
@@ -114,9 +115,15 @@ onMounted(() => {
 @media (min-width: 1600px) {
   .nav button {
     width: 100px;
+    padding: 10px 5px;
   }
 }
 
+@media (max-width: 1024px) {
+  .nav button {
+    padding: 10px 5px;
+  }
+}
 .nav a:link,
 .nav a:visited {
   text-decoration: none;
