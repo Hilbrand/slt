@@ -72,7 +72,7 @@ export const DEFAULT_PAGINA = "start" as PaginaID;
 export const DEFAULT_VERKIEZING = "tk2025";
 export const DEFAULT_GEMEENTE = "0518"; // Den Haag
 export const DEFAULT_TOEGANKELIJKHEID = "lb";
-export const DEFAULT_VISUALISATIE = Visualisatie.TABEL;
+export const DEFAULT_VISUALISATIE = Visualisatie.GRAFIEK;
 
 export interface InformatieType {
   pagina: PaginaID;
