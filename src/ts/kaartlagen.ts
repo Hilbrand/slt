@@ -194,7 +194,7 @@ export class Kaart {
     }
   }
 
-  onPointerLeave(evt: Event) {
+  onPointerLeave(_evt: Event) {
     this.currentFeature = undefined;
     this.getHover().style.visibility = "hidden";
   }

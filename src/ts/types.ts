@@ -114,3 +114,13 @@ export type LegendaTextType = {
   geenGegevens: string;
   titel: boolean;
 };
+
+export const hoofdRegelToegankelijkheidCsv =
+  ['Toegankelijkheid', 'Gebarentolk op locatie', 'Gebarentolk op afstand', 'Aanwezig', 'Onbekend', 'Afwezig'];
+
+export const hoofdRegelGemeenteCsv =
+  ['Gemeente', 'Gebarentolk op locatie', 'Gebarentolk op afstand', 'Aanwezig', 'Onbekend', 'Afwezig'];
+
+export interface RegelDataCsv {
+  (): string[][];
+};

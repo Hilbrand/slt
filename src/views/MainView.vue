@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import Navigation from "@/components/NavigationComponent.vue";
+import { computed, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { useEmlMismatchesStore } from "@/stores/emlMismatchesStore";
 import { useToegankelijkhedenStore } from "@/stores/toegankelijkhedenStore";
 import { jsonToNavigatie, navigatieToJson } from "@/ts/navigatie";
 import { VERKIEZING_IDS, VERKIEZINGEN, Visualisatie, type InformatieType, type VerkiezingID } from "@/ts/types";
-import { computed, ref, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import Navigation from "@/components/NavigationComponent.vue";
 import Eml from "./EmlView.vue";
 import Gemeente from "./GemeenteView.vue";
 import Kaart from "./KaartView.vue";
 import Start from "./StartView.vue";
-import Voortgang from "./VoortgangView.vue";
 import Toegankelijkheden from "./ToegankelijkhedenView.vue";
+import Voortgang from "./VoortgangView.vue";
 
 const route = useRoute();
 const router = useRouter();

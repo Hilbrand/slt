@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { jsonToNavigatie } from "@/ts/navigatie";
-import { TOEGANKELIJKHEDEN, TOEGANKELIJKHEDEN_IDS, Visualisatie, type InformatieType, type LegendaTextType, type ToegankelijkhedenID, type ToegankelijkheidAreaType } from "@/ts/types";
 import { useToegankelijkhedenStore } from "@/stores/toegankelijkhedenStore";
+import { maakGemeenteData } from "@/ts/downloadData";
+import { jsonToNavigatie } from "@/ts/navigatie";
+import { hoofdRegelGemeenteCsv, TOEGANKELIJKHEDEN, TOEGANKELIJKHEDEN_IDS, Visualisatie, type InformatieType, type LegendaTextType, type ToegankelijkhedenID, type ToegankelijkheidAreaType } from "@/ts/types";
+import Download from "@/components/DownloadComponent.vue";
 import Legenda from "@/components/LegendaComponent.vue";
 import ToegankelijkheidRegel from "@/components/ToegankelijkheidRegel.vue";
 import ToegankelijkheidRegelTabel from "@/components/ToegankelijkheidRegelTabel.vue";
@@ -23,7 +25,7 @@ const toegankelijkheidText = computed<string>(() =>
 
 const nationaal = computed<ToegankelijkheidAreaType>(() =>
   toegankelijkhedenStore.loadedVerkiezing() == props.informatie?.verkiezing
-    ? toegankelijkhedenStore.getNational()
+    ? toegankelijkhedenStore.getNationaal()
     : ["", 0, {}],
 );
 
@@ -32,6 +34,10 @@ const gemeenten = computed(() =>
     ? toegankelijkhedenStore.getGemeenten()
     : [],
 );
+
+const csvBestandsnaam = computed(() => {
+  return `${props.informatie.verkiezing}_${toegankelijkheidText.value.toLowerCase()}`;
+});
 
 function idGem(gemId: string): string {
   return `tg-${gemId}`;
@@ -82,17 +88,27 @@ const legendaText = {
     </option>
   </select>
   <div class="tabel-tg">
+  <Download
+    :bestandsnaam="csvBestandsnaam"
+    :hoofdregel="hoofdRegelGemeenteCsv"
+    :regelData="() => maakGemeenteData(props.informatie.toegankelijkheid)" />
   <table class="grid">
     <tbody>
       <template v-if="props.informatie.visualisatie == Visualisatie.TABEL">
         <ToegankelijkheidTabelHoofd naam="Gemeente" />
         <ToegankelijkheidRegelTabel
+          :id="nationaal[0]"
+          :tid="props.informatie.toegankelijkheid"
+          groep="stemlokalen"
+          :toegankelijkheden="nationaal[2]">
+          {{ toegankelijkhedenStore.getGemeenteName(nationaal[0]) }}
+        </ToegankelijkheidRegelTabel>
+        <ToegankelijkheidRegelTabel
           v-for="gem in gemeenten"
           :id="idGem(gem[0])"
           :key="gem[0]"
           :tid="props.informatie.toegankelijkheid"
-          :totaal="nationaal[1]"
-          groep="gemeenten"
+          groep="stemlokalen"
           :toegankelijkheden="toegankelijkhedenStore.getToegankelijkheden(gem[0])"
           ><a @click=navigateGemeente(gem[0])>{{  gem[1] }}</a>
         </ToegankelijkheidRegelTabel>
@@ -102,7 +118,7 @@ const legendaText = {
           :toegankelijkheid="toegankelijkheidText"
           :tid="props.informatie.toegankelijkheid"
           :totaal="nationaal[1]"
-          groep="gemeenten"
+          groep="stemlokalen"
           :toegankelijkheden="nationaal[2]">Alle stemlokalen</ToegankelijkheidRegel>
         <ToegankelijkheidRegel
           v-for="gem in gemeenten"
@@ -111,7 +127,7 @@ const legendaText = {
           :toegankelijkheid="toegankelijkheidText"
           :tid="props.informatie.toegankelijkheid"
           :totaal="toegankelijkhedenStore.getStemlokalen(gem[0])"
-          groep="gemeenten"
+          groep="stemlokalen"
           :toegankelijkheden="toegankelijkhedenStore.getToegankelijkheden(gem[0])"
           :visualisatie="props.informatie.visualisatie">
           <a @click=navigateGemeente(gem[0])>{{  gem[1] }}</a>

@@ -177,7 +177,7 @@ def nationalTotals(json):
         if state not in totalTg:
           totalTg[state] = 0
         totalTg[state] += allTgStates[tgName][state]
-  json['national'] = ['national', sum(toegsTotaal['lb'].values()), toegsTotaal]
+  json['nationaal'] = ['nationaal', sum(toegsTotaal['lb'].values()), toegsTotaal]
   print("Gegevens op landelijk nivo verzameld.")
 
 #
@@ -232,7 +232,7 @@ def atLeastOne(json):
   print("Gegevens van tenminste 1 aangemaakt.")
 
 #
-# Maakt een gesorteerd array met tuple [gemeente code, gemeente naam] 
+# Maakt een gesorteerd array met tuple [gemeente code, gemeente naam]
 # op basis van gegevens die in WaarIsMijnStemlokaal data bestand zijn verwerkt.
 #
 def togemeenten(data):
@@ -261,7 +261,7 @@ def ontbrekendeGemeenten(bron, ontbrekendeGemeentenBestand):
 
   for gemeente in ontbrekendeGemeenten:
       ontbrekendeGemeentenBestand.write(gemeente[1] + '\n')
-  print("Ontbrekende gemeenten gegevens aangemaakt.")    
+  print("Ontbrekende gemeenten gegevens aangemaakt.")
 
 #
 # Hoofd proces. Laad bestand van WaarIsMijnStemlokaal en converteert naar de verschillende bestanden.

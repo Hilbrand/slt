@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useRouter } from "vue-router";
+import { maakToegankelijkhedenData } from "@/ts/downloadData";
 import { jsonToNavigatie } from "@/ts/navigatie";
-import { Visualisatie, type InformatieType, type LegendaTextType, type ToegankelijkheidType } from "@/ts/types";
+import { hoofdRegelToegankelijkheidCsv, Visualisatie, type InformatieType, type LegendaTextType, type ToegankelijkheidType } from "@/ts/types";
 import { useToegankelijkhedenStore } from "@/stores/toegankelijkhedenStore";
+import Download from "@/components/DownloadComponent.vue";
 import Legenda from "@/components/LegendaComponent.vue";
 import ToegankelijkheidsTable from "@/components/ToegankelijkheidsTable.vue";
 
@@ -44,6 +46,10 @@ function wisselGemeente(event: Event) {
   router.push({ query: jsonToNavigatie(copy) });
 }
 
+const csvBestandsnaam = computed(() => {
+  return `${props.informatie.verkiezing}_${toegankelijkhedenStore.getGemeenteName(props.informatie?.gemeente).toLowerCase()}`;
+});
+
 const grafiek = computed(() => {
   return props.informatie.visualisatie == Visualisatie.GRAFIEK;
 });
@@ -58,6 +64,10 @@ const legendaText = {
 </script>
 
 <template v-if="toegankelijkheden !== undefined">
+  <Download
+    :bestandsnaam="csvBestandsnaam"
+    :hoofdregel="hoofdRegelToegankelijkheidCsv"
+    :regelData="() => maakToegankelijkhedenData(toegankelijkheden)" />
   <select class="select" @change="wisselGemeente">
     <option>Selecteer een gemeente</option>
     <option v-for="gem in gemeenten" :key="gem[0]"

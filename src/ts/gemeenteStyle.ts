@@ -27,7 +27,7 @@ export function createGemeenteStyleFunction(
   tg: Ref<ToegankelijkhedenID>,
   percentage: Ref<number>,
 ) {
-  return (feature: FeatureLike, resolution: number): Style => {
+  return (feature: FeatureLike, _resolution: number): Style => {
     const gem = feature.get("c");
     const { total, above } = isAbove(data.value, gem, tg.value, percentage.value);
     const color = above

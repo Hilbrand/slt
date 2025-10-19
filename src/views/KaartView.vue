@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import Legenda from "@/components/LegendaComponent.vue";
+import { computed, onMounted, ref, watch } from "vue";
+import { useRouter } from "vue-router";
 import { useToegankelijkhedenStore } from "@/stores/toegankelijkhedenStore";
 import { createGemeenteStyleFunction, isAbove } from "@/ts/gemeenteStyle";
 import {
@@ -17,8 +18,7 @@ import {
   type ToegankelijkhedenID,
   type ToegankelijkheidDataTypeKey,
 } from "@/ts/types";
-import { computed, onMounted, ref, watch } from "vue";
-import { useRouter } from "vue-router";
+import Legenda from "@/components/LegendaComponent.vue";
 
 const router = useRouter();
 

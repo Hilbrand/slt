@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import { VERKIEZINGEN, type VerkiezingID, type VerkiezingType } from "./types";
+import { VERKIEZINGEN, type VerkiezingID } from "./types";
 
 export type GemeentenGepubliceerdItem = {
   datum: Date,
@@ -106,7 +106,7 @@ export async function maakGrafiek(verkiezingCode: VerkiezingID, data: GemeentenG
     // @ts-expect-error lijn is specifiek type en dat mag
     .attr("d", lijn)
     .on("mousemove", function(event) {
-      const [xp, yp] = d3.pointer(event);
+      const [xp, _yp] = d3.pointer(event);
       const xValue = x.invert(xp);
       const bisect = d3.bisector((d: GemeentenGepubliceerdItem) => d.datum).left;
       const index = bisect(data, xValue);
@@ -118,6 +118,4 @@ export async function maakGrafiek(verkiezingCode: VerkiezingID, data: GemeentenG
         .style("top", (event.pageY - 0) + "px");
     })
     .on("mouseout", () => tooltip.style("opacity", 0));
-
-
 }

@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { Visualisatie, type InformatieType, type LegendaTextType, type ToegankelijkheidAreaType } from "@/ts/types";
 import { useToegankelijkhedenStore } from "@/stores/toegankelijkhedenStore";
+import { maakToegankelijkhedenData } from "@/ts/downloadData";
+import { hoofdRegelToegankelijkheidCsv, Visualisatie, type InformatieType, type LegendaTextType, type ToegankelijkheidAreaType } from "@/ts/types";
+import Download from "@/components/DownloadComponent.vue";
 import Legenda from "@/components/LegendaComponent.vue";
 import ToegankelijkheidsTable from "@/components/ToegankelijkheidsTable.vue";
-import ToegankelijkheidTabelHoofd from "@/components/ToegankelijkheidTabelHoofd.vue";
 
 const props = defineProps<{
   informatie: InformatieType;
@@ -14,7 +15,7 @@ const toegankelijkhedenStore = useToegankelijkhedenStore();
 
 const nationaal = computed<ToegankelijkheidAreaType>(() =>
   toegankelijkhedenStore.loadedVerkiezing() == props.informatie?.verkiezing
-    ? toegankelijkhedenStore.getNational()
+    ? toegankelijkhedenStore.getNationaal()
     : ["", 0, {}],
 );
 const atLeastOne = computed<ToegankelijkheidAreaType>(() =>
@@ -41,8 +42,12 @@ const atLeastOneToegankelijkheid = {
 } as LegendaTextType;
 </script>
 
-<template v-if="national !== undefined">
+<template v-if="nationaal !== undefined">
   <h3>Toegankelijkheid van alle stembureaus</h3>
+  <Download
+    :bestandsnaam="`${props.informatie.verkiezing}_alle_stemlokalen`"
+    :hoofdregel="hoofdRegelToegankelijkheidCsv"
+    :regelData="() => maakToegankelijkhedenData(nationaal[2])" />
   <div v-if="!grafiek"
     class="totaal-tekst">Aantal stemlokalen: {{ nationaal[1] }}</div>
   <ToegankelijkheidsTable
@@ -62,6 +67,10 @@ const atLeastOneToegankelijkheid = {
     <Legenda :legendaText="alleToegankelijkheid" />
   </div>
   <h3>Gemeenten waar minimaal 1 stemlokaal de toegankelijkheid aanwezig is</h3>
+  <Download
+    :bestandsnaam="`${props.informatie.verkiezing}_tenminste_1`"
+    :hoofdregel="hoofdRegelToegankelijkheidCsv"
+    :regelData="() => maakToegankelijkhedenData(atLeastOne[2])" />
   <div v-if="!grafiek"
     class="totaal-tekst">Aantal gemeenten: {{ atLeastOne[1] }}</div>
   <ToegankelijkheidsTable

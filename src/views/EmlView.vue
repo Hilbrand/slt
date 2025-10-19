@@ -1,8 +1,5 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import type { InformatieType, LegendaTextType } from "@/ts/types";
-import { useToegankelijkhedenStore } from "@/stores/toegankelijkhedenStore";
-import Legenda from "@/components/LegendaComponent.vue";
 import {
   ANDERE_NAAM,
   ANDERE_NAAM_PERCENTAGE,
@@ -14,6 +11,9 @@ import {
   ZELFDE_PERCENTAGE,
   type GemeenteMismatch,
 } from "@/stores/emlMismatchesStore";
+import { useToegankelijkhedenStore } from "@/stores/toegankelijkhedenStore";
+import type { InformatieType, LegendaTextType } from "@/ts/types";
+import Legenda from "@/components/LegendaComponent.vue";
 
 const props = defineProps<{
   informatie: InformatieType;

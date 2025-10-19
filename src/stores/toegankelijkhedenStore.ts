@@ -9,7 +9,7 @@ export const useToegankelijkhedenStore = defineStore("toegankelijkheden", {
     resource_id: "",
     verkiezing: "",
     gemeenten: [],
-    national: ["", 0, {}] as ToegankelijkheidAreaType,
+    nationaal: ["", 0, {}] as ToegankelijkheidAreaType,
     atLeastOne: ["", 0, {}] as ToegankelijkheidAreaType,
     gemeenteData: {} as GemeenteDataType,
   }),
@@ -21,7 +21,7 @@ export const useToegankelijkhedenStore = defineStore("toegankelijkheden", {
         const json = await data.json();
         this.resource_id = json.resource_id;
         this.gemeenteData = json.data;
-        this.national = json.national || ["", 0, {}];
+        this.nationaal = json.nationaal || ["", 0, {}];
         this.atLeastOne = json.atLeastOne || ["", 0, {}];
         const dataGemeenten = await fetch(verkiezing + "_gemeenten.json");
         this.gemeenten = await dataGemeenten.json();
@@ -34,7 +34,7 @@ export const useToegankelijkhedenStore = defineStore("toegankelijkheden", {
 
   getters: {
     getAtLeastOne: (state) => (): ToegankelijkheidAreaType => state.atLeastOne,
-    getNational: (state) => (): ToegankelijkheidAreaType => state.national,
+    getNationaal: (state) => (): ToegankelijkheidAreaType => state.nationaal,
     getGemeenten: (state) => () => state.gemeenten,
     getGemeenteData: (state) => (): GemeenteDataType => state.gemeenteData,
     getGemeenteName:

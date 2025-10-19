@@ -3,7 +3,6 @@ import { type ToegankelijkheidType, type ToegankelijkhedenID, type Toegankelijkh
 
 const props = defineProps<{
   tid: ToegankelijkhedenID,
-  totaal: number;
   groep: string;
   toegankelijkheden: ToegankelijkheidType;
 }>();
