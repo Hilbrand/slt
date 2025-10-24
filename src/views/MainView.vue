@@ -115,8 +115,8 @@ function veranderVisualisatie(event: Event) {
   <footer class="footer">
     <p>
       De informatie op deze pagina is gebaseerd met de gegevens die beschikaar zijn op de website
-      <a href="https://www.waarismijnstemlokaal.nl" target="_blank"
-        >https://www.waarismijnstemlokaal.nl</a
+      <a href="https://WaarIsMijnStemlokaal.nl" target="_blank"
+        >https://WaarIsMijnStemlokaal.nl</a
       >. De gegevens zijn gebaseerd op het bestand met id:
       <code>{{ toegankelijkhedenStore.getResourceId() }}</code>.
    </p>

@@ -1,9 +1,19 @@
 name: Script om stemlokalen gegevens te verversen
 
 on:
+  # Voor een verkiezing activeer cron om dagelijks de gegevens te verversen.
   schedule:
     - cron: '25 18 * * *' # Dagelijks draaien
   workflow_dispatch:      # Handmatig starten toegestaan
+
+# Variabelen die per verkiezing aangepast dienen te worden.
+env:
+  # Korte code voor verkiezing. Wordt gebruikt in aangemaakte bestandsnamen.
+  VERKIEZING: tk2025
+  # Id van het data bestand van WaarIsMijnStemlokaal behorende bij boven genoemde verkiezing.
+  RESOURCE_ID: d4c0fa98-22d7-43fb-a80d-fd2f112a6627
+  # Naam van het bestand van WaarIsMijnStemlokaal met niet deelnemende gemeenten bij boven genoemde verkiezing.
+  NIET_DEELNEMENDE_GEMEENTEN: niet-deelnemende-gemeenten-2025-tk.csv
 
 jobs:
   run-script:
@@ -18,17 +28,20 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Download met wget
-        run: wget -O scripts/data/stemlokalen_TK2025.json "https://data.waarismijnstemlokaal.nl/api/3/action/datastore_search?resource_id=d4c0fa98-22d7-43fb-a80d-fd2f112a6627&limit=100000"
+      - name: Download stemlokalen met wget
+        run: wget -O scripts/data/stemlokalen_${{ env.VERKIEZING }}.json "https://data.waarismijnstemlokaal.nl/api/3/action/datastore_search?resource_id=${{ env.RESOURCE_ID }}&limit=100000"
+
+      - name: Download niet deelnemende gemeenten
+        run: wget -O public/${{ env.VERKIEZING }}_ontbrekende_gemeenten.csv https://waarismijnstemlokaal.nl/files/${{ env.NIET_DEELNEMENDE_GEMEENTEN }}
 
       - name: Draai Python script die bestanden voor website aanmaakt
-        run: python scripts/converteer.py scripts/data/stemlokalen_TK2025.json public/tk2025
+        run: python scripts/converteer.py scripts/data/stemlokalen_${{ env.VERKIEZING }}.json public/${{ env.VERKIEZING }}
 
       - name: Bewaar de veranderde bestanden
         run: |
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git add scripts/data/stemlokalen_TK2025.json
+          git add scripts/data/stemlokalen_${{ env.VERKIEZING }}.json
           git add public/*
           git commit -m "Update van stemlokalen gegevens" || echo "Geen veranderen toe te voegen"
 
