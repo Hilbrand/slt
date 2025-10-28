@@ -32,7 +32,7 @@ jobs:
         run: wget -O scripts/data/stemlokalen_${{ env.VERKIEZING }}.json "https://data.waarismijnstemlokaal.nl/api/3/action/datastore_search?resource_id=${{ env.RESOURCE_ID }}&limit=100000"
 
       - name: Download niet deelnemende gemeenten
-        run: wget -O public/${{ env.VERKIEZING }}_ontbrekende_gemeenten.csv https://waarismijnstemlokaal.nl/files/${{ env.NIET_DEELNEMENDE_GEMEENTEN }}
+        run: wget -O public/${{ env.VERKIEZING }}_niet-deelnemende-gemeenten.csv https://waarismijnstemlokaal.nl/files/${{ env.NIET_DEELNEMENDE_GEMEENTEN }}
 
       - name: Draai Python script die bestanden voor website aanmaakt
         run: python scripts/converteer.py scripts/data/stemlokalen_${{ env.VERKIEZING }}.json public/${{ env.VERKIEZING }}
