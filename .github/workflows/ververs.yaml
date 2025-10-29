@@ -2,8 +2,8 @@ name: Script om stemlokalen gegevens te verversen
 
 on:
   # Voor een verkiezing activeer cron om dagelijks de gegevens te verversen.
-  schedule:
-    - cron: '25 18 * * *' # Dagelijks draaien
+#  schedule:
+#    - cron: '25 18 * * *' # Dagelijks draaien
   workflow_dispatch:      # Handmatig starten toegestaan
 
 # Variabelen die per verkiezing aangepast dienen te worden.
