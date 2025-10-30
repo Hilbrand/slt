@@ -73,7 +73,7 @@ onMounted(() => {
     <input class="theme"
       type="checkbox"
       id="theme"
-      title="Schakel tussen licht en donker thema"
+      :title="`Klik om pagina in ${thema ? 'licht' : 'donker'} thema te tonen.`"
       v-model="thema"
       @change="bewaarThema"/>
   </nav>
@@ -119,11 +119,6 @@ onMounted(() => {
   }
 }
 
-@media (max-width: 1024px) {
-  .nav button {
-    padding: 10px 5px;
-  }
-}
 .nav a:link,
 .nav a:visited {
   text-decoration: none;
@@ -144,5 +139,9 @@ onMounted(() => {
     position: unset;
     text-align: center;
   }
+  .nav button {
+    padding: 10px 5px;
+  }
 }
+
 </style>

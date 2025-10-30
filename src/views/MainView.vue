@@ -99,7 +99,7 @@ function veranderVisualisatie(event: Event) {
     <h2 class="verkiezing-naam">{{ VERKIEZINGEN[informatie.verkiezing].naam }}</h2>
     <input
       type="checkbox"
-      titel="Toon gegevens als Grafiek of Tabel"
+      :title="`Klik om gegevens als ${ visualisatie ? 'tabel' : 'grafiek' } te tonen.`"
       class="vis"
       v-model="visualisatie"
       @change="veranderVisualisatie"/>
