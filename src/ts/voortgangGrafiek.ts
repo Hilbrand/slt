@@ -19,7 +19,7 @@ export async function leesCsv(verkiezing: string): Promise<GemeentenGepubliceerd
 
 export async function maakGrafiek(verkiezingCode: VerkiezingID, data: GemeentenGepubliceerdItem[], element: string, innerWidth: number) {
   const verkiezing = VERKIEZINGEN[verkiezingCode]
-  const marginWidth = 30;
+  const marginWidth = 35;
   const marginHeight = 10;
   const width = Math.min(innerWidth - marginWidth - marginWidth, 1000);
   const height = Math.min(width - 50, 500);
