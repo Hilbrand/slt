@@ -4,7 +4,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: '30 18 * * *' # Dagelijks draaien
+#    - cron: '30 18 * * *' # Dagelijks draaien
   workflow_dispatch:      # Handmatig starten toegestaan
 permissions:
   contents: write
