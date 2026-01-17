@@ -1,9 +1,9 @@
 import json
 import sys
+import os
 from datetime import date
 import subprocess
 
-vorige_verkiezing = 'ep2024'
 LB = 'Toegankelijk voor mensen met een lichamelijke beperking'
 
 toegankelijkheids_categorieen = [
@@ -235,7 +235,7 @@ def atLeastOne(json):
 # Maakt een gesorteerd array met tuple [gemeente code, gemeente naam]
 # op basis van gegevens die in WaarIsMijnStemlokaal data bestand zijn verwerkt.
 #
-def togemeenten(data):
+def converteerGemeenten(data):
   gemeenten = []
   for code in data:
     gemeenten.append([code, data[code][0]])
@@ -243,15 +243,34 @@ def togemeenten(data):
   return sorted(gemeenten, key=lambda item: item[1])
 
 #
+# Schrijf het aantal aangeleverde gemeenten naar het voortgang.csv bestand.
+#
+def schrijfVoortgang(verkiezing, data):
+  bestand = verkiezing + "/voortgang.csv"
+
+  if not os.path.exists(bestand):
+    with open(bestand, "w") as f:
+        f.write("datum,aantal\n")
+  with open(verkiezing + '/voortgang.csv', 'a', encoding='utf-8') as voortgangBestand:
+      datum = date.today().strftime('%d-%m-%Y')
+      #Gebruik volgende regels als een eerdere commit datum moet worden opgehaald.
+      #Check de slt repo in andere directory uit, pass directory hieronder aan, checkout de specifieke commit
+      #en run dit script.
+      #datum = subprocess.run(['git', 'show', '-s', '--format=%cd', '--date=format:%d-%m-%Y'],
+      #      cwd='<directory naar andere repo waar specifieke commit is uitgecheckt>',
+      #      capture_output=True, text=True)
+      #    .stdout.strip()
+      voortgangBestand.write(datum + ',' + str(len(data)) + '\n')
+
+#
 # Maakt een bestand aan met gemeenten die nog niet hun gegevens aan hebben geleverd.
 # Dit wordt gedaan aan de hand van de lijst gemeenten van de vorige verkiezing.
 #
-def ontbrekendeGemeenten(bron, ontbrekendeGemeentenBestand):
-  bron1  = bron[:-7]
-  file1 = bron1 + '/' + vorige_verkiezing + '_gemeenten.json'
-  file2 = bron + '_gemeenten.json'
+def ontbrekendeGemeenten(verkiezing, vorige_verkiezing, ontbrekendeGemeentenBestand):
+  vorigeVerkiezingBestand = vorige_verkiezing + '/gemeenten.json'
+  nieuweVerkiezingBestand = verkiezing + '/gemeenten.json'
 
-  with open(file1, 'r') as f1, open(file2, 'r') as f2:
+  with open(vorigeVerkiezingBestand, 'r') as f1, open(nieuweVerkiezingBestand, 'r') as f2:
     data1 = json.load(f1)
     data2 = json.load(f2)
 
@@ -261,12 +280,12 @@ def ontbrekendeGemeenten(bron, ontbrekendeGemeentenBestand):
 
   for gemeente in ontbrekendeGemeenten:
       ontbrekendeGemeentenBestand.write(gemeente[1] + '\n')
-  print("Ontbrekende gemeenten gegevens aangemaakt.")
+  print("Ontbrekende gemeenten gegevens bestand aangemaakt.")
 
 #
 # Hoofd proces. Laad bestand van WaarIsMijnStemlokaal en converteert naar de verschillende bestanden.
 #
-def load_and_process_json_file(filename, output_filename):
+def load_and_process_json_file(filename, verkiezing, vorige_verkiezing):
   try:
     with open(filename, 'r', encoding='utf-8') as file:
       data = json.load(file)
@@ -275,38 +294,30 @@ def load_and_process_json_file(filename, output_filename):
       nietVerplichtTotaal(counted)
       nationalTotals(counted)
       atLeastOne(counted)
-      with open(output_filename + '.json', 'w', encoding='utf-8') as output:
+      with open(verkiezing + '/stemlokalen.json', 'w', encoding='utf-8') as output:
         json.dump(counted, output, separators=(',', ':'))
-      with open(output_filename + '_gemeenten.json', 'w', encoding='utf-8') as output:
-        json.dump(togemeenten(counted['data']), output, separators=(',', ':'))
-      with open(output_filename + '_voortgang.csv', 'a', encoding='utf-8') as voortgangBestand:
-        datum = date.today().strftime('%d-%m-%Y')
-        #Gebruik volgende regels als een eerdere commit datum moet worden opgehaald.
-        #Check de slt repo in andere directory uit, pass directory hieronder aan, checkout de specifieke commit
-        #en run dit script.
-        #datum = subprocess.run(['git', 'show', '-s', '--format=%cd', '--date=format:%d-%m-%Y'],
-        #      cwd='<directory naar andere repo waar specifieke commit is uitgecheckt>',
-        #      capture_output=True, text=True)
-        #    .stdout.strip()
-        voortgangBestand.write(datum + ',' + str(len(counted['data'])) + '\n')
-      with open(output_filename + '_ontbrekende_gemeenten.csv', 'w', encoding='utf-8') as output:
-        ontbrekendeGemeenten(output_filename, output)
+      with open(verkiezing + '/gemeenten.json', 'w', encoding='utf-8') as output:
+        json.dump(converteerGemeenten(counted['data']), output, separators=(',', ':'))
+      schrijfVoortgang(verkiezing, counted['data'])
+      with open(verkiezing + '/ontbrekende_gemeenten.csv', 'w', encoding='utf-8') as output:
+        ontbrekendeGemeenten(verkiezing, vorige_verkiezing, output)
 
   except Exception as e:
       return f'Error loading or processing file: {str(e)}'
 
 def main():
     # Check if a filename was provided as command line argument
-    if len(sys.argv) != 3:
-        print('Gebruik: python converteer.py [stemlokalen json bestand] [uitvoer bestand zonder extensie]')
+    if len(sys.argv) != 4:
+        print('Gebruik: python converteer.py [stemlokalen json bestand] [verkiezing] [vorige verkiezing]')
         sys.exit(1)
 
     # Get the filename from command line arguments
     filename = sys.argv[1]
-    output_filename = sys.argv[2]
+    verkiezing = "public/" + sys.argv[2]
+    vorige_verkiezing = "public/" + sys.argv[3]
 
     # Process the file
-    result = load_and_process_json_file(filename, output_filename)
+    result = load_and_process_json_file(filename, verkiezing, vorige_verkiezing)
 
     # Check if there was an error
     if isinstance(result, str):
@@ -314,8 +325,8 @@ def main():
         sys.exit(1)
 
     # Print the results
-    print('Conversie opgeslagen in: ' + output_filename + '.json')
-    print('Conversie gemeentes opgeslagen in: ' + output_filename + '_gemeenten.json')
+    print('Conversie opgeslagen in: ' + verkiezing + '/stemlokalen.json')
+    print('Conversie gemeenten opgeslagen in: ' + verkiezing + '/gemeenten.json')
 
 if __name__ == '__main__':
     main()

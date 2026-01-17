@@ -24,7 +24,7 @@ export const useEmlMismatchesStore = defineStore("emlMismatches", {
   actions: {
     async loadData(verkiezing: string) {
       try {
-        const data = await fetch(verkiezing + "_eml_mismatch.json");
+        const data = await fetch(verkiezing + "/eml_mismatch.json");
         this.mismatches = await data.json();
         this.verkiezing = verkiezing;
       } catch (error) {

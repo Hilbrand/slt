@@ -2,7 +2,7 @@ export const PAGINA_IDS = ["eml", "gemeente", "kaart", "start", "tg", "voortgang
 
 export type PaginaID = (typeof PAGINA_IDS)[number];
 
-export const VERKIEZING_IDS = ["ep2024", "tk2025"] as const;
+export const VERKIEZING_IDS = ["ep2024", "tk2025", "gr2026"] as const;
 
 export type VerkiezingID = (typeof VERKIEZING_IDS)[number];
 
@@ -22,6 +22,11 @@ export const VERKIEZINGEN: Record<VerkiezingID, VerkiezingType> = {
   tk2025: {
     naam: "Tweede Kamer 2025",
     datum: new Date(2025, 9, 29),
+    aantalGemeenten: 345,
+  },
+  gr2026: {
+    naam: "Gemeenteraad 2026",
+    datum: new Date(2026, 2, 18),
     aantalGemeenten: 345,
   }
 };
@@ -71,7 +76,7 @@ export enum Visualisatie {
 };
 
 export const DEFAULT_PAGINA = "start" as PaginaID;
-export const DEFAULT_VERKIEZING = "tk2025";
+export const DEFAULT_VERKIEZING = "gr2026";
 export const DEFAULT_GEMEENTE = "0518"; // Den Haag
 export const DEFAULT_TOEGANKELIJKHEID = "lb";
 export const DEFAULT_VISUALISATIE = Visualisatie.GRAFIEK;

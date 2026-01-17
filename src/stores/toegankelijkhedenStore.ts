@@ -17,13 +17,13 @@ export const useToegankelijkhedenStore = defineStore("toegankelijkheden", {
   actions: {
     async loadData(verkiezing: string) {
       try {
-        const data = await fetch(verkiezing + ".json");
+        const data = await fetch(verkiezing + "/stemlokalen.json");
         const json = await data.json();
         this.resource_id = json.resource_id;
         this.gemeenteData = json.data;
         this.nationaal = json.nationaal || ["", 0, {}];
         this.atLeastOne = json.atLeastOne || ["", 0, {}];
-        const dataGemeenten = await fetch(verkiezing + "_gemeenten.json");
+        const dataGemeenten = await fetch(verkiezing + "/gemeenten.json");
         this.gemeenten = await dataGemeenten.json();
         this.verkiezing = verkiezing;
       } catch (error) {

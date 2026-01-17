@@ -211,3 +211,18 @@ th:first-child, td:first-child {
   line-height: 30px;
   padding-right: 10px;
 }
+
+.select {
+  border-radius: 5px;
+  position: fixed;
+  top: 100px;
+  margin-left: 10px;
+  z-index: 10000;
+}
+@media (max-width: 1024px) {
+  .select {
+    top: 78px;
+    right: 5px;
+    width: 50%;
+  }
+}

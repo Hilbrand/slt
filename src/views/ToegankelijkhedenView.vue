@@ -141,24 +141,12 @@ const legendaText = {
 </template>
 
 <style scoped>
-.select {
-  border-radius: 5px;
-  position: fixed;
-  top: 100px;
-  margin-left: 10px;
-  z-index: 10000;
-}
 .grid tr {
   scroll-margin-top: 140px;
 }
 @media (max-width: 1024px) {
-  .select {
-    top: 78px;
-    right: 5px;
-    width: 50%;
+  .grid tr {
+    scroll-margin-top: 120px;
   }
-.grid tr {
-  scroll-margin-top: 120px;
-}
 }
 </style>

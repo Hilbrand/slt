@@ -9,7 +9,7 @@ export type GemeentenGepubliceerdItem = {
 const parseDatum = d3.timeParse("%d-%m-%Y");
 
 export async function leesCsv(verkiezing: string): Promise<GemeentenGepubliceerdItem[]> {
-  return await d3.csv(verkiezing + "_voortgang.csv", (d: { datum: any; aantal: string; }) => {
+  return await d3.csv(verkiezing + "/voortgang.csv", (d: { datum: any; aantal: string; }) => {
     return {
       datum: parseDatum(d.datum),
       aantal: parseInt(d.aantal),

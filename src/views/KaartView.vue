@@ -12,6 +12,7 @@ import {
 import { jsonToNavigatie } from "@/ts/navigatie";
 import {
   TOEGANKELIJKHEDEN,
+  TOEGANKELIJKHEDEN_IDS,
   type GemeenteDataType,
   type InformatieType,
   type LegendaTextType,
@@ -126,10 +127,16 @@ onMounted(() => {
   });
 });
 
-function navigateToegankelijkeid(tg: ToegankelijkhedenID) {
+
+function wisselToegankelijkheid(event: Event) {
+  const e = event.target as HTMLInputElement;
   const copy = props.informatie;
-  copy.toegankelijkheid = tg;
+  copy.toegankelijkheid = e.value as ToegankelijkhedenID;
   router.push({ query: jsonToNavigatie(copy) });
+}
+
+function selected(tg: string): boolean {
+  return props.informatie?.toegankelijkheid === tg;
 }
 
 function handleSlider() {
@@ -172,22 +179,15 @@ const legendaText = {
 
 <template>
   <div class="mapContent">
+    <select class="select" @change="wisselToegankelijkheid">
+    <option v-for="row in TOEGANKELIJKHEDEN_IDS" :key="row"
+        :value="row"
+        :selected="selected(row)">
+      {{ TOEGANKELIJKHEDEN[row] }}
+    </option>
+    </select>
     <div class="mapSelector">
-      <h2>Toegankelijkheid</h2>
-      <p>Klik op een van de toegankelijkheden om de gevens op de kaart te tonen.</p>
-      <div class="selecties">
-      <template v-for="(tg, index) in TOEGANKELIJKHEDEN"
-        :key="index">
-        <input
-          type="checkbox"
-          :id="index"
-          @click="navigateToegankelijkeid(index)"
-          class="cat-link"
-          :checked="index == toegankelijkheid"/>
-        <label :for="index">{{ tg }}</label>
-      </template>
-      </div>
-      <h2>Percentage</h2>
+      <h3>Percentage</h3>
       <p>
         In {{ totalAbove }} gemeenten is {{ percentage }}% van de stemlokalen
         {{ toegankelijkheidText }}.
@@ -232,19 +232,6 @@ const legendaText = {
   grid-template-columns: 15px 1fr;
   align-items: center;
   column-gap: 7px;
-}
-
-.cat-link::before {
-  content: "▢";
-  line-height: 20px;
-}
-
-.cat-link:checked {
-  font-weight: bold;
-}
-
-.cat-link:checked::before {
-  content: "✔";
 }
 
 .slider-container {

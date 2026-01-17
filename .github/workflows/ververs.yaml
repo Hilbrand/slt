@@ -2,18 +2,19 @@ name: Script om stemlokalen gegevens te verversen
 
 on:
   # Voor een verkiezing activeer cron om dagelijks de gegevens te verversen.
-#  schedule:
-#    - cron: '25 18 * * *' # Dagelijks draaien
+  schedule:
+    - cron: '25 18 * * *' # Dagelijks draaien
   workflow_dispatch:      # Handmatig starten toegestaan
 
 # Variabelen die per verkiezing aangepast dienen te worden.
 env:
   # Korte code voor verkiezing. Wordt gebruikt in aangemaakte bestandsnamen.
-  VERKIEZING: tk2025
+  VERKIEZING: gr2026
+  VORIGE_VERKIEZING: tk2025
   # Id van het data bestand van WaarIsMijnStemlokaal behorende bij boven genoemde verkiezing.
-  RESOURCE_ID: d4c0fa98-22d7-43fb-a80d-fd2f112a6627
+  RESOURCE_ID: ff973715-2f66-4421-a860-10cc0b8d6295
   # Naam van het bestand van WaarIsMijnStemlokaal met niet deelnemende gemeenten bij boven genoemde verkiezing.
-  NIET_DEELNEMENDE_GEMEENTEN: niet-deelnemende-gemeenten-2025-tk.csv
+  NIET_DEELNEMENDE_GEMEENTEN: niet-deelnemende-gemeenten-2026-gr.csv
 
 jobs:
   run-script:
@@ -32,10 +33,10 @@ jobs:
         run: wget -O scripts/data/stemlokalen_${{ env.VERKIEZING }}.json "https://data.waarismijnstemlokaal.nl/api/3/action/datastore_search?resource_id=${{ env.RESOURCE_ID }}&limit=100000"
 
       - name: Download niet deelnemende gemeenten
-        run: wget -O public/${{ env.VERKIEZING }}_niet-deelnemende-gemeenten.csv https://waarismijnstemlokaal.nl/files/${{ env.NIET_DEELNEMENDE_GEMEENTEN }}
+        run: mkdir -p public/${{ env.VERKIEZING }}; wget -O public/${{ env.VERKIEZING }}/niet-deelnemende-gemeenten.csv https://waarismijnstemlokaal.nl/files/${{ env.NIET_DEELNEMENDE_GEMEENTEN }}
 
       - name: Draai Python script die bestanden voor website aanmaakt
-        run: python scripts/converteer.py scripts/data/stemlokalen_${{ env.VERKIEZING }}.json public/${{ env.VERKIEZING }}
+        run: python scripts/converteer.py scripts/data/stemlokalen_${{ env.VERKIEZING }}.json ${{ env.VERKIEZING }} ${{ env.VORIGE_VERKIEZING }}
 
       - name: Bewaar de veranderde bestanden
         run: |
