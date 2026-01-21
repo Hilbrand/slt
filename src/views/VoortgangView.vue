@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DEFAULT_VERKIEZING, VERKIEZINGEN, type InformatieType } from "@/ts/types";
+import { DEFAULT_VERKIEZING, type InformatieType, type VerkiezingID } from "@/ts/types";
 import { leesCsv, maakGrafiek, type GemeentenGepubliceerdItem } from "@/ts/voortgangGrafiek";
 import { onMounted, onUnmounted, ref, watch } from "vue";
 
@@ -8,6 +8,7 @@ const props = defineProps<{
 }>();
 
 const ggGrafiek = ref(null);
+const ingelezenVerkiezing = ref<VerkiezingID>(DEFAULT_VERKIEZING);
 const gegevens = ref<GemeentenGepubliceerdItem[] | null>(null);
 const nietDeelnemendeGemeenten = ref<string[] | null>(null);
 const ontbrekendeGemeenten = ref<string[] | null>(null);
@@ -36,22 +37,21 @@ async function leesOntbrekendeGemeentenCsv(verkiezing: string): Promise<string[]
 }
 
 async function tekenGrafiek() {
-  const verkiezing = DEFAULT_VERKIEZING;
-
-  if (gegevens.value == null) {
-    gegevens.value = await leesCsv(verkiezing);
-    nietDeelnemendeGemeenten.value = await leesNietDeelnemendeGemeentenCsv(verkiezing);
-    ontbrekendeGemeenten.value = await leesOntbrekendeGemeentenCsv(verkiezing);
+  if (gegevens.value == null || ingelezenVerkiezing.value != props.informatie.verkiezing && props.informatie.verkiezing != null) {
+    ingelezenVerkiezing.value = props.informatie.verkiezing;
+    gegevens.value = await leesCsv(ingelezenVerkiezing.value);
+    nietDeelnemendeGemeenten.value = await leesNietDeelnemendeGemeentenCsv(ingelezenVerkiezing.value);
+    ontbrekendeGemeenten.value = await leesOntbrekendeGemeentenCsv(ingelezenVerkiezing.value);
   }
   if (ggGrafiek.value !== null && gegevens.value != null) {
-    maakGrafiek(verkiezing, gegevens.value, ggGrafiek.value, window.innerWidth);
+    maakGrafiek(ingelezenVerkiezing.value, gegevens.value, ggGrafiek.value, window.innerWidth);
   }
 }
 
 watch(
-  () => ggGrafiek,
+  () => props.informatie,
   (newState) => {
-    if (newState.value) {
+    if (newState) {
       tekenGrafiek();
     }
   },
