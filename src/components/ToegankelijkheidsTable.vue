@@ -16,7 +16,7 @@ function hasData(): boolean {
 }
 
 function cat(key: ToegankelijkhedenID) {
-  return TOEGANKELIJKHEDEN[key] || "";
+  return (TOEGANKELIJKHEDEN[key] || "") + (key === 'to' ? " (Toegankelijk, Genderneutraal, Aanwezig)" : "");
 }
 </script>
 

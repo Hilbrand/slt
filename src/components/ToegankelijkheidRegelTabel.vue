@@ -21,41 +21,54 @@ function titleLabel(key: ToegankelijkhedenID, state: ToegankelijkheidDataTypeKey
 </script>
 
 <template>
-  <tr class="tabel">
+  <tr v-if="props.toegankelijkheden[tid] !== undefined"
+    class="tabel">
     <td><slot /></td>
     <!-- <td class="row"> -->
     <td
       v-if="tid == 'gt'"
+      colspan="3"
       :title="titleLabel(tid, 'l', ' op locatie aanwezig')"
-      class="cell"
-      style="width:12.5%">
+      class="cell">
       {{ show(tid, "l") }}
     </td>
     <td
       v-if="tid == 'gt'"
+      colspan="3"
       :title="titleLabel(tid, 'a', ' op afstand aanwezig')"
-      class="cell"
-      style="width:12.5%">
+      class="cell">
       {{ show(tid, "a") }}
     </td>
     <td
-      v-if="tid != 'gt'"
+      v-if="tid == 'to'"
       colspan="2"
+      :title="titleLabel(tid, 't', ' toegankelijk')"
+      class="cell">
+      {{ show(tid, "t") }}
+    </td>
+    <td
+      v-if="tid == 'to'"
+      colspan="2"
+      :title="titleLabel(tid, 'g', ' genderneutraal')"
+      class="cell">
+      {{ show(tid, "g") }}
+    </td>
+    <td
+      v-if="tid != 'gt'"
+      :colspan="tid == 'to' ? 2 : 6"
       :title="titleLabel(tid, 'j', ' aanwezig')"
-      class="cell"
-      style="width:25%">
+      class="cell">
       {{ show(tid, "j") }}
     </td>
     <td
       :title="titleLabel(tid, '', ' onbekend')"
       class="cell"
-      style="width:25%">
+      >
       {{ show(tid, "") }}
     </td>
     <td
       :title="titleLabel(tid, 'n', ' afwezig')"
-      class="cell"
-      style="width:25%">
+      class="cell">
       {{ show(tid, 'n')  }}
     </td>
   </tr>

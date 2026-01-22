@@ -151,19 +151,27 @@ function featureGemeenteName(): string {
   }
   return featureGemeente.value;
 }
+function heeft(state: ToegankelijkheidDataTypeKey): boolean {
+  return (toegankelijkheid.value === 'gt' && (state == 'l' || state == 'a'))
+      || (toegankelijkheid.value === 'to' && (state == 't' || state == 'g'));
+}
+
+function gegevensBeschikbaar(): boolean {
+  const data = allData.value;
+
+  return data && featureGemeente.value && data[featureGemeente.value][2][toegankelijkheid.value] && true || false;
+}
 
 function aanwezig(state: ToegankelijkheidDataTypeKey): number {
-  const data = allData.value;
-  if (data && featureGemeente.value) {
-    return data[featureGemeente.value][2][toegankelijkheid.value][state] || 0;
+  if (gegevensBeschikbaar()) {
+    return allData.value[featureGemeente.value][2][toegankelijkheid.value][state] || 0;
   }
   return 0;
 }
 
 function totalGem(): number {
-  const data = allData.value;
-  if (data && featureGemeente.value && data[featureGemeente.value]) {
-    return data[featureGemeente.value][1] || 0;
+  if (gegevensBeschikbaar()) {
+    return allData.value[featureGemeente.value][1] || 0;
   }
   return 0;
 }
@@ -208,8 +216,26 @@ const legendaText = {
         <template v-if="totalGem() > 0">
           <p>Aantal stemlokaties waar {{ toegankelijkheidText }}:</p>
           <div class="hover-table">
-            <div>Ja</div>
-            <div>{{ aanwezig("j") }}</div>
+            <template v-if="heeft('l')">
+              <div>Lokaal</div>
+              <div>{{ aanwezig("l") }}</div>
+            </template>
+            <template v-if="heeft('a')">
+              <div>Op afstand</div>
+              <div>{{ aanwezig("a") }}</div>
+            </template>
+            <template v-if="heeft('t')">
+              <div>Toegankelijk</div>
+              <div>{{ aanwezig("t") }}</div>
+            </template>
+            <template v-if="heeft('g')">
+              <div>Genderneutraal</div>
+              <div>{{ aanwezig("g") }}</div>
+            </template>
+            <template v-if="toegankelijkheid != 'gt'">
+              <div>Aanwezig</div>
+              <div>{{ aanwezig("j") }}</div>
+            </template>
             <div>Nee</div>
             <div>{{ aanwezig("n") }}</div>
             <div>Onbekend</div>

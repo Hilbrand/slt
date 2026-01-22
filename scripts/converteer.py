@@ -5,11 +5,13 @@ from datetime import date
 import subprocess
 
 LB = 'Toegankelijk voor mensen met een lichamelijke beperking'
+legacyToilet = False
 
 toegankelijkheids_categorieen = [
     LB,
     'Toegankelijke ov-halte',
-    'Gehandicaptentoilet',
+    'Gehandicaptentoilet',  # Dit was naam voor gr2026, voor ODS versie 1.7
+    'Toilet',
     'Host',
     'Prikkelarm',
     'Geleidelijnen',
@@ -19,6 +21,7 @@ toegankelijkheids_categorieen = [
     'Gebarentolk (NGT)',
     'Gebarentalig stembureaulid (NGT)',
     'Akoestiek geschikt voor slechthorenden',
+    'Prokkelduo',
     # Aanvullend
 #    'Niet verplichte toegankelijkheden',
 ]
@@ -27,6 +30,7 @@ toegankelijkheids_categorieen_short = {
     LB                                                       : 'lb',
     'Toegankelijke ov-halte'                                 : 'ov',
     'Gehandicaptentoilet'                                    : 'to',
+    'Toilet'                                                 : 'to',
     'Host'                                                   : 'ho',
     'Prikkelarm'                                             : 'pa',
     'Geleidelijnen binnen'                                   : 'gi',
@@ -37,6 +41,7 @@ toegankelijkheids_categorieen_short = {
     'Gebarentolk (NGT)'                                      : 'gt',
     'Gebarentalig stembureaulid (NGT)'                       : 'gs',
     'Akoestiek geschikt voor slechthorenden'                 : 'as',
+    'Prokkelduo'                                             : 'pd',
      'Niet verplichte toegankelijkheden'                     : 'nv',
 }
 
@@ -65,15 +70,22 @@ def set_value(gemeente, categorie, value):
       tc = categorie
       match value:
         case 'ja':
-          v = 'j'
+          v = 't' if tc == 'Gehandicaptentoilet' and legacyToilet else 'j'
         case 'nee':
           v = 'n'
+        # gebarentolk
         case 'op afstand':
           v = 'a'
         case 'op locatie':
           v = 'l'
+        # toilet
+        case 'ja, toegankelijk toilet':
+          v = 't'
+        case 'ja, genderneutraal toilet':
+          v = 'g'
         case _:
           v = value
+
     stc = toegankelijkheids_categorieen_short[tc]
     if stc not in gemeente:
         gemeente[stc] = {}
@@ -84,7 +96,7 @@ def set_value(gemeente, categorie, value):
 #
 # Telt de toegankelijkheden en groepeert per gemeente.
 #
-def count_values(json_data):
+def telToegankelijkheden(json_data):
     try:
         # Extract the records array
         records = json_data['result']['records']
@@ -100,9 +112,10 @@ def count_values(json_data):
                 gemeentecode_groups[code] = {'g': record.get('Gemeente')}
 
             for tc in toegankelijkheids_categorieen:
-               value = record.get(tc, '')
-               set_value(gemeentecode_groups[code], tc, value)
-               keys[value] = 1
+              if tc in record:
+                 value = record.get(tc, '')
+                 set_value(gemeentecode_groups[code], tc, value)
+                 keys[value] = 1
         print("Alle records geteld.")
         return data
     except Exception as e:
@@ -114,6 +127,7 @@ def count_values(json_data):
 def transform(json):
   gemeenten = {}
   data = json['data']
+
   for code in data:
     gem = ""
     toegs = {}
@@ -143,7 +157,7 @@ def nietVerplichtTotaal(json):
     for tgName in allTgStates:
       if tgName != 'lb':
         for state in allTgStates[tgName]:
-          if state == 'a' or state == 'l':
+          if state == 'a' or state == 'l' or state == 't' or state == 'g':
             bewaarState = 'j'
           else:
            bewaarState = state
@@ -224,6 +238,10 @@ def atLeastOne(json):
         increment(toegsTotaal[tgName], 'a')
       elif greaterZero(states, 'l'):
         increment(toegsTotaal[tgName], 'l')
+      elif greaterZero(states, 't'):
+        increment(toegsTotaal[tgName], 't')
+      elif greaterZero(states, 'g'):
+        increment(toegsTotaal[tgName], 'g')
       elif 'n' in states and states['n'] == noCount:
         increment(toegsTotaal[tgName], 'n')
       else:
@@ -289,7 +307,7 @@ def load_and_process_json_file(filename, verkiezing, vorige_verkiezing):
   try:
     with open(filename, 'r', encoding='utf-8') as file:
       data = json.load(file)
-      counted = count_values(data)
+      counted = telToegankelijkheden(data)
       transform(counted)
       nietVerplichtTotaal(counted)
       nationalTotals(counted)
@@ -306,27 +324,30 @@ def load_and_process_json_file(filename, verkiezing, vorige_verkiezing):
       return f'Error loading or processing file: {str(e)}'
 
 def main():
-    # Check if a filename was provided as command line argument
-    if len(sys.argv) != 4:
-        print('Gebruik: python converteer.py [stemlokalen json bestand] [verkiezing] [vorige verkiezing]')
-        sys.exit(1)
+  global legacyToilet
+  # Check if a filename was provided as command line argument
+  if len(sys.argv) != 4:
+      print('Gebruik: python converteer.py [stemlokalen json bestand] [verkiezing] [vorige verkiezing]')
+      sys.exit(1)
 
-    # Get the filename from command line arguments
-    filename = sys.argv[1]
-    verkiezing = "public/" + sys.argv[2]
-    vorige_verkiezing = "public/" + sys.argv[3]
+  # Get the filename from command line arguments
+  filename = sys.argv[1]
+  verkiezing = "public/" + sys.argv[2]
+  vorige_verkiezing = "public/" + sys.argv[3]
+  # Voor oudere gegevens interpreteer toilet als een toegankelijk toilet.
+  legacyToilet = int(sys.argv[2][2:]) < 2026
 
-    # Process the file
-    result = load_and_process_json_file(filename, verkiezing, vorige_verkiezing)
+  # Process the file
+  result = load_and_process_json_file(filename, verkiezing, vorige_verkiezing)
 
-    # Check if there was an error
-    if isinstance(result, str):
-        print(result)
-        sys.exit(1)
+  # Check if there was an error
+  if isinstance(result, str):
+      print(result)
+      sys.exit(1)
 
-    # Print the results
-    print('Conversie opgeslagen in: ' + verkiezing + '/stemlokalen.json')
-    print('Conversie gemeenten opgeslagen in: ' + verkiezing + '/gemeenten.json')
+  # Print the results
+  print('Conversie opgeslagen in: ' + verkiezing + '/stemlokalen.json')
+  print('Conversie gemeenten opgeslagen in: ' + verkiezing + '/gemeenten.json')
 
 if __name__ == '__main__':
     main()
