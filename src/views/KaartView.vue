@@ -159,7 +159,11 @@ function heeft(state: ToegankelijkheidDataTypeKey): boolean {
 function gegevensBeschikbaar(): boolean {
   const data = allData.value;
 
-  return data && featureGemeente.value && data[featureGemeente.value][2][toegankelijkheid.value] && true || false;
+  return featureGemeente.value
+      && data
+      && data[featureGemeente.value]
+      && data[featureGemeente.value][2]
+      && data[featureGemeente.value][2][toegankelijkheid.value] && true || false;
 }
 
 function aanwezig(state: ToegankelijkheidDataTypeKey): number {

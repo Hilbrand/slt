@@ -98,6 +98,7 @@ function veranderVisualisatie(event: Event) {
     <h1>Stemlokaaltoegankelijkheid <span class="titel">{{ titel }}</span></h1>
     <h2 class="verkiezing-naam">{{ VERKIEZINGEN[informatie.verkiezing].naam }}</h2>
     <input
+      v-if="['start', 'gemeente', 'tg'].includes(informatie?.pagina)"
       type="checkbox"
       :title="`Klik om gegevens als ${ visualisatie ? 'tabel' : 'grafiek' } te tonen.`"
       class="vis"
