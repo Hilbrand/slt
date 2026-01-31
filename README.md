@@ -20,11 +20,12 @@ Daarnaast moet de GitHub action geconfigureerd en geactiveerd worden.
 Voor activatie moet de regel van de cron in [./github/workflows/ververs.yaml](./github/workflows/ververs.yaml) uit commentaar worden gehaald.
 Daarnaast dienen de volgende env variable in het `ververs.yaml` bestand aangepast te worden:
 
-| variable naam                | omschrijving                                                                |
-|------------------------------|-----------------------------------------------------------------------------|
-| `VERKIEZING`                 | code voor de verkiezing, zoals in de typescript ook gebruikt. b.v. `tk2025` |
-| `RESOURCE_ID`                | naam van het data bestand van https://WaarIsMijnStemlokaal.nl               |
-| `NIET_DEELNEMENDE_GEMEENTEN` | Bestand met niet deelnemende gemeenten van https://WaarIsMijnStemlokaal.nl  |
+| Variabelenaam                | Omschrijving                                                                            |
+|------------------------------|-----------------------------------------------------------------------------------------|
+| `VERKIEZING`                 | Code voor de verkiezing, zoals in de typescript ook gebruikt. b.v. `tk2025`             |
+| `VORIGE_VERKIEZING`          | Code vorige verkiezing. Gebruikt voor gemeentenamen gedurende periode voor verkiezingen |
+| `RESOURCE_ID`                | Naam van het data bestand van https://WaarIsMijnStemlokaal.nl                           |
+| `NIET_DEELNEMENDE_GEMEENTEN` | Bestand met niet deelnemende gemeenten van https://WaarIsMijnStemlokaal.nl              |
 
 Na de verkiezingen moet de cron job in de GitHub action weer in commentaar gezet, anders blijft deze data ophalen.
 
@@ -72,7 +73,7 @@ npx vitest
 
 ## Licentie
 
-Copyright 2025 Stemlokalentoegankelijkheid bijdragers
+Copyright 2025-2026 Stemlokalentoegankelijkheid bijdragers
 
 In licentie gegeven krachtens de EUPL, Versie 1.2 of – zodra ze zullen worden goedgekeurd door de
 Europese  Commissie - latere versies van de EUPL (De "Licentie");
