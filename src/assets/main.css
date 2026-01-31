@@ -215,7 +215,7 @@ th:first-child, td:first-child {
 .select {
   border-radius: 5px;
   position: fixed;
-  top: 100px;
+  top: 95px;
   margin-left: 10px;
   z-index: 10000;
 }

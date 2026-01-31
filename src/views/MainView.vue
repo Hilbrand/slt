@@ -181,11 +181,8 @@ function nietZelf() {
 }
 
 @media (max-width: 1280px) {
-  .header {
-    height: 160px;
-  }
-  .main {
-    padding-top: 160px;
+  .verkiezing-naam {
+    display: none;
   }
 }
 
