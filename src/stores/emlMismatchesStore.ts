@@ -1,3 +1,4 @@
+import { EML_BESCHIKBAAR } from "@/ts/types";
 import { defineStore } from "pinia";
 
 export const CODE = 0;
@@ -24,11 +25,15 @@ export const useEmlMismatchesStore = defineStore("emlMismatches", {
   actions: {
     async loadData(verkiezing: string) {
       try {
-        const data = await fetch(verkiezing + "/eml_mismatch.json");
-        this.mismatches = await data.json();
+        if (EML_BESCHIKBAAR.includes(verkiezing)) {
+          const data = await fetch(verkiezing + "/eml_mismatch.json");
+          this.mismatches = await data.json();
+        } else {
+          this.mismatches = [];
+        }
         this.verkiezing = verkiezing;
       } catch (error) {
-        console.error("Failed to load data:", error);
+        console.error("De EML/WaarIsMijnStemlokaal gegevens kon niet worden ingelezen:", error);
       }
     },
   },

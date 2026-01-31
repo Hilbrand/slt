@@ -226,3 +226,9 @@ th:first-child, td:first-child {
     width: 50%;
   }
 }
+
+.nietzelf {
+  padding-left:10px;
+  font-style: italic;
+  font-weight: bold;
+}

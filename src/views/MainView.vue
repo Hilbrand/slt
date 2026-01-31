@@ -82,6 +82,10 @@ function veranderVisualisatie(event: Event) {
   copy.visualisatie = e.checked ?  Visualisatie.GRAFIEK : Visualisatie.TABEL;
   router.push({ query: jsonToNavigatie(copy) });
 }
+function nietZelf() {
+  return informatie.value?.pagina == 'gemeente'
+      && toegankelijkhedenStore.isNietDeelnemendeGemeente(toegankelijkhedenStore.getGemeenteName(informatie.value?.gemeente)) ? '1': '';
+}
 </script>
 
 <template>
@@ -95,7 +99,7 @@ function veranderVisualisatie(event: Event) {
       </option>
     </select>
     <Navigation class="nav" :informatie="informatie" />
-    <h1><span class="titel">{{ titel }}</span></h1>
+    <h1 class="titel">{{ titel }} <sup>{{ nietZelf() }}</sup></h1>
     <h2 class="verkiezing-naam">{{ VERKIEZINGEN[informatie.verkiezing].naam }}</h2>
     <input
       v-if="['start', 'gemeente', 'tg'].includes(informatie?.pagina)"

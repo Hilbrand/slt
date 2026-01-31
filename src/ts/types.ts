@@ -82,6 +82,7 @@ export const DEFAULT_VERKIEZING = "gr2026";
 export const DEFAULT_GEMEENTE = "0518"; // Den Haag
 export const DEFAULT_TOEGANKELIJKHEID = "lb";
 export const DEFAULT_VISUALISATIE = Visualisatie.GRAFIEK;
+export const EML_BESCHIKBAAR = ['ep2024'];
 
 export interface InformatieType {
   pagina: PaginaID;

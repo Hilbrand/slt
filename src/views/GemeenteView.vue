@@ -91,6 +91,10 @@ const legendaText = {
       </td>
     </tr>
   </ToegankelijkheidsTable>
+  <div v-if="toegankelijkhedenStore.isNietDeelnemendeGemeente(toegankelijkhedenStore.getGemeenteName(props.informatie?.gemeente))"
+    class="nietzelf">
+    <sup>1</sup> Deze gemeente heeft niet zelf de gegevens aangeleverd.
+  </div>
   <Legenda v-if="grafiek"
     :legendaText="legendaText" />
 </template>

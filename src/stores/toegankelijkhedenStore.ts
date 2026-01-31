@@ -12,9 +12,25 @@ export const useToegankelijkhedenStore = defineStore("toegankelijkheden", {
     nationaal: ["", 0, {}] as ToegankelijkheidAreaType,
     atLeastOne: ["", 0, {}] as ToegankelijkheidAreaType,
     gemeenteData: {} as GemeenteDataType,
+    nietDeelnemendeGemeenten: [] as string[],
+    ontbrekendeGemeenten: [] as string[],
   }),
 
   actions: {
+    async leesGemeentenCsv(csv: string): Promise<string[]> {
+        try {
+          const data = await fetch(csv);
+          const gemeenten = await data.text();
+
+          if (gemeenten.includes('html')) {
+            return [];
+          }
+          return gemeenten == "" ? [] : gemeenten.split('\n');
+        } catch(error) {
+          console.log(`"Fout bij laden ${csv} gemeenten:"`, error);
+          return [];
+        }
+    },
     async loadData(verkiezing: string) {
       try {
         const data = await fetch(verkiezing + "/stemlokalen.json");
@@ -26,8 +42,10 @@ export const useToegankelijkhedenStore = defineStore("toegankelijkheden", {
         const dataGemeenten = await fetch(verkiezing + "/gemeenten.json");
         this.gemeenten = await dataGemeenten.json();
         this.verkiezing = verkiezing;
+        this.nietDeelnemendeGemeenten = await this.leesGemeentenCsv(verkiezing + "/niet-deelnemende-gemeenten.csv");
+        this.ontbrekendeGemeenten = await this.leesGemeentenCsv(verkiezing + "/ontbrekende_gemeenten.csv");
       } catch (error) {
-        console.error("Failed to load data:", error);
+        console.error("De gegevens konden niet worden ingelezen:", error);
       }
     },
   },
@@ -52,6 +70,9 @@ export const useToegankelijkhedenStore = defineStore("toegankelijkheden", {
       (state) =>
       (key: string | undefined): ToegankelijkheidType =>
         key !== undefined && state.gemeenteData && state.gemeenteData[key] ? state.gemeenteData[key][2] : {},
+    getOntbrekendeGemeenten: (state) => (): string[] => state.ontbrekendeGemeenten,
+    getNietDeelnemendeGemeenten: (state) => (): string[] => state.nietDeelnemendeGemeenten,
+    isNietDeelnemendeGemeente: (state) => (naam: string): boolean => state.nietDeelnemendeGemeenten.includes(naam),
     isDataForVerkiezing:
       (state) =>
       (verkiezing: string): boolean =>
