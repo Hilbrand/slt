@@ -4,7 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useEmlMismatchesStore } from "@/stores/emlMismatchesStore";
 import { useToegankelijkhedenStore } from "@/stores/toegankelijkhedenStore";
 import { jsonToNavigatie, navigatieToJson } from "@/ts/navigatie";
-import { VERKIEZING_IDS, VERKIEZINGEN, Visualisatie, type InformatieType, type VerkiezingID } from "@/ts/types";
+import { TOEGANKELIJKHEDEN, VERKIEZING_IDS, VERKIEZINGEN, Visualisatie, type InformatieType, type VerkiezingID } from "@/ts/types";
 import Navigation from "@/components/NavigationComponent.vue";
 import Eml from "./EmlView.vue";
 import Gemeente from "./GemeenteView.vue";
@@ -43,19 +43,19 @@ watch(
 const titel = computed<string>(() => {
   switch (informatie.value?.pagina) {
     case "eml":
-      return "EML Data"
+      return "EML vs WaarIsMijnStemlokaal"
     case "start":
-      return "";
+      return "Stemlokaaltoegankelijkheid";
     case "kaart":
-      return "op de kaart";
+      return "Op de kaart";
     case "gemeente":
       return toegankelijkhedenStore.getGemeenteName(informatie.value?.gemeente);
     case "voortgang":
-      return "aanlevervoortgang";
+      return "Aanlevervoortgang";
     case "tg":
-      return "";
+      return TOEGANKELIJKHEDEN[informatie.value.toegankelijkheid];
     default:
-      return "";
+      return "Stemlokaaltoegankelijkheid";
   }
 });
 
@@ -95,7 +95,7 @@ function veranderVisualisatie(event: Event) {
       </option>
     </select>
     <Navigation class="nav" :informatie="informatie" />
-    <h1>Stemlokaaltoegankelijkheid <span class="titel">{{ titel }}</span></h1>
+    <h1><span class="titel">{{ titel }}</span></h1>
     <h2 class="verkiezing-naam">{{ VERKIEZINGEN[informatie.verkiezing].naam }}</h2>
     <input
       v-if="['start', 'gemeente', 'tg'].includes(informatie?.pagina)"
@@ -168,6 +168,7 @@ function veranderVisualisatie(event: Event) {
 }
 .footer {
   width: 100%;
+  padding: 0 10px;
 }
 .main {
   padding-top: 130px;
@@ -208,11 +209,6 @@ function veranderVisualisatie(event: Event) {
   }
   .footer p {
     margin: 10px;
-  }
-}
-@media (max-width: 600px) {
-  .titel {
-    display: none;
   }
 }
 </style>

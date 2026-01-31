@@ -55,7 +55,7 @@ const emlDataLegenda = {
 </script>
 
 <template>
-  <h3>Niet overeenkomende data EML/waarismijnstemlokaal</h3>
+  <h3>Niet overeenkomende data EML/WaarIsMijnStemlokaal</h3>
   <p class="tekst">
     Voor journalisten en onderzoekers zijn de verkiezingsuitslagen zoals gepubliceerd door de
     Kiesraad en de gegevens van WaarIsMijnStemlokaal 2 bronnen om onderzoek te doen,

@@ -64,7 +64,7 @@ onMounted(() => {
       @click="navigateTo('eml')"
       :class="selected('eml')"
       title="Pagina met locatiegegevens van WaarIsMijnStemlokaal vergeleken met verkiezingsuitslagen gegevens"
-    >EML Data</button>
+    >EML</button>
     <button
       @click="navigateTo('voortgang')"
       :class="selected('voortgang')"

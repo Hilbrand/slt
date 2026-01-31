@@ -7,6 +7,11 @@ export type GemeentenGepubliceerdItem = {
 }
 
 const parseDatum = d3.timeParse("%d-%m-%Y");
+const DATUM_FORMAT_OPTIES = {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+};
 
 export async function leesCsv(verkiezing: string): Promise<GemeentenGepubliceerdItem[]> {
   return await d3.csv(verkiezing + "/voortgang.csv", (d: { datum: any; aantal: string; }) => {
@@ -26,10 +31,10 @@ export async function maakGrafiek(verkiezingCode: VerkiezingID, data: GemeentenG
 
   const x = d3.scaleTime()
     .domain([data[0].datum, verkiezing.datum])
-    .range([0, width - marginWidth])
+    .range([0, width - marginWidth]);
   const y = d3.scaleLinear()
     .domain([0, 400])
-    .range([height - marginHeight, 0])
+    .range([height - marginHeight, 0]);
 
   d3.select(element).selectChild().remove();
 
@@ -41,11 +46,7 @@ export async function maakGrafiek(verkiezingCode: VerkiezingID, data: GemeentenG
     .attr('transform', `translate(0,${marginHeight})`);
 
   // X-AS
-  const xAs = d3.axisBottom(x)
-
-  svg.append("g")
-    .attr("transform", `translate(${marginWidth},${height - marginHeight})`)
-    .call(xAs);
+  const xAs = d3.axisBottom(x);
 
   svg.append("g")
     .attr("class", "as")
@@ -54,12 +55,12 @@ export async function maakGrafiek(verkiezingCode: VerkiezingID, data: GemeentenG
     .call(xAs
       .tickSize(-height)
       .ticks(d3.timeSunday)
-      // @ts-expect-error "" is legaal
-      .tickFormat("")
-    )
+      // @ts-expect-error formaat is legaal
+      .tickFormat(d3.timeFormat("%-d %b"))
+    );
 
   // Maak verticale lijnen wat vager
-  svg.selectAll('.as .tick line').attr('opacity', 0.4)
+  svg.selectAll('.as .tick line').attr('opacity', 0.4);
 
   // Y-AS
   const yAs = d3.axisLeft(y)
@@ -86,7 +87,7 @@ export async function maakGrafiek(verkiezingCode: VerkiezingID, data: GemeentenG
     .text(laatste.aantal)
     .attr("class", "tekst")
     .attr("x", x(laatste.datum) + 40)
-    .attr("y", y(laatste.aantal) + 5)
+    .attr("y", y(laatste.aantal) + 5);
 
   // Grafiek
   const lijn = d3.line()
@@ -111,9 +112,11 @@ export async function maakGrafiek(verkiezingCode: VerkiezingID, data: GemeentenG
       const bisect = d3.bisector((d: GemeentenGepubliceerdItem) => d.datum).left;
       const index = bisect(data, xValue);
       const aantal = data[index]?.aantal;
+      // @ts-expect-error datum format opties is correct, maar geeft wel compile error hier
+      const datum = data[index]?.datum.toLocaleDateString('nl-NL', DATUM_FORMAT_OPTIES) || '';
 
       tooltip.style("opacity", 1)
-        .html(`${aantal || ''}`)
+        .html(`${datum || ''} - ${aantal || ''}`)
         .style("left", (event.pageX + 10) + "px")
         .style("top", (event.pageY - 0) + "px");
     })
