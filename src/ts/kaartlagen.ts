@@ -123,16 +123,22 @@ export class Kaart {
   map: Map;
   currentGemeente: string;
   currentFeature: FeatureLike | undefined;
-  listeners: FeatureListener[];
+  featureListeners: FeatureListener[];
+  selecteerListeners: FeatureListener[];
 
   constructor(dragPan: boolean, lagen: BaseLayer[]) {
     this.map = this.maakMap(dragPan, lagen);
     this.currentGemeente = "";
-    this.listeners = [];
+    this.featureListeners = [];
+    this.selecteerListeners = [];
   }
 
   addFeatureListener(listener: FeatureListener) {
-    this.listeners.push(listener);
+    this.featureListeners.push(listener);
+  }
+
+  addSelecteerListeners(listener: FeatureListener) {
+    this.selecteerListeners.push(listener);
   }
 
   addLayer(layer: GeoLayer) {
@@ -152,7 +158,7 @@ export class Kaart {
     const info = this.getHover();
 
     if (feature) {
-      this.listeners.forEach((l) => l(feature));
+      this.featureListeners.forEach((l) => l(feature));
       if (window.innerWidth > 1024) {
         info.style.left = pixel[0] - (pixel[0] > (window.innerWidth - 600) ? 220 : 0) + "px";
       }else if (pixel[0] > window.innerWidth * 0.5) {
@@ -180,6 +186,10 @@ export class Kaart {
   onClick(evt: MapBrowserEvent) {
     this.onPointMove(evt);
     this.getHover().style.visibility = "visible";
+    if (this.currentFeature !== undefined) {
+      const feature = this.currentFeature;
+      this.selecteerListeners.forEach((l) => l(feature));
+    }
   }
 
   onPointMove(evt: MapBrowserEvent) {

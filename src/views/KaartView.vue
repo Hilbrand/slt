@@ -125,6 +125,14 @@ onMounted(() => {
   kaart.value.addFeatureListener((feature) => {
     featureGemeente.value = feature.get("c");
   });
+  kaart.value.addSelecteerListeners((feature) => {
+    const gem = feature.getProperties()?.c;
+    if (gem) {
+      const copy = props.informatie;
+      copy.gemeente = gem;
+      router.push({ query: jsonToNavigatie(copy) });
+    }
+  });
 });
 
 
