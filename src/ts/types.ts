@@ -34,6 +34,8 @@ export const VERKIEZINGEN: Record<VerkiezingID, VerkiezingType> = {
 export const TOEGANKELIJKHEDEN_IDS = [
   "lb",
   "ov",
+  "tt",
+  "nt",
   "to",
   "ho",
   "pd",
@@ -57,6 +59,8 @@ export type ToegankelijkhedenID = (typeof TOEGANKELIJKHEDEN_IDS)[number];
 export const TOEGANKELIJKHEDEN: Record<ToegankelijkhedenID, string> = {
   lb: "Toegankelijk voor mensen met een lichamelijke beperking",
   ov: "Toegankelijke ov-halte",
+  tt: "Toegankelijk Toilet",
+  nt: "Genderneutraal Toilet",
   to: "Toilet",
   ho: "Host",
   pd: "Prokkelduo",
@@ -99,8 +103,6 @@ export type ToegankelijkheidDataType = {
   n?: number;
   a?: number; // Op afstand aanwezige gebarentolk
   l?: number; // Lokaal aanwezige gebarentolk
-  t?: number; // Toegankelijk toilet
-  g?: number; // Genderneutraal toilet
 };
 
 export type ToegankelijkheidDataTypeKey = keyof ToegankelijkheidDataType;
@@ -126,10 +128,10 @@ export type LegendaTextType = {
 };
 
 export const hoofdRegelToegankelijkheidCsv =
-  ['Toegankelijkheid', 'Gebarentolk op locatie', 'Gebarentolk op afstand', 'Toegankelijk Toilet', 'Genderneutraal Toilet', 'Aanwezig', 'Onbekend', 'Afwezig'];
+  ['Toegankelijkheid', 'Gebarentolk op locatie', 'Gebarentolk op afstand', 'Aanwezig', 'Onbekend', 'Afwezig'];
 
 export const hoofdRegelGemeenteCsv =
-  ['Gemeente', 'Gebarentolk op locatie', 'Gebarentolk op afstand', 'Toegankelijk Toilet', 'Genderneutraal Toilet', 'Aanwezig', 'Onbekend', 'Afwezig'];
+  ['Gemeente', 'Gebarentolk op locatie', 'Gebarentolk op afstand', 'Aanwezig', 'Onbekend', 'Afwezig'];
 
 export interface RegelDataCsv {
   (): string[][];

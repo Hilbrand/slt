@@ -27,35 +27,21 @@ function titleLabel(key: ToegankelijkhedenID, state: ToegankelijkheidDataTypeKey
     <!-- <td class="row"> -->
     <td
       v-if="tid == 'gt'"
-      colspan="3"
+      colspan="1"
       :title="titleLabel(tid, 'l', ' op locatie aanwezig')"
       class="cell">
       {{ show(tid, "l") }}
     </td>
     <td
       v-if="tid == 'gt'"
-      colspan="3"
+      colspan="1"
       :title="titleLabel(tid, 'a', ' op afstand aanwezig')"
       class="cell">
       {{ show(tid, "a") }}
     </td>
     <td
-      v-if="tid == 'to'"
-      colspan="2"
-      :title="titleLabel(tid, 't', ' toegankelijk')"
-      class="cell">
-      {{ show(tid, "t") }}
-    </td>
-    <td
-      v-if="tid == 'to'"
-      colspan="2"
-      :title="titleLabel(tid, 'g', ' genderneutraal')"
-      class="cell">
-      {{ show(tid, "g") }}
-    </td>
-    <td
       v-if="tid != 'gt'"
-      :colspan="tid == 'to' ? 2 : 6"
+      colspan="2"
       :title="titleLabel(tid, 'j', ' aanwezig')"
       class="cell">
       {{ show(tid, "j") }}

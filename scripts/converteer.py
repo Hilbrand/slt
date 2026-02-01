@@ -29,7 +29,9 @@ toegankelijkheids_categorieen = [
 toegankelijkheids_categorieen_short = {
     LB                                                       : 'lb',
     'Toegankelijke ov-halte'                                 : 'ov',
-    'Gehandicaptentoilet'                                    : 'to',
+    'Gehandicaptentoilet'                                    : 'tt',
+    'Toegankelijk Toilet'                                    : 'tt',
+    'Genderneutraal Toilet'                                  : 'nt',
     'Toilet'                                                 : 'to',
     'Host'                                                   : 'ho',
     'Prikkelarm'                                             : 'pa',
@@ -50,76 +52,94 @@ uitzonderingen = {
   'buiten',
 }
 
-def set_value(gemeente, categorie, value):
-    if value in uitzonderingen:
-      tc =  categorie + ' ' + value
-      v = 'j'
-      if value == 'binnen':
-        set_value(gemeente, categorie + ' buiten', 'nee')
-      if value == 'buiten':
-        set_value(gemeente, categorie + ' binnen', 'nee')
-    elif value == 'buiten en binnen':
-      set_value(gemeente, categorie + ' binnen', 'ja')
-      set_value(gemeente, categorie + ' buiten', 'ja')
-      return
-    elif categorie == 'Geleidelijnen':
-      set_value(gemeente, categorie + ' binnen', value)
-      set_value(gemeente, categorie + ' buiten', value)
-      return
-    else:
-      tc = categorie
-      match value:
-        case 'ja':
-          v = 't' if tc == 'Gehandicaptentoilet' and legacyToilet else 'j'
-        case 'nee':
-          v = 'n'
-        # gebarentolk
-        case 'op afstand':
-          v = 'a'
-        case 'op locatie':
-          v = 'l'
-        # toilet
-        case 'ja, toegankelijk toilet':
-          v = 't'
-        case 'ja, genderneutraal toilet':
-          v = 'g'
-        case _:
-          v = value
+def set_aanwezigheid(gemeente, categorie, aanwezigheid):
+  stc = toegankelijkheids_categorieen_short[categorie]
+  if stc not in gemeente:
+      gemeente[stc] = {}
+  if aanwezigheid not in gemeente[stc]:
+      gemeente[stc][aanwezigheid] = 0
+  gemeente[stc][aanwezigheid] += 1
 
-    stc = toegankelijkheids_categorieen_short[tc]
-    if stc not in gemeente:
-        gemeente[stc] = {}
-    if v not in gemeente[stc]:
-        gemeente[stc][v] = 0
-    gemeente[stc][v] += 1
+def data_aanwezigheid(aanwezigheid):
+  match aanwezigheid:
+    case 'ja':
+      v = 'j'
+    case 'nee':
+      v = 'n'
+    # gebarentolk
+    case 'op afstand':
+      v = 'a'
+    case 'op locatie':
+      v = 'l'
+    case _:
+      v = aanwezigheid
+  return v
+
+def set_value(gemeente, categorie, value):
+  if value in uitzonderingen:
+    tc =  categorie + ' ' + value
+    v = 'j'
+    if value == 'binnen':
+      set_value(gemeente, categorie + ' buiten', 'nee')
+    if value == 'buiten':
+      set_value(gemeente, categorie + ' binnen', 'nee')
+  elif value == 'buiten en binnen':
+    set_value(gemeente, categorie + ' binnen', 'ja')
+    set_value(gemeente, categorie + ' buiten', 'ja')
+    return
+  elif categorie == 'Geleidelijnen':
+    set_value(gemeente, categorie + ' binnen', value)
+    set_value(gemeente, categorie + ' buiten', value)
+    return
+  elif value == 'ja, toegankelijk toilet' or value == 'Gehandicaptentoilet':
+    set_aanwezigheid(gemeente, 'Toegankelijk Toilet', 'j')
+    set_aanwezigheid(gemeente, 'Genderneutraal Toilet', 'j')
+    set_aanwezigheid(gemeente, 'Toilet', 'j')
+    return
+  elif value == 'ja, genderneutraal toilet':
+    set_aanwezigheid(gemeente, 'Toegankelijk Toilet', 'n')
+    set_aanwezigheid(gemeente, 'Genderneutraal Toilet', 'j')
+    set_aanwezigheid(gemeente, 'Toilet', 'j')
+    return
+  elif categorie == 'Toilet':
+    aanwezigheidToilet = data_aanwezigheid(value)
+    aanwezigheidAndere = 'n' if value == 'ja' else aanwezigheidToilet
+    set_aanwezigheid(gemeente, 'Toegankelijk Toilet', aanwezigheidAndere)
+    set_aanwezigheid(gemeente, 'Genderneutraal Toilet', aanwezigheidAndere)
+    set_aanwezigheid(gemeente, 'Toilet', aanwezigheidToilet)
+    return
+  else:
+    tc = categorie
+    v = data_aanwezigheid(value)
+  set_aanwezigheid(gemeente, tc, v)
 
 #
 # Telt de toegankelijkheden en groepeert per gemeente.
 #
 def telToegankelijkheden(json_data):
-    try:
-        # Extract the records array
-        records = json_data['result']['records']
+  try:
+    # Extract the records array
+    records = json_data['result']['records']
 
-        # Groepeer records op CBS gemeentecode
-        data = { 'resource_id': json_data['result']['resource_id'], 'data' : {} }
-        gemeentecode_groups = data['data']
-        keys = {}
-        for record in records:
-            code = record.get('CBS gemeentecode')[2:]
+    # Groepeer records op CBS gemeentecode
+    data = { 'resource_id': json_data['result']['resource_id'], 'data' : {} }
+    gemeentecode_groups = data['data']
+    keys = {}
+    for record in records:
+      code = record.get('CBS gemeentecode')[2:]
 
-            if code not in gemeentecode_groups:
-                gemeentecode_groups[code] = {'g': record.get('Gemeente')}
+      if code not in gemeentecode_groups:
+        gemeentecode_groups[code] = {'g': record.get('Gemeente')}
 
-            for tc in toegankelijkheids_categorieen:
-              if tc in record:
-                 value = record.get(tc, '')
-                 set_value(gemeentecode_groups[code], tc, value)
-                 keys[value] = 1
-        print("Alle records geteld.")
-        return data
-    except Exception as e:
-        return f'Error processing the JSON: {str(e)}'
+      for tc in toegankelijkheids_categorieen:
+        if tc in record:
+          value = record.get(tc, '')
+          set_value(gemeentecode_groups[code], tc, value)
+          keys[value] = 1
+    print("Alle records geteld.")
+    return data
+  except Exception as e:
+      return f'Error processing the JSON: {str(e)}'
 
 #
 # Transformeer data van map naar gemeente naam, totaal en toegankelijkeden in array per gemeente code.
@@ -127,7 +147,6 @@ def telToegankelijkheden(json_data):
 def transform(json):
   gemeenten = {}
   data = json['data']
-
   for code in data:
     gem = ""
     toegs = {}
@@ -155,9 +174,11 @@ def nietVerplichtTotaal(json):
     allTgStates = gemeente[2]
     totalTg = {}
     for tgName in allTgStates:
-      if tgName != 'lb':
+      # lb is verplicht en to en nt worden al geteld met tt
+      # (tt wordt gebruikt omdat in verkiezingen voor gr2026 de andere niet voorkomen en dus niet geteld zouden worden),
+      if tgName != 'lb' and tgName != 'to' and tgName != 'nt':
         for state in allTgStates[tgName]:
-          if state == 'a' or state == 'l' or state == 't' or state == 'g':
+          if state == 'a' or state == 'l':
             bewaarState = 'j'
           else:
            bewaarState = state
@@ -238,10 +259,6 @@ def atLeastOne(json):
         increment(toegsTotaal[tgName], 'a')
       elif greaterZero(states, 'l'):
         increment(toegsTotaal[tgName], 'l')
-      elif greaterZero(states, 't'):
-        increment(toegsTotaal[tgName], 't')
-      elif greaterZero(states, 'g'):
-        increment(toegsTotaal[tgName], 'g')
       elif 'n' in states and states['n'] == noCount:
         increment(toegsTotaal[tgName], 'n')
       else:
@@ -303,7 +320,7 @@ def ontbrekendeGemeenten(verkiezing, vorige_verkiezing, ontbrekendeGemeentenBest
 #
 # Hoofd proces. Laad bestand van WaarIsMijnStemlokaal en converteert naar de verschillende bestanden.
 #
-def load_and_process_json_file(filename, verkiezing, vorige_verkiezing):
+def laad_en_verwerk_json_bestand(filename, verkiezing, vorige_verkiezing):
   try:
     with open(filename, 'r', encoding='utf-8') as file:
       data = json.load(file)
@@ -336,9 +353,9 @@ def main():
   vorige_verkiezing = "public/" + sys.argv[3]
   # Voor oudere gegevens interpreteer toilet als een toegankelijk toilet.
   legacyToilet = int(sys.argv[2][2:]) < 2026
-
+  
   # Process the file
-  result = load_and_process_json_file(filename, verkiezing, vorige_verkiezing)
+  result = laad_en_verwerk_json_bestand(filename, verkiezing, vorige_verkiezing)
 
   # Check if there was an error
   if isinstance(result, str):
