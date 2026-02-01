@@ -26,12 +26,12 @@ toegankelijkheids_categorieen = [
 #    'Niet verplichte toegankelijkheden',
 ]
 
-toegankelijkheids_categorieen_short = {
+toegankelijkheids_categorieen_kort = {
     LB                                                       : 'lb',
     'Toegankelijke ov-halte'                                 : 'ov',
     'Gehandicaptentoilet'                                    : 'tt',
     'Toegankelijk Toilet'                                    : 'tt',
-    'Genderneutraal Toilet'                                  : 'nt',
+    'Genderneutraal Toilet'                                  : 'gt',
     'Toilet'                                                 : 'to',
     'Host'                                                   : 'ho',
     'Prikkelarm'                                             : 'pa',
@@ -40,12 +40,20 @@ toegankelijkheids_categorieen_short = {
     'Kandidatenlijst in braille'                             : 'kb',
     'Kandidatenlijst met grote letters'                      : 'kg',
     'Stemmal met audio-ondersteuning'                        : 'sa',
-    'Gebarentolk (NGT)'                                      : 'gt',
+    'Gebarentolk'                                            : 'gtolk',
+    'Gebarentolk (NGT) op locatie'                           : 'gl',
+    'Gebarentolk (NGT) op afstand'                           : 'ga',
     'Gebarentalig stembureaulid (NGT)'                       : 'gs',
     'Akoestiek geschikt voor slechthorenden'                 : 'as',
     'Prokkelduo'                                             : 'pd',
      'Niet verplichte toegankelijkheden'                     : 'nv',
 }
+
+# lb is verplicht
+# Voor toilet wordt alleen toilet (to) of voor 2026 (tt) meegeteld omdat tt en gt overlappen met to.
+# Voor gebarentolk (gl) en (ga) worden geteld via 'gtolk'. gtolk telt of op locatie of op afstand samengevoegd.
+niet_verplichte_niet_meetellen = set(['lb', 'tt', 'gt', 'gl', 'ga'])
+niet_verplichte_niet_meetellen_voor_2026 = set(['lb', 'to', 'gt', 'gl', 'ga'])
 
 uitzonderingen = {
   'binnen',
@@ -53,7 +61,7 @@ uitzonderingen = {
 }
 
 def set_aanwezigheid(gemeente, categorie, aanwezigheid):
-  stc = toegankelijkheids_categorieen_short[categorie]
+  stc = toegankelijkheids_categorieen_kort[categorie]
   if stc not in gemeente:
       gemeente[stc] = {}
   if aanwezigheid not in gemeente[stc]:
@@ -66,11 +74,6 @@ def data_aanwezigheid(aanwezigheid):
       v = 'j'
     case 'nee':
       v = 'n'
-    # gebarentolk
-    case 'op afstand':
-      v = 'a'
-    case 'op locatie':
-      v = 'l'
     case _:
       v = aanwezigheid
   return v
@@ -90,6 +93,14 @@ def set_value(gemeente, categorie, value):
   elif categorie == 'Geleidelijnen':
     set_value(gemeente, categorie + ' binnen', value)
     set_value(gemeente, categorie + ' buiten', value)
+    return
+  elif categorie == 'Gebarentolk (NGT)':
+    aanwezigheid = data_aanwezigheid(value)
+    ol = value == 'op locatie'
+    oa = value == 'op afstand'
+    set_aanwezigheid(gemeente, 'Gebarentolk (NGT) op locatie', 'j' if ol else 'n' if oa else aanwezigheid)
+    set_aanwezigheid(gemeente, 'Gebarentolk (NGT) op afstand', 'j' if oa else 'n' if ol else aanwezigheid)
+    set_aanwezigheid(gemeente, 'Gebarentolk', 'j' if oa or ol else aanwezigheid)
     return
   elif value == 'ja, toegankelijk toilet' or value == 'Gehandicaptentoilet':
     set_aanwezigheid(gemeente, 'Toegankelijk Toilet', 'j')
@@ -116,7 +127,7 @@ def set_value(gemeente, categorie, value):
 #
 # Telt de toegankelijkheden en groepeert per gemeente.
 #
-def telToegankelijkheden(json_data):
+def tel_toegankelijkheden(json_data):
   try:
     # Extract the records array
     records = json_data['result']['records']
@@ -167,21 +178,17 @@ def transform(json):
 #
 # Tel per gemeente van de niet verplichte toegankelijkheden de totalen.
 #
-def nietVerplichtTotaal(json):
+def niet_verplicht_totaal(json):
   gemeenten = json['data']
+  niet_meetellen = niet_verplichte_niet_meetellen_voor_2026 if legacyToilet else niet_verplichte_niet_meetellen
   for code in gemeenten:
     gemeente = gemeenten[code]
     allTgStates = gemeente[2]
     totalTg = {}
     for tgName in allTgStates:
-      # lb is verplicht en to en nt worden al geteld met tt
-      # (tt wordt gebruikt omdat in verkiezingen voor gr2026 de andere niet voorkomen en dus niet geteld zouden worden),
-      if tgName != 'lb' and tgName != 'to' and tgName != 'nt':
+      if not tgName in niet_meetellen:
         for state in allTgStates[tgName]:
-          if state == 'a' or state == 'l':
-            bewaarState = 'j'
-          else:
-           bewaarState = state
+          bewaarState = state
           if bewaarState not in totalTg:
             totalTg[bewaarState] = 0
           totalTg[bewaarState] += allTgStates[tgName][state]
@@ -190,10 +197,17 @@ def nietVerplichtTotaal(json):
     allTgStates['nv'] = totalTg
   print("Niet verplichte toegankelijkheden totalen geteld.")
 
+def filter_gtolk(json):
+  gemeenten = json['data']
+  for code in gemeenten:
+    # ['<gemeente naam>', 'stemlokalen', {'<tg>': {}}]
+    gemeente = gemeenten[code]
+    del gemeente[2]['gtolk']
+
 #
 # Tel de toegankelijkheden op landelijk nivo.
 #
-def nationalTotals(json):
+def landelijke_totalen(json):
   gemeenten = json['data']
   totaalStemlokalen = 0
   toegsTotaal = {}
@@ -204,6 +218,9 @@ def nationalTotals(json):
     # {'<tgName>': {}}}
     allTgStates = gemeente[2]
     for tgName in allTgStates:
+      # Negeer samengetelde gtolk, wordt alleen gebruikt om som te bepalen
+      if tgName == 'gtolk':
+        continue
       if tgName not in toegsTotaal:
          toegsTotaal[tgName] = {}
       totalTg = toegsTotaal[tgName]
@@ -218,7 +235,7 @@ def nationalTotals(json):
 #
 # Test of key in values en zo ja of de waarde > 0 is.
 #
-def greaterZero(values, key):
+def groter_nul(values, key):
   return key in values and values[key] > 0
 
 #
@@ -234,7 +251,7 @@ def increment(values, key):
 # Maakt json object met per toegankelijkheid geteld bij hoeveel gemeenten deze tenminste 1 keer
 # voor komt.
 #
-def atLeastOne(json):
+def tenminste_een(json):
   gemeenten = json['data']
   totaalGemeenten = 0
   toegsTotaal = {}
@@ -253,12 +270,8 @@ def atLeastOne(json):
       if tgName not in toegsTotaal:
           toegsTotaal[tgName] = {}
       states = allTgStates[tgName]
-      if greaterZero(states, 'j'):
+      if groter_nul(states, 'j'):
         increment(toegsTotaal[tgName], 'j')
-      elif greaterZero(states, 'a'):
-        increment(toegsTotaal[tgName], 'a')
-      elif greaterZero(states, 'l'):
-        increment(toegsTotaal[tgName], 'l')
       elif 'n' in states and states['n'] == noCount:
         increment(toegsTotaal[tgName], 'n')
       else:
@@ -270,7 +283,7 @@ def atLeastOne(json):
 # Maakt een gesorteerd array met tuple [gemeente code, gemeente naam]
 # op basis van gegevens die in WaarIsMijnStemlokaal data bestand zijn verwerkt.
 #
-def converteerGemeenten(data):
+def converteer_gemeenten(data):
   gemeenten = []
   for code in data:
     gemeenten.append([code, data[code][0]])
@@ -280,28 +293,28 @@ def converteerGemeenten(data):
 #
 # Schrijf het aantal aangeleverde gemeenten naar het voortgang.csv bestand.
 #
-def schrijfVoortgang(verkiezing, data):
+def schrijf_voortgang(verkiezing, data):
   bestand = verkiezing + "/voortgang.csv"
 
   if not os.path.exists(bestand):
     with open(bestand, "w") as f:
-        f.write("datum,aantal\n")
+      f.write("datum,aantal\n")
   with open(verkiezing + '/voortgang.csv', 'a', encoding='utf-8') as voortgangBestand:
-      datum = date.today().strftime('%d-%m-%Y')
-      #Gebruik volgende regels als een eerdere commit datum moet worden opgehaald.
-      #Check de slt repo in andere directory uit, pass directory hieronder aan, checkout de specifieke commit
-      #en run dit script.
-      #datum = subprocess.run(['git', 'show', '-s', '--format=%cd', '--date=format:%d-%m-%Y'],
-      #      cwd='<directory naar andere repo waar specifieke commit is uitgecheckt>',
-      #      capture_output=True, text=True)
-      #    .stdout.strip()
-      voortgangBestand.write(datum + ',' + str(len(data)) + '\n')
+    datum = date.today().strftime('%d-%m-%Y')
+    #Gebruik volgende regels als een eerdere commit datum moet worden opgehaald.
+    #Check de slt repo in andere directory uit, pass directory hieronder aan, checkout de specifieke commit
+    #en run dit script.
+    #datum = subprocess.run(['git', 'show', '-s', '--format=%cd', '--date=format:%d-%m-%Y'],
+    #      cwd='<directory naar andere repo waar specifieke commit is uitgecheckt>',
+    #      capture_output=True, text=True)
+    #    .stdout.strip()
+    voortgangBestand.write(datum + ',' + str(len(data)) + '\n')
 
 #
 # Maakt een bestand aan met gemeenten die nog niet hun gegevens aan hebben geleverd.
 # Dit wordt gedaan aan de hand van de lijst gemeenten van de vorige verkiezing.
 #
-def ontbrekendeGemeenten(verkiezing, vorige_verkiezing, ontbrekendeGemeentenBestand):
+def ontbrekende_gemeenten(verkiezing, vorige_verkiezing, ontbrekendeGemeentenBestand):
   vorigeVerkiezingBestand = vorige_verkiezing + '/gemeenten.json'
   nieuweVerkiezingBestand = verkiezing + '/gemeenten.json'
 
@@ -324,18 +337,19 @@ def laad_en_verwerk_json_bestand(filename, verkiezing, vorige_verkiezing):
   try:
     with open(filename, 'r', encoding='utf-8') as file:
       data = json.load(file)
-      counted = telToegankelijkheden(data)
+      counted = tel_toegankelijkheden(data)
       transform(counted)
-      nietVerplichtTotaal(counted)
-      nationalTotals(counted)
-      atLeastOne(counted)
+      niet_verplicht_totaal(counted)
+      filter_gtolk(counted)
+      landelijke_totalen(counted)
+      tenminste_een(counted)
       with open(verkiezing + '/stemlokalen.json', 'w', encoding='utf-8') as output:
         json.dump(counted, output, separators=(',', ':'))
       with open(verkiezing + '/gemeenten.json', 'w', encoding='utf-8') as output:
-        json.dump(converteerGemeenten(counted['data']), output, separators=(',', ':'))
-      schrijfVoortgang(verkiezing, counted['data'])
+        json.dump(converteer_gemeenten(counted['data']), output, separators=(',', ':'))
+      schrijf_voortgang(verkiezing, counted['data'])
       with open(verkiezing + '/ontbrekende_gemeenten.csv', 'w', encoding='utf-8') as output:
-        ontbrekendeGemeenten(verkiezing, vorige_verkiezing, output)
+        ontbrekende_gemeenten(verkiezing, vorige_verkiezing, output)
 
   except Exception as e:
       return f'Error loading or processing file: {str(e)}'

@@ -47,23 +47,7 @@ function titleLabel(key: ToegankelijkhedenID, state: ToegankelijkheidDataTypeKey
     <td><slot /></td>
     <td class="row">
       <div
-        v-if="tid == 'gt' && show(tid, 'l') > 0"
-        :title="titleLabel(tid, 'l', ' op locatie aanwezig')"
-        class="cell yes ola"
-        :class="`${tekortJa(tid, 'l')} ${tekortJaKlein(tid, 'l')}` "
-        :style="width(tid, 'l')">
-        {{ show(tid, "l") }}
-      </div>
-      <div
-        v-if="tid == 'gt' && show(tid, 'a') > 0"
-        :title="titleLabel(tid, 'a', ' op afstand aanwezig')"
-        class="cell yes"
-        :class="`${tekortJa(tid, 'a')} ${tekortJaKlein(tid, 'a')}` "
-        :style="width(tid, 'a')">
-        {{ show(tid, "a") }}
-      </div>
-      <div
-        v-if="tid != 'gt' && show(tid, 'j') > 0"
+        v-if="show(tid, 'j') > 0"
         :title="titleLabel(tid, 'j', ' aanwezig')"
         class="cell yes"
         :class="`${tekortJa(tid, 'j')} ${tekortJaKlein(tid, 'j')}` "

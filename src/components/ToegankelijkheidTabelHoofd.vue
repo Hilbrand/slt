@@ -7,7 +7,7 @@ const props = defineProps<{
 <template>
   <tr class="tabel">
     <th class="cell eerste">{{ props.naam }}</th>
-    <th class="cell" colspan="2">Aanwezig</th>
+    <th class="cell">Aanwezig</th>
     <th class="cell">Onbekend</th>
     <th class="cell">Afwezig</th>
   </tr>

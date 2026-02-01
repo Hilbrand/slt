@@ -13,8 +13,6 @@ import { TOEGANKELIJKHEDEN, type ToegankelijkhedenID, type ToegankelijkheidType 
 export function maakToegankelijkhedenData(data: ToegankelijkheidType): string[][] {
   return Object.entries(data).map(([tg, values]) => [
     TOEGANKELIJKHEDEN[tg as ToegankelijkhedenID],
-    String(values.l ?? 0),
-    String(values.a ?? 0),
     String(values.j ?? 0),
     String(values[""] ?? 0),
     String(values.n ?? 0),
@@ -36,8 +34,6 @@ export function maakGemeenteData(tg: ToegankelijkhedenID): string[][] {
     const values = toegankelijkhedenStore.getToegankelijkheden(gem[0])[tg];
     return [
       gem[1],
-      String(values.l ?? 0),
-      String(values.a ?? 0),
       String(values.j ?? 0),
       String(values[""] ?? 0),
       String(values.n ?? 0),

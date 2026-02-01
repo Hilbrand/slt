@@ -16,7 +16,7 @@ export function isAbove(data: GemeenteDataType, gem: string, tg: Toegankelijkhed
     return { total: 0, above: false };
   }
   const tgData = data[gem] && data[gem][2] && data[gem][2][tg];
-  const amount = tgData && tg == "gt" ? (tgData?.a || 0) + (tgData?.l || 0) : tgData?.j || 0;
+  const amount = tgData?.j || 0;
   const total = data[gem] && data[gem][1] ? data[gem][1] : 1;
   const above = Math.ceil((amount * 100) / total) >= percentage;
   return { total: total, above: above };

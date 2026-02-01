@@ -24,24 +24,7 @@ function titleLabel(key: ToegankelijkhedenID, state: ToegankelijkheidDataTypeKey
   <tr v-if="props.toegankelijkheden[tid] !== undefined"
     class="tabel">
     <td><slot /></td>
-    <!-- <td class="row"> -->
     <td
-      v-if="tid == 'gt'"
-      colspan="1"
-      :title="titleLabel(tid, 'l', ' op locatie aanwezig')"
-      class="cell">
-      {{ show(tid, "l") }}
-    </td>
-    <td
-      v-if="tid == 'gt'"
-      colspan="1"
-      :title="titleLabel(tid, 'a', ' op afstand aanwezig')"
-      class="cell">
-      {{ show(tid, "a") }}
-    </td>
-    <td
-      v-if="tid != 'gt'"
-      colspan="2"
       :title="titleLabel(tid, 'j', ' aanwezig')"
       class="cell">
       {{ show(tid, "j") }}

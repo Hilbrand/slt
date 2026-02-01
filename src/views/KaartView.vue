@@ -151,9 +151,6 @@ function featureGemeenteName(): string {
   }
   return featureGemeente.value;
 }
-function heeft(state: ToegankelijkheidDataTypeKey): boolean {
-  return toegankelijkheid.value === 'gt' && (state == 'l' || state == 'a');
-}
 
 function gegevensBeschikbaar(): boolean {
   const data = allData.value;
@@ -219,18 +216,8 @@ const legendaText = {
         <template v-if="totalGem() > 0">
           <p>Aantal stemlokaties waar {{ toegankelijkheidText }}:</p>
           <div class="hover-table">
-            <template v-if="heeft('l')">
-              <div>Lokaal</div>
-              <div>{{ aanwezig("l") }}</div>
-            </template>
-            <template v-if="heeft('a')">
-              <div>Op afstand</div>
-              <div>{{ aanwezig("a") }}</div>
-            </template>
-            <template v-if="toegankelijkheid != 'gt'">
-              <div>Aanwezig</div>
-              <div>{{ aanwezig("j") }}</div>
-            </template>
+            <div>Aanwezig</div>
+            <div>{{ aanwezig("j") }}</div>
             <div>Nee</div>
             <div>{{ aanwezig("n") }}</div>
             <div>Onbekend</div>

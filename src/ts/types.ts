@@ -35,7 +35,7 @@ export const TOEGANKELIJKHEDEN_IDS = [
   "lb",
   "ov",
   "tt",
-  "nt",
+  "gt",
   "to",
   "ho",
   "pd",
@@ -45,7 +45,8 @@ export const TOEGANKELIJKHEDEN_IDS = [
   "kb",
   "kg",
   "sa",
-  "gt",
+  "gl",
+  "ga",
   "gs",
   "as",
   "nv",
@@ -60,7 +61,7 @@ export const TOEGANKELIJKHEDEN: Record<ToegankelijkhedenID, string> = {
   lb: "Toegankelijk voor mensen met een lichamelijke beperking",
   ov: "Toegankelijke ov-halte",
   tt: "Toegankelijk Toilet",
-  nt: "Genderneutraal Toilet",
+  gt: "Genderneutraal Toilet",
   to: "Toilet",
   ho: "Host",
   pd: "Prokkelduo",
@@ -70,7 +71,8 @@ export const TOEGANKELIJKHEDEN: Record<ToegankelijkhedenID, string> = {
   kb: "Kandidatenlijst in braille",
   kg: "Kandidatenlijst met grote letters",
   sa: "Stemmal met audio-ondersteuning",
-  gt: "Gebarentolk (NGT)",
+  gl: "Gebarentolk (NGT) op locatie",
+  ga: "Gebarentolk (NGT) op afstand",
   gs: "Gebarentalig stembureaulid (NGT)",
   as: "Akoestiek geschikt voor slechthorenden",
   nv: "Niet verplichte toegankelijkheden",
@@ -101,8 +103,6 @@ export type ToegankelijkheidDataType = {
   j? : number;
   ""?: number;
   n?: number;
-  a?: number; // Op afstand aanwezige gebarentolk
-  l?: number; // Lokaal aanwezige gebarentolk
 };
 
 export type ToegankelijkheidDataTypeKey = keyof ToegankelijkheidDataType;
@@ -128,10 +128,10 @@ export type LegendaTextType = {
 };
 
 export const hoofdRegelToegankelijkheidCsv =
-  ['Toegankelijkheid', 'Gebarentolk op locatie', 'Gebarentolk op afstand', 'Aanwezig', 'Onbekend', 'Afwezig'];
+  ['Toegankelijkheid', 'Aanwezig', 'Onbekend', 'Afwezig'];
 
 export const hoofdRegelGemeenteCsv =
-  ['Gemeente', 'Gebarentolk op locatie', 'Gebarentolk op afstand', 'Aanwezig', 'Onbekend', 'Afwezig'];
+  ['Gemeente', 'Aanwezig', 'Onbekend', 'Afwezig'];
 
 export interface RegelDataCsv {
   (): string[][];

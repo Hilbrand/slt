@@ -124,10 +124,15 @@ function nietZelf() {
         >https://WaarIsMijnStemlokaal.nl</a
       >. De gegevens zijn gebaseerd op het bestand met id:
       <code>{{ toegankelijkhedenStore.getResourceId() }}</code>.
-   </p>
-    <p>'Niet verplichte toegankelijkheden' is de som van alle toegankelijkheden behalve de verplichte
-      'Toegankelijk voor mensen met een lichamelijke beperking'.
-   </p>
+    </p>
+    <details>
+      <summary>Uitleg Niet verplichte toegankelijkheden</summary>
+      <p><b>Niet verplichte toegankelijkheden</b> is de som van alle toegankelijkheden behalve de verplichte
+         'Toegankelijk voor mensen met een lichamelijke beperking'.
+         In dit cijfer wordt de aanwezigheid van een toilet meegenomen en
+         voor Gebarentolk wordt op locatie of op afstand meegenomen als aanwezig.
+      </p>
+    </details>
     <p>
       Meer informatie over dit project is te vinden op <a href="https://github.com/hilbrand/slt" target="_blank"
       >https://github.com/hilbrand/slt</a>.
