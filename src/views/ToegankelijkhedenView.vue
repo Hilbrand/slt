@@ -110,7 +110,7 @@ const legendaText = {
           :tid="props.informatie.toegankelijkheid"
           groep="stemlokalen"
           :toegankelijkheden="toegankelijkhedenStore.getToegankelijkheden(gem[0])"
-          ><a @click=navigateGemeente(gem[0])>{{  gem[1] }} <sup>{{ toegankelijkhedenStore.isNietDeelnemendeGemeente(gem[1]) ? "1" : ''}}</sup></a>
+          ><a @click=navigateGemeente(gem[0])>{{  gem[1] }}</a><sup>{{ toegankelijkhedenStore.isNietDeelnemendeGemeente(gem[1]) ? "1" : ''}}</sup>
         </ToegankelijkheidRegelTabel>
       </template>
       <template v-else>
@@ -130,7 +130,7 @@ const legendaText = {
           groep="stemlokalen"
           :toegankelijkheden="toegankelijkhedenStore.getToegankelijkheden(gem[0])"
           :visualisatie="props.informatie.visualisatie">
-          <a @click=navigateGemeente(gem[0])>{{  gem[1] }} <sup>{{ toegankelijkhedenStore.isNietDeelnemendeGemeente(gem[1]) ? "1" : ''}}</sup></a>
+          <a @click=navigateGemeente(gem[0])>{{  gem[1] }}</a><sup>{{ toegankelijkhedenStore.isNietDeelnemendeGemeente(gem[1]) ? "1" : ''}}</sup>
         </ToegankelijkheidRegel>
         </template>
     </tbody>
