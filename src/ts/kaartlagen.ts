@@ -20,7 +20,7 @@ import Fill from "ol/style/Fill";
 
 export type GeoLayer = VectorLayer<VectorSource>;
 
-const extent = [-285401.92, 22598.08, 595401.9199999999, 903401.9199999999];
+const extent = [-285401.92, 22598.08, 595401.92, 903401.92];
 const resolutions = [
   3440.64, 1720.32, 860.16, 430.08, 215.04, 107.52, 53.76, 26.88, 13.44, 6.72, 3.36, 1.68, 0.84,
   0.42,
@@ -32,7 +32,7 @@ for (let i = 0; i < 26; ++i) {
 }
 
 const hoverStyle = new Style({
-  fill: new Fill({color: '#FFF5'}),
+  fill: new Fill({color: '#EEE8'}),
   stroke: new Stroke({ color: '#A6BDDB', width: 1 })
 });
 

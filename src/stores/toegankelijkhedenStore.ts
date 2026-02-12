@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import type { GemeenteDataType, ToegankelijkheidType, ToegankelijkheidAreaType } from "@/types";
+import { GEEN_VERKIEZING } from "@/ts/types";
 
 /**
  * Store voor toegankelijkheden per gemeente.
@@ -65,7 +66,7 @@ export const useToegankelijkhedenStore = defineStore("toegankelijkheden", {
           : (state.gemeenten.filter(g => g[0] === key)[0][1]),
     isDoetNietMee: (state) => (key: string | undefined): boolean =>
       // @ts-expect-error Bij gemeenten waar geen verkiezingen wordt gehouden staat in kolom 1 de waarde 'geen verkiezing' ipv een getal
-      key !== undefined && state.gemeenteData && state.gemeenteData[key] && state.gemeenteData[key][1] === 'geen verkiezing',
+      key !== undefined && state.gemeenteData && state.gemeenteData[key] && state.gemeenteData[key][1] === GEEN_VERKIEZING,
     getStemlokalen: (state) => (key: string | undefined) =>
       key !== undefined && state.gemeenteData && state.gemeenteData[key] ? state.gemeenteData[key][1] : 0,
     getResourceId: (state) => (): string => state.resource_id,

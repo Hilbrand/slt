@@ -2,7 +2,7 @@
 import { computed, onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useToegankelijkhedenStore } from "@/stores/toegankelijkhedenStore";
-import { createGemeenteStyleFunction, isAbove } from "@/ts/gemeenteStyle";
+import { createGemeenteStyleFunction, isBovenPercentage } from "@/ts/gemeenteStyle";
 import {
   Kaart,
   maakGeoJsonKaartlaag,
@@ -83,7 +83,7 @@ function calcTotal() {
   let sum = 0;
 
   for (const gem in allData.value) {
-    const { above } = isAbove(allData.value, gem, toegankelijkheid.value, percentage.value);
+    const { bovenPercentage: above } = isBovenPercentage(allData.value, gem, toegankelijkheid.value, percentage.value);
 
     if (above) {
       sum += 1;
