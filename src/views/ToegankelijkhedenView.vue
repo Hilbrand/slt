@@ -129,6 +129,7 @@ const legendaText = {
           :totaal="toegankelijkhedenStore.getStemlokalen(gem[0])"
           groep="stemlokalen"
           :toegankelijkheden="toegankelijkhedenStore.getToegankelijkheden(gem[0])"
+          :doetMee="!toegankelijkhedenStore.isDoetNietMee(gem[0])"
           :visualisatie="props.informatie.visualisatie">
           <a @click=navigateGemeente(gem[0])>{{  gem[1] }}</a><sup>{{ toegankelijkhedenStore.isNietDeelnemendeGemeente(gem[1]) ? "1" : ''}}</sup>
         </ToegankelijkheidRegel>

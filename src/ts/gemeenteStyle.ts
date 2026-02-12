@@ -32,7 +32,7 @@ export function createGemeenteStyleFunction(
     const { total, above } = isAbove(data.value, gem, tg.value, percentage.value);
     const color = above
       ? color_ja
-      : (data.value[gem]
+      : (data.value[gem] && data.value[gem][2]
         ? (data.value[gem][2][tg.value]?.n === total ? color_nee : color_onbekend)
         : color_geen_gegevens);
     return new Style({

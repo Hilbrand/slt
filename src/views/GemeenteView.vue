@@ -65,6 +65,7 @@ const legendaText = {
 
 <template v-if="toegankelijkheden !== undefined">
   <Download
+    v-if="!toegankelijkhedenStore.isDoetNietMee(props.informatie?.gemeente)"
     :bestandsnaam="csvBestandsnaam"
     :hoofdregel="hoofdRegelToegankelijkheidCsv"
     :regelData="() => maakToegankelijkhedenData(toegankelijkheden)" />
@@ -76,30 +77,39 @@ const legendaText = {
       {{ gem[1] }}
     </option>
   </select>
-  <div v-if="!grafiek"
-    class="totaal-tekst">Aantal stemlokalen: {{ totaal }}</div>
-  <ToegankelijkheidsTable
-    :totaal="totaal"
-    groep="stemlokalen"
-    :toegankelijkheden="toegankelijkheden"
-    :visualisatie="props.informatie.visualisatie">
-    <tr v-if="grafiek">
-      <td>Aantal stemlokalen</td>
-      <td v-if="grafiek"
-        class="row">
-        <div class="cell yes" style="width: 100%">{{ totaal }}</div>
-      </td>
-    </tr>
-  </ToegankelijkheidsTable>
-  <div v-if="toegankelijkhedenStore.isNietDeelnemendeGemeente(toegankelijkhedenStore.getGemeenteName(props.informatie?.gemeente))"
-    class="nietzelf">
-    <sup>1</sup> Deze gemeente heeft niet zelf de gegevens aangeleverd.
+  <div v-if="toegankelijkhedenStore.isDoetNietMee(props.informatie?.gemeente)"
+     class="doet-niet-mee">
+  <p>In {{ toegankelijkhedenStore.getGemeenteName(props.informatie?.gemeente) }} zijn deze ronde geen verkiezingen.</p>
   </div>
+  <template v-else>
+    <div v-if="!grafiek"
+      class="totaal-tekst">Aantal stemlokalen: {{ totaal }}</div>
+    <ToegankelijkheidsTable
+      :totaal="totaal"
+      groep="stemlokalen"
+      :toegankelijkheden="toegankelijkheden"
+      :visualisatie="props.informatie.visualisatie">
+      <tr v-if="grafiek">
+        <td>Aantal stemlokalen</td>
+        <td v-if="grafiek"
+          class="row">
+          <div class="cell yes" style="width: 100%">{{ totaal }}</div>
+        </td>
+      </tr>
+    </ToegankelijkheidsTable>
+    <div v-if="toegankelijkhedenStore.isNietDeelnemendeGemeente(toegankelijkhedenStore.getGemeenteName(props.informatie?.gemeente))"
+      class="nietzelf">
+      <sup>1</sup> Deze gemeente heeft niet zelf de gegevens aangeleverd.
+    </div>
+  </template>
   <Legenda v-if="grafiek"
     :legendaText="legendaText" />
 </template>
 
 <style scoped>
+.doet-niet-mee {
+  padding: 0 10px;
+}
 .select {
   z-index: 10000;
   margin:10px;

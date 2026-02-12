@@ -280,6 +280,22 @@ def tenminste_een(json):
   print("Gegevens van tenminste 1 aangemaakt.")
 
 #
+#
+#
+def verwerk_geen_verkiezingen(verkiezing, json):
+  bestand = verkiezing + '/geen_verkiezingen.csv'
+  gemeenten = {}
+
+  if os.path.exists(bestand):
+    print("Verwerk bestand met gemeenten die niet meedoen met deze verkiezing")
+    with open(bestand, 'r', encoding='utf-8') as file:
+      for regel in file:
+        if not regel.strip():
+          continue
+        code, naam = regel.strip().split(',')
+        json['data'][code] = [naam,'geen verkiezing']
+
+#
 # Maakt een gesorteerd array met tuple [gemeente code, gemeente naam]
 # op basis van gegevens die in WaarIsMijnStemlokaal data bestand zijn verwerkt.
 #
@@ -311,23 +327,34 @@ def schrijf_voortgang(verkiezing, data):
     voortgangBestand.write(datum + ',' + str(len(data)) + '\n')
 
 #
-# Maakt een bestand aan met gemeenten die nog niet hun gegevens aan hebben geleverd.
-# Dit wordt gedaan aan de hand van de lijst gemeenten van de vorige verkiezing.
+# lees gemeenten bestand in.
+#
+def lees_gemeenten(directory, jsonBestand):
+  bestand = directory + jsonBestand
+
+  with open(bestand, 'r') as vorigeB:
+    jsonGegevens = json.load(vorigeB)
+
+    return {item[0]: tuple(item) for item in jsonGegevens}
+#
+# Maakt een bestand aan met gemeenten alle gemeenten die nog niet hun gegevens aan hebben geleverd.
+# Dit wordt gedaan aan de hand van de lijst alle gemeenten.
+# Als het bestand van alle gemeenten nog niet bestaat dan wordt het gekopieerd van de meegegeven vorige verkiezing.
 #
 def ontbrekende_gemeenten(verkiezing, vorige_verkiezing, ontbrekendeGemeentenBestand):
-  vorigeVerkiezingBestand = vorige_verkiezing + '/gemeenten.json'
-  nieuweVerkiezingBestand = verkiezing + '/gemeenten.json'
+  gemeentenVerkiezingen = verkiezing + '/gemeenten.json'
+  if not os.path.exists(gemeentenVerkiezingen):
+    print ("Kopieer gemeenten.json bestand gemeenten van vorige verkiezingen.")
+    with open(gemeentenVerkiezingen, 'w', encoding='utf-8') as gnb, open(vorige_verkiezing + '/gemeenten.json', 'r', encoding='utf-8') as gvb:
+      gnb.write(gvb.read())
 
-  with open(vorigeVerkiezingBestand, 'r') as f1, open(nieuweVerkiezingBestand, 'r') as f2:
-    data1 = json.load(f1)
-    data2 = json.load(f2)
-
-  dict1 = {item[0]: tuple(item) for item in data1}
-  dict2 = {item[0]: tuple(item) for item in data2}
-  ontbrekendeGemeenten = [dict1[num] for num in dict1 if num not in dict2]
+  vorigeDict = lees_gemeenten(verkiezing, '/gemeenten.json')
+  nieuweDict = lees_gemeenten(verkiezing, '/aangeleverde_gemeenten.json')
+  ontbrekendeGemeenten = [vorigeDict[num] for num in vorigeDict if num not in nieuweDict]
 
   for gemeente in ontbrekendeGemeenten:
       ontbrekendeGemeentenBestand.write(gemeente[1] + '\n')
+  os.remove(verkiezing + '/aangeleverde_gemeenten.json')
   print("Ontbrekende gemeenten gegevens bestand aangemaakt.")
 
 #
@@ -337,17 +364,18 @@ def laad_en_verwerk_json_bestand(filename, verkiezing, vorige_verkiezing):
   try:
     with open(filename, 'r', encoding='utf-8') as file:
       data = json.load(file)
-      counted = tel_toegankelijkheden(data)
-      transform(counted)
-      niet_verplicht_totaal(counted)
-      filter_gtolk(counted)
-      landelijke_totalen(counted)
-      tenminste_een(counted)
+      stemlokalen = tel_toegankelijkheden(data)
+      transform(stemlokalen)
+      niet_verplicht_totaal(stemlokalen)
+      filter_gtolk(stemlokalen)
+      landelijke_totalen(stemlokalen)
+      tenminste_een(stemlokalen)
+      verwerk_geen_verkiezingen(verkiezing, stemlokalen)
       with open(verkiezing + '/stemlokalen.json', 'w', encoding='utf-8') as output:
-        json.dump(counted, output, separators=(',', ':'))
-      with open(verkiezing + '/gemeenten.json', 'w', encoding='utf-8') as output:
-        json.dump(converteer_gemeenten(counted['data']), output, separators=(',', ':'))
-      schrijf_voortgang(verkiezing, counted['data'])
+        json.dump(stemlokalen, output, separators=(',', ':'))
+      with open(verkiezing + '/aangeleverde_gemeenten.json', 'w', encoding='utf-8') as output:
+        json.dump(converteer_gemeenten(stemlokalen['data']), output, separators=(',', ':'))
+      schrijf_voortgang(verkiezing, stemlokalen['data'])
       with open(verkiezing + '/ontbrekende_gemeenten.csv', 'w', encoding='utf-8') as output:
         ontbrekende_gemeenten(verkiezing, vorige_verkiezing, output)
 

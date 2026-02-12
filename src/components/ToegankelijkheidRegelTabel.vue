@@ -21,7 +21,7 @@ function titleLabel(key: ToegankelijkhedenID, state: ToegankelijkheidDataTypeKey
 </script>
 
 <template>
-  <tr v-if="props.toegankelijkheden[tid] !== undefined"
+  <tr v-if="props.toegankelijkheden && props.toegankelijkheden[tid] !== undefined"
     class="tabel">
     <td><slot /></td>
     <td

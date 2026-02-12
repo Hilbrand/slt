@@ -30,13 +30,18 @@ export function maakGemeenteData(tg: ToegankelijkhedenID): string[][] {
   const toegankelijkhedenStore = useToegankelijkhedenStore();
   const gemeenten = toegankelijkhedenStore.getGemeenten();
 
-  return gemeenten.map(gem => {
-    const values = toegankelijkhedenStore.getToegankelijkheden(gem[0])[tg];
-    return [
-      gem[1],
-      String(values.j ?? 0),
-      String(values[""] ?? 0),
-      String(values.n ?? 0),
-    ];
+  return gemeenten
+    .filter(gem =>
+      toegankelijkhedenStore.getToegankelijkheden(gem[0])
+      && toegankelijkhedenStore.getToegankelijkheden(gem[0]).hasOwnProperty(tg))
+    .map(gem => {
+      const values = toegankelijkhedenStore.getToegankelijkheden(gem[0])[tg];
+
+      return [
+        gem[1],
+        String(values.j ?? 0),
+        String(values[""] ?? 0),
+        String(values.n ?? 0),
+      ];
   });
 }

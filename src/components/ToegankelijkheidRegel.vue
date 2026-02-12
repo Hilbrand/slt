@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { type ToegankelijkheidType, type ToegankelijkhedenID, type ToegankelijkheidDataTypeKey, TOEGANKELIJKHEDEN } from "@/ts/types";
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   tid: ToegankelijkhedenID,
   totaal: number;
   groep: string;
   toegankelijkheden: ToegankelijkheidType;
-}>();
+  doetMee?: boolean;
+}>(), { doetMee: true});
 
 function show(key: ToegankelijkhedenID, state: ToegankelijkheidDataTypeKey): number {
   return props.toegankelijkheden[key] && props.toegankelijkheden[key][state] || 0;
@@ -43,7 +44,7 @@ function titleLabel(key: ToegankelijkhedenID, state: ToegankelijkheidDataTypeKey
 </script>
 
 <template>
-  <tr v-if="props.toegankelijkheden[tid] !== undefined">
+  <tr v-if="doetMee && props.toegankelijkheden[tid] !== undefined">
     <td><slot /></td>
     <td class="row">
       <div

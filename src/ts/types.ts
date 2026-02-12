@@ -27,7 +27,7 @@ export const VERKIEZINGEN: Record<VerkiezingID, VerkiezingType> = {
   gr2026: {
     naam: "Gemeenteraad 2026",
     datum: new Date(2026, 2, 18),
-    aantalGemeenten: 345,
+    aantalGemeenten: 340,
   }
 };
 

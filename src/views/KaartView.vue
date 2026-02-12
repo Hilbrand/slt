@@ -20,6 +20,7 @@ import {
   type ToegankelijkheidDataTypeKey,
 } from "@/ts/types";
 import Legenda from "@/components/LegendaComponent.vue";
+import { useGemeentenStore } from "@/stores/gemeentenStore";
 
 const router = useRouter();
 
@@ -27,6 +28,7 @@ const props = defineProps<{
   informatie: InformatieType;
 }>();
 
+const gemeentenStore = useGemeentenStore();
 const toegankelijkhedenStore = useToegankelijkhedenStore();
 const allData = ref<GemeenteDataType>({});
 
@@ -234,7 +236,8 @@ const legendaText = {
             <div class="hover-table-last">{{ totalGem() }}</div>
           </div>
         </template>
-        <div v-else>Voor deze gemeente zijn nog geen gegevens beschikbaar.</div>
+        <div v-else-if="toegankelijkhedenStore.isDoetNietMee(featureGemeente)">In {{ gemeentenStore.getGemeente(featureGemeente) }} zijn deze ronde geen verkiezingen.</div>
+        <div v-else>Voor {{ gemeentenStore.getGemeente(featureGemeente) }} zijn nog geen gegevens beschikbaar.</div>
       </div>
       <div class="kaart-hint" v-if="!grootScherm">Gebruik 2 vingers om de kaart te verplaatsen.</div>
     </div>
