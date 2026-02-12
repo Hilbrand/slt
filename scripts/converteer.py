@@ -280,7 +280,7 @@ def tenminste_een(json):
   print("Gegevens van tenminste 1 aangemaakt.")
 
 #
-#
+# Voeg gemeenten waar geen verkiezing is toe aan de data met als tekst 'geen verkiezing'.
 #
 def verwerk_geen_verkiezingen(verkiezing, json):
   bestand = verkiezing + '/geen_verkiezingen.csv'
@@ -370,12 +370,13 @@ def laad_en_verwerk_json_bestand(filename, verkiezing, vorige_verkiezing):
       filter_gtolk(stemlokalen)
       landelijke_totalen(stemlokalen)
       tenminste_een(stemlokalen)
+      # schrijf voortang voor verwerk_geen_verkiezingen omdat anders gemeenten die niet meedoen met de verkiezing worden meegeteld.
+      schrijf_voortgang(verkiezing, stemlokalen['data'])
       verwerk_geen_verkiezingen(verkiezing, stemlokalen)
       with open(verkiezing + '/stemlokalen.json', 'w', encoding='utf-8') as output:
         json.dump(stemlokalen, output, separators=(',', ':'))
       with open(verkiezing + '/aangeleverde_gemeenten.json', 'w', encoding='utf-8') as output:
         json.dump(converteer_gemeenten(stemlokalen['data']), output, separators=(',', ':'))
-      schrijf_voortgang(verkiezing, stemlokalen['data'])
       with open(verkiezing + '/ontbrekende_gemeenten.csv', 'w', encoding='utf-8') as output:
         ontbrekende_gemeenten(verkiezing, vorige_verkiezing, output)
 
