@@ -45,12 +45,16 @@ h3 {
   align-items: center;
   margin: 10px;
 }
+
+.legenda {
+  border-bottom: 1px solid var(--color-legenda-border-bottom);
+}
+
 @media (min-width: 512px) {
   .legenda {
     display: flex;
     justify-content: space-between;
     margin: 0 10px 30px 10px;
-    border-bottom: 1px solid var(--color-legenda-border-bottom);
   }
 }
 .legenda-block {

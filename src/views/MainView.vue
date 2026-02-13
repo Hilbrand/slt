@@ -177,7 +177,9 @@ function nietZelf() {
 }
 .footer {
   width: 100%;
-  padding: 0 10px;
+}
+.footer > * {
+  margin: 10px;
 }
 .main {
   padding-top: 130px;
@@ -212,9 +214,6 @@ function nietZelf() {
   }
   .main {
     padding-top: 105px;
-  }
-  .footer p {
-    margin: 10px;
   }
 }
 </style>
