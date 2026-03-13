@@ -40,36 +40,37 @@ onMounted(() => {
 
 <template>
   <nav class="nav">
-    <button
+    <a
       @click="navigateTo('start')"
       :class="selected('start')"
       title="Start pagina met algemene statistieken"
-    >Start</button>
-    <button
+    >Start</a>
+    <a
       @click="navigateTo('gemeente')"
       :class="selected('gemeente')"
       title="Pagina met toegankelijkheidsgegevens per Gemeente"
-    >Gemeente</button>
-    <button
+    >Gemeente</a>
+    <a
       @click="navigateTo('kaart')"
       :class="selected('kaart')"
       title="Pagina met toegankelijkheidsgegevens per gemeente op een kaart"
-    >Kaart</button>
-    <button
+    >Kaart</a>
+    <a
       @click="navigateTo('tg')"
       :class="selected('tg')"
       title="Pagina met een toegankelijkheid in alle gemeenten"
-    >TG</button>
-    <button
+    >TG</a>
+    <a
       @click="navigateTo('eml')"
       :class="selected('eml')"
       title="Pagina met locatiegegevens van WaarIsMijnStemlokaal vergeleken met verkiezingsuitslagen gegevens"
-    >EML</button>
-    <button
+    >EML</a>
+    <a
       @click="navigateTo('voortgang')"
       :class="selected('voortgang')"
+      class="icon"
       title="Pagina met voortgang van aangeleverde gegevens door gemeenten voor aankomende verkiezing"
-    >&#128203;</button>
+    >&#128203;</a>
     <input class="theme"
       type="checkbox"
       id="theme"
@@ -86,12 +87,12 @@ onMounted(() => {
   top: 0px;
 }
 .nav .theme {
-  padding-left: 10px;
-  width: 30px;
+  margin-left: 10px;
   -webkit-appearance: none;
   appearance: none;
   font-size: 1.3em;
   cursor: pointer;
+  padding: 0px 3px;
 }
 .nav .theme:before {
   content: '\263C';
@@ -99,24 +100,35 @@ onMounted(() => {
 .nav .theme:checked:before {
   content: '\263D';
 }
-
-.nav button {
-  color: var(--color-button-tekst);
-  vertical-align: middle;
-  text-align: center;
-  border: 1px solid var(--color-button-border);
-  background-color: var(--color-button);
-  border-top: 0;
-  border-radius: 0 0 5px 5px;
-  padding: 10px;
-  margin-left: 5px;
+.nav .theme:hover {
+  background-color: var(--color-button-hover);
+  border-radius: 3px;
 }
 
-@media (min-width: 1600px) {
-  .nav button {
-    width: 100px;
-    padding: 10px 5px;
+.nav a {
+  text-decoration: none;
+  color: var(--color-button-tekst);
+  text-align: center;
+  margin-left: 5px;
+  padding: 5px 5px;
+}
+
+@media (min-width: 1200px) {
+  .nav a {
+    min-width: 80px;
   }
+}
+
+.nav a:hover {
+  background-color: var(--color-button-hover);
+  border-radius: 3px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.nav a.selected {
+  font-weight: bold;
+  text-decoration: underline;
 }
 
 .nav a:link,
@@ -124,23 +136,17 @@ onMounted(() => {
   text-decoration: none;
 }
 
-.nav button:hover {
-  background-color: var(--color-button-hover);
-  cursor: pointer;
-}
-
-.nav button.selected {
-  font-weight: bold;
-  background: var(--color-button-geselecteerd);
+.nav .icon {
+  font-size: 1.3em;
+  padding-top: 0;
+  text-decoration: none !important;
+  color: var(--color-button-geselecteerd);
 }
 
 @media (max-width: 1280px) {
   .nav {
     position: unset;
     text-align: center;
-  }
-  .nav button {
-    padding: 10px 5px;
   }
 }
 

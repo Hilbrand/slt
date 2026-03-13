@@ -25,7 +25,7 @@
   --color-button: light-dark(#e9e9ed, #555);
   --color-button-tekst: light-dark(#555, #e9e9ed);
   --color-button-border: var(--color-button-tekst);
-  --color-button-hover: light-dark(#ccc, #888);
+  --color-button-hover: light-dark(#ddd, #888);
   --color-button-geselecteerd: light-dark(#bbb, #333);
 
   --color-legenda-border-bottom:#333;
@@ -40,7 +40,9 @@
   --color-map-selectie-border: #999;
 
   --color-voortgang-lijn: light-dark(steelblue, #eee);
-  --color-voortgang-as: light-dark(#aaa, #eee);;
+  --color-voortgang-as: light-dark(#aaa, #eee);
+
+  --color-table-alternate: light-dark(#e9e9ed, #555);
 
   &:has(#theme:checked) {
     color-scheme: dark;
@@ -193,11 +195,13 @@ a:active, .cat-link + label:active {
   text-align: right;
   padding-right: 10px;
 }
+
 th:first-child, td:first-child {
   text-align: left;
 }
+
 .grid tr:nth-child(odd) {
-  background-color: var(--color-button);
+  background-color: var(--color-table-alternate);
 }
 
 .totaal-tekst {
