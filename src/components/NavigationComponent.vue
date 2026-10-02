@@ -59,18 +59,18 @@ onMounted(() => {
       @click="navigateTo('tg')"
       :class="selected('tg')"
       title="Pagina met een toegankelijkheid in alle gemeenten"
-    >TG</a>
-    <a
+    >Toegankelijkheid</a>
+    <!-- <a
       @click="navigateTo('eml')"
       :class="selected('eml')"
       title="Pagina met locatiegegevens van WaarIsMijnStemlokaal vergeleken met verkiezingsuitslagen gegevens"
-    >EML</a>
+    >EML</a> -->
     <a
       @click="navigateTo('voortgang')"
       :class="selected('voortgang')"
       class="icon"
       title="Pagina met voortgang van aangeleverde gegevens door gemeenten voor aankomende verkiezing"
-    >&#128203;</a>
+    >&#x1F4C8;</a>
     <input class="theme"
       type="checkbox"
       id="theme"

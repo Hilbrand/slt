@@ -20,7 +20,7 @@ const informatie = ref<InformatieType>({} as InformatieType);
 
 const toegankelijkhedenStore = useToegankelijkhedenStore();
 const emlMismatchesStore = useEmlMismatchesStore();
-const visualisatie = ref(false);
+const visualisatie = ref(Visualisatie.GRAFIEK);
 
 watch(
   () => route.query,
@@ -34,7 +34,7 @@ watch(
   () => informatie,
   (newValue) => {
     router.replace({ query: jsonToNavigatie(newValue.value) });
-    visualisatie.value = newValue.value.visualisatie == Visualisatie.GRAFIEK;
+    visualisatie.value = newValue.value.visualisatie;
     update(informatie.value);
   },
   { immediate: true, deep: true },
@@ -79,7 +79,7 @@ async function update(informatie: InformatieType) {
 function veranderVisualisatie(event: Event) {
   const e = event.target as HTMLInputElement;
   const copy = informatie.value;
-  copy.visualisatie = e.checked ?  Visualisatie.GRAFIEK : Visualisatie.TABEL;
+  copy.visualisatie = e.value as Visualisatie;
   router.push({ query: jsonToNavigatie(copy) });
 }
 function nietZelf() {
@@ -101,13 +101,22 @@ function nietZelf() {
     <Navigation class="nav" :informatie="informatie" />
     <h1 class="titel">{{ titel }} <sup>{{ nietZelf() }}</sup></h1>
     <h2 class="verkiezing-naam">{{ VERKIEZINGEN[informatie.verkiezing].naam }}</h2>
-    <input
-      v-if="['start', 'gemeente', 'tg'].includes(informatie?.pagina)"
-      type="checkbox"
-      :title="`Klik om gegevens als ${ visualisatie ? 'tabel' : 'grafiek' } te tonen.`"
-      class="vis"
-      v-model="visualisatie"
-      @change="veranderVisualisatie"/>
+    <div v-if="['start', 'gemeente', 'tg'].includes(informatie?.pagina)" class="visu">
+      <label>
+        <input
+          type="radio"
+          v-model="visualisatie"
+          :value="Visualisatie.GRAFIEK"
+          @change="veranderVisualisatie"
+        />Grafiek</label>
+      <label>
+        <input
+          type="radio"
+          v-model="visualisatie"
+          :value="Visualisatie.TABEL"
+          @change="veranderVisualisatie"
+        />Tabel</label>
+    </div>
   </header>
   <main class="main">
     <Kaart v-if="informatie.pagina == 'kaart'" :informatie="informatie" />
@@ -153,21 +162,15 @@ function nietZelf() {
   z-index: 10000;
 }
 
-.vis {
+.visu {
   position: absolute;
-  top: 90px;
-  right: 0px;
-  width: 30px;
-  -webkit-appearance: none;
-  appearance: none;
-  font-size: 1.3em;
-  cursor: pointer;
+  top: 105px;
+  right: 10px;
 }
-.vis:before {
-  content: 'T';
-}
-.vis:checked:before {
-  content: '\1F4CA';
+@media (max-width: 1024px) {
+  .visu {
+    top: 80px;
+  }
 }
 
 .verkiezingen {
