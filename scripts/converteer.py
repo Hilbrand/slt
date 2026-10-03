@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import json
 import sys
 import os
@@ -310,22 +312,28 @@ def converteer_gemeenten(data):
 # Schrijf het aantal aangeleverde gemeenten naar het voortgang.csv bestand.
 #
 def schrijf_voortgang(verkiezing, data):
-  bestand = verkiezing + "/voortgang.csv"
+  bestand = verkiezing + '/voortgang.csv'
+  #Gebruik volgende regels als een eerdere commit datum moet worden opgehaald.
+  #Check de slt repo in andere directory uit, pass directory hieronder aan, checkout de specifieke commit
+  #en run dit script.
+  #datum = subprocess.run(['git', 'show', '-s', '--format=%cd', '--date=format:%d-%m-%Y'],
+  #      cwd='<directory naar andere repo waar specifieke commit is uitgecheckt>',
+  #      capture_output=True, text=True)
+  #    .stdout.strip()
+  datum = date.today().strftime('%d-%m-%Y')
 
-  if not os.path.exists(bestand):
-    with open(bestand, "w") as f:
-      f.write("datum,aantal\n")
-  with open(verkiezing + '/voortgang.csv', 'a', encoding='utf-8') as voortgangBestand:
-    datum = date.today().strftime('%d-%m-%Y')
-    #Gebruik volgende regels als een eerdere commit datum moet worden opgehaald.
-    #Check de slt repo in andere directory uit, pass directory hieronder aan, checkout de specifieke commit
-    #en run dit script.
-    #datum = subprocess.run(['git', 'show', '-s', '--format=%cd', '--date=format:%d-%m-%Y'],
-    #      cwd='<directory naar andere repo waar specifieke commit is uitgecheckt>',
-    #      capture_output=True, text=True)
-    #    .stdout.strip()
-    voortgangBestand.write(datum + ',' + str(len(data)) + '\n')
+  with open(bestand, "r", encoding="utf-8") as f:
+      regels = f.readlines()
+  nieuwe_regel = f"{datum},{str(len(data))}\n"
 
+  laatste_regel = regels[-1].rstrip("\r\n")
+  if laatste_regel.startswith(f"{datum}"):
+    regels[-1] = nieuwe_regel
+  else:
+    regels.append(nieuwe_regel)
+
+  with open(bestand, "w", encoding="utf-8") as f:
+      f.writelines(regels)
 #
 # lees gemeenten bestand in.
 #
