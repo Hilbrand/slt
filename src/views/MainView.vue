@@ -167,11 +167,6 @@ function nietZelf() {
   top: 105px;
   right: 10px;
 }
-@media (max-width: 1024px) {
-  .visu {
-    top: 80px;
-  }
-}
 
 .verkiezingen {
   position: absolute;
@@ -197,9 +192,6 @@ function nietZelf() {
 }
 
 @media (max-width: 1024px) {
-  .header {
-    height: 105px;
-  }
   .header h1 {
     font-size: 1.2em;
   }
@@ -214,9 +206,6 @@ function nietZelf() {
   .vis {
     top:45px;
     right: 0px;
-  }
-  .main {
-    padding-top: 105px;
   }
 }
 </style>

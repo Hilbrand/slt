@@ -50,7 +50,7 @@ h3 {
   border-bottom: 1px solid var(--color-legenda-border-bottom);
 }
 
-@media (min-width: 512px) {
+@media (min-width: 620px) {
   .legenda {
     display: flex;
     justify-content: space-between;

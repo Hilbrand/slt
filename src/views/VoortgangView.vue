@@ -14,11 +14,11 @@ const gegevens = ref<GemeentenGepubliceerdItem[] | null>(null);
 
 const toegankelijkhedenStore = useToegankelijkhedenStore();
 
-const nietDeelnemendeGemeenten = computed<String[]>(() =>
+const nietDeelnemendeGemeenten = computed<string[]>(() =>
   toegankelijkhedenStore.getNietDeelnemendeGemeenten(),
 );
 
-const ontbrekendeGemeenten = computed<String[]>(() =>
+const ontbrekendeGemeenten = computed<string[]>(() =>
   toegankelijkhedenStore.getOntbrekendeGemeenten(),
 );
 

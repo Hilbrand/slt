@@ -59,7 +59,7 @@ onMounted(() => {
       @click="navigateTo('tg')"
       :class="selected('tg')"
       title="Pagina met een toegankelijkheid in alle gemeenten"
-    >Toegankelijkheid</a>
+    ><span class="tgl">Toegankelijkheid</span><span class="tgs">TG</span></a>
     <!-- <a
       @click="navigateTo('eml')"
       :class="selected('eml')"
@@ -119,6 +119,17 @@ onMounted(() => {
   }
 }
 
+@media (max-width: 450px) {
+  .nav .tgl {
+    display: none;
+  }
+}
+@media (min-width: 450px) {
+  .nav .tgs {
+    display: none;
+  }
+}
+
 .nav a:hover {
   background-color: var(--color-button-hover);
   border-radius: 3px;
@@ -142,6 +153,7 @@ onMounted(() => {
   text-decoration: none !important;
   color: var(--color-button-geselecteerd);
 }
+
 
 @media (max-width: 1280px) {
   .nav {
